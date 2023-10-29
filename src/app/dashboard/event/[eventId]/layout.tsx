@@ -30,7 +30,7 @@ export default function SettingsLayout({
         <aside className="-mx-4 lg:w-1/5">
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <main className="flex-1 lg:max-w-2xl">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );
