@@ -45,9 +45,9 @@ export default function EventIdPage({
           </OpenModalButton>
         </div>
       </div>
-      <div className="flex h-96 w-full flex-col items-center justify-center gap-8 rounded-lg border border-dashed text-center">
+      <div className="flex h-96 w-full flex-col items-center justify-center gap-5 rounded-lg border border-dashed text-center">
         <div className="h-fit w-fit rounded-full bg-primary/40 p-5">
-          <GalleryThumbnailsIcon className="h-8 w-8 text-primary-foreground" />
+          <GalleryThumbnailsIcon className="h-16 w-16 text-primary-foreground" />
         </div>
         <div className="space-y-1">
           <p className="text-xl font-semibold">No events created</p>

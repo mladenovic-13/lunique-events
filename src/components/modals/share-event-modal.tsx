@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { CopyCheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { toast, useToast } from "../ui/use-toast";
+import { useToast } from "../ui/use-toast";
 
 export const ShareEventModal = () => {
   const [copied, setCopied] = useState(false);
@@ -45,6 +45,8 @@ export const ShareEventModal = () => {
       }),
   });
 
+  if (!eventId) return null;
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -53,22 +55,19 @@ export const ShareEventModal = () => {
           <DialogDescription>
             Anyone with the link can view this gallery.
           </DialogDescription>
-          <div className="flex gap-3 py-5">
-            <Input
-              value={`http://localhost:3000/gallery/${eventId}`}
-              className="flex-1"
-            />
-            <Button
-              disabled={isLoading || copied}
-              onClick={() => copy()}
-              size="icon"
-              variant="secondary"
-            >
-              {!copied && <CopyIcon className="h-5 w-5" />}
-              {copied && !isLoading && <CopyCheckIcon className="h-5 w-5" />}
-            </Button>
-          </div>
         </DialogHeader>
+        <div className="flex gap-3">
+          <Input defaultValue={galleryUrl} className="flex-1" />
+          <Button
+            disabled={isLoading || copied}
+            onClick={() => copy()}
+            size="icon"
+            variant="secondary"
+          >
+            {!copied && <CopyIcon className="h-5 w-5" />}
+            {copied && !isLoading && <CopyCheckIcon className="h-5 w-5" />}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
