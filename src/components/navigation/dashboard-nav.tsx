@@ -10,7 +10,7 @@ export const DashboardNav = async () => {
     <nav className="border-b">
       <div className="container mx-auto flex h-16 w-full items-center justify-between">
         <Link href={paths.dashboard.root}>
-          <div className="rounded-md text-xl font-light tracking-wide text-primary drop-shadow-lg">
+          <div className="rounded-md text-xl font-bold tracking-wider text-primary drop-shadow-lg md:font-extrabold">
             Better Event
           </div>
         </Link>
