@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { CreateEventForm } from "../forms/create-event-form";
 
 export const CreateEventModal = () => {
   const { isOpen, type, onClose } = useModal();
@@ -22,6 +23,9 @@ export const CreateEventModal = () => {
           <DialogDescription>
             Create a new event here. Click save when you are done.
           </DialogDescription>
+          <div>
+            <CreateEventForm />
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>
