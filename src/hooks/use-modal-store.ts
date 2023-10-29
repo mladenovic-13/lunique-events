@@ -3,7 +3,7 @@ import { create } from "zustand";
 export type ModalType = "create-event" | "share-event" | "upload-event-images";
 
 export type ModalData = {
-  data?: string;
+  eventId?: string;
 };
 
 interface ModalStore {

@@ -12,9 +12,12 @@ interface OpenModalButtonProps extends ButtonProps {
   modalData?: ModalData;
 }
 
-export const OpenModalButton = (props: OpenModalButtonProps) => {
-  const { modalType, modalData, children } = props;
-
+export const OpenModalButton = ({
+  children,
+  modalType,
+  modalData,
+  ...props
+}: OpenModalButtonProps) => {
   const { onOpen } = useModal();
 
   return (
