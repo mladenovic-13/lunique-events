@@ -63,11 +63,11 @@ export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <button
             disabled={isLoading}
             onClick={() => mutate()}
-            className="flex items-center"
+            className="flex w-full items-center"
           >
             {!isLoading && <LogOutIcon className="mr-1.5 h-4 w-4" />}
             {isLoading && <RotateCwIcon className="mr-1.5 h-4 w-4" />}
