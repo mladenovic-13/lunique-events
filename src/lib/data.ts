@@ -56,9 +56,9 @@ export const events = [
 ];
 
 export const images = [
-  "/images/1.webp",
-  "/images/2.webp",
-  "/images/3.webp",
-  "/images/4.webp",
-  "/images/5.webp",
+  { id: 1, src: "/images/1.webp" },
+  { id: 2, src: "/images/2.webp" },
+  { id: 3, src: "/images/3.webp" },
+  { id: 4, src: "/images/4.webp" },
+  { id: 5, src: "/images/5.webp" },
 ];
