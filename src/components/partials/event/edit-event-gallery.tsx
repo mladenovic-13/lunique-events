@@ -37,28 +37,33 @@ export const EditEventGallery = ({
 
   return (
     <div className="space-y-5">
-      {selected.length === 0 && (
-        <Button variant="secondary" onClick={handleSelectAll}>
-          Select All
-        </Button>
-      )}
-      {selected.length !== 0 && (
-        <div className="flex gap-1.5">
-          <Button variant="secondary" onClick={handleDeselectAll}>
-            Deselect All
+      <div className="space-y-1.5">
+        {selected.length === 0 && (
+          <Button variant="secondary" onClick={handleSelectAll}>
+            Select All
           </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="text-destructive"
-            onClick={() =>
-              onOpen("delete-event-images", { eventId, images: selected })
-            }
-          >
-            <TrashIcon />
-          </Button>
-        </div>
-      )}
+        )}
+        {selected.length !== 0 && (
+          <div className="flex gap-1.5">
+            <Button variant="secondary" onClick={handleDeselectAll}>
+              Deselect All
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="text-destructive"
+              onClick={() =>
+                onOpen("delete-event-images", { eventId, images: selected })
+              }
+            >
+              <TrashIcon />
+            </Button>
+          </div>
+        )}
+        <p className="text-sm text-zinc-500">
+          {selected.length} of {images.length} photo(s) selected.
+        </p>
+      </div>
       <ToggleGroup.Root
         type="multiple"
         orientation="horizontal"
@@ -66,7 +71,7 @@ export const EditEventGallery = ({
         onValueChange={setSelected}
         className="grid grid-cols-3 gap-3 md:grid-cols-5"
       >
-        {images.slice(10).map((image) => (
+        {images.map((image) => (
           <ToggleGroup.Item
             key={image.id}
             value={String(image.id)}
