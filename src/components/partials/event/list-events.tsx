@@ -9,7 +9,7 @@ export const ListEvents = () => (
       <Link
         href={paths.events.event(String(event.id))}
         key={event.id}
-        className="transition duration-200 hover:opacity-80"
+        className="transition duration-200 lg:hover:opacity-80"
       >
         <EventCard {...event} />
       </Link>
