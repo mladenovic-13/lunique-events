@@ -4,7 +4,7 @@ import { paths } from "@/routes/paths";
 import Link from "next/link";
 
 export const ListEvents = () => (
-  <div className="grid gap-5 md:grid-cols-3 md:gap-8">
+  <div className="grid gap-3 md:grid-cols-4">
     {events.map((event) => (
       <Link
         href={paths.events.event(String(event.id))}
