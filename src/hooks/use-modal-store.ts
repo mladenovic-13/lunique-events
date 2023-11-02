@@ -12,10 +12,8 @@ export type ModalType =
 export type ModalData = {
   eventId?: string;
   images?: string[];
-  gallery?: {
-    images: ImageProps[];
-    currenImage: ImageProps[number]["id"];
-  };
+  galleryImages?: ImageProps[];
+  galleryId?: string;
 };
 
 interface ModalStore {

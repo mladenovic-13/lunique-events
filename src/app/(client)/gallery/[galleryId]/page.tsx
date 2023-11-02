@@ -18,7 +18,7 @@ export default function GalleryIdPage({
   return (
     <main className="dark grid gap-3 bg-background p-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
       {galleryId && <SelfieUploadCard galleryId={galleryId} />}
-      {images && <RenderGalleryImages images={images} />}
+      {images && <RenderGalleryImages images={images} galleryId={galleryId} />}
     </main>
   );
 }
