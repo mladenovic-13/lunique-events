@@ -55,6 +55,9 @@
   }
   body {
     @apply bg-background text-foreground;
+
+    width: 100vw;
+    overflow-x: hidden;
   }
 
   .h-fill {
