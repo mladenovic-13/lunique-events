@@ -1,9 +1,11 @@
-// import { EditEventGallery } from "@/components/partials/event/edit-event-gallery";
+import { EditEventGallery } from "@/components/partials/event/edit-event-gallery";
 import { EventActionButtons } from "@/components/partials/event/event-action-buttons";
 import { EventHeader } from "@/components/partials/event/event-header";
 import { NoEventImages } from "@/components/partials/event/no-event-images";
 import { paths } from "@/routes/paths";
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { type ImageAttributes } from "@/types";
 import { redirect } from "next/navigation";
 
 export default async function EventIdPage({
@@ -13,9 +15,21 @@ export default async function EventIdPage({
     eventId: string;
   };
 }) {
-  const event = await api.event.get.query({ id: params.eventId });
+  const session = await getServerAuthSession();
+  if (!session?.user.id) redirect(paths.root);
 
-  if (!event) redirect(paths.events.root);
+  const event = await api.event.get.query({ id: params.eventId });
+  if (!event?.id) redirect(paths.events.root);
+
+  const urls = await api.s3.getEventImages.query({
+    userId: session.user.id,
+    eventId: event.id,
+  });
+
+  const images: ImageAttributes[] = urls.map((url, idx) => ({
+    id: idx,
+    src: url,
+  }));
 
   return (
     <div className="space-y-5 pb-20 md:space-y-8">
@@ -24,10 +38,8 @@ export default async function EventIdPage({
         <EventActionButtons event={event} />
       </div>
 
-      {/* {images && event && (
-        <EditEventGallery eventId={String(event.id)} images={images} />
-      )} */}
-      <NoEventImages event={event} />
+      {images && <EditEventGallery eventId={event.id} images={images} />}
+      {!images && <NoEventImages event={event} />}
     </div>
   );
 }

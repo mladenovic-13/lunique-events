@@ -8,11 +8,7 @@ import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-
-type ImageAttributes = {
-  id: number;
-  src: string;
-};
+import { type ImageAttributes } from "@/types";
 
 interface ImageToggleGroupProps {
   images: ImageAttributes[];

@@ -13,9 +13,9 @@ import { GalleryDropzone } from "../partials/event/gallery-dropzone";
 export const UploadImagesModal = () => {
   const { isOpen, type, onClose, data } = useModal();
 
-  const isModalOpen = isOpen && type === "upload-event-images";
-
   const { eventId } = data;
+
+  const isModalOpen = isOpen && type === "upload-event-images";
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
