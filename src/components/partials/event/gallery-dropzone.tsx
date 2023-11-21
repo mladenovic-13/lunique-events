@@ -8,7 +8,9 @@ import { useModal } from "@/hooks/use-modal-store";
 import { getGalleryImagePath } from "@/lib/get-path";
 import { convertToMB } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import axios, { AxiosError } from "axios";
+import { type RouterInputs } from "@/trpc/shared";
+import { ImageType } from "@prisma/client";
+import axios from "axios";
 import { ImageIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { type SyntheticEvent, useState, useCallback, useEffect } from "react";
@@ -29,6 +31,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
 
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getPresignedUrl.useMutation();
+  const { mutate: saveImageDetails } = api.event.addImages.useMutation();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
@@ -48,20 +51,34 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
 
   const onSubmit = useCallback(async () => {
     if (files.length > 0 && session && session.user) {
-      let progress = 0;
-      const step = 100 / files.length;
+      try {
+        let progress = 0;
+        const step = 100 / files.length;
 
-      for (const file of files) {
-        try {
+        const images: RouterInputs["event"]["addImages"]["images"] = [];
+
+        for (const file of files) {
+          const imageKey = getGalleryImagePath(
+            session.user.id,
+            eventId,
+            file.name,
+          );
+
           const presignedUrl = await fetchPresignedUrls({
-            key: getGalleryImagePath(session.user.id, eventId, file.name),
+            key: imageKey,
           });
-
-          console.log({ name: file.name, url: presignedUrl });
 
           await axios.put(presignedUrl, file.slice(), {
             headers: { "Content-Type": file.type },
           });
+
+          const imageType = ["jpg", "jpeg"].includes(
+            file.name.split(".")[1] ?? "",
+          )
+            ? ImageType.JPG
+            : ImageType.PNG;
+
+          images.push({ key: imageKey, name: file.name, type: imageType });
 
           progress = progress + step;
 
@@ -70,28 +87,38 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
           });
 
           document.dispatchEvent(progressEvent);
-        } catch (error) {
-          if (error instanceof AxiosError) {
-            console.log("Failed to upload: ", file.name);
-          }
-          console.log("Failed to create presigned url for: ", file.name);
-
-          toast({
-            variant: "destructive",
-            title: "Upload failed",
-            description: "Youre upload failed. Please try again",
-          });
         }
-      }
 
-      onClose();
-      toast({
-        title: "Images uploaded",
-        description: `${files.length} image(s) uploaded and indexed successfully.`,
-      });
+        saveImageDetails(
+          { eventId, images },
+          {
+            onSuccess: (data) => {
+              toast({
+                title: "Images uploaded",
+                description: `${data.count} image(s) uploaded successfully.`,
+              });
+              onClose();
+            },
+          },
+        );
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Failed to upload images",
+          description: "Something went wrong. Please try again.",
+        });
+      }
     }
     setFiles([]);
-  }, [eventId, fetchPresignedUrls, files, session, onClose, toast]);
+  }, [
+    eventId,
+    fetchPresignedUrls,
+    files,
+    session,
+    onClose,
+    toast,
+    saveImageDetails,
+  ]);
 
   const handleRemove = (e: SyntheticEvent, name: string) => {
     e.stopPropagation();

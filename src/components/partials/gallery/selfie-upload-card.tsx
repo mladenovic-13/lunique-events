@@ -18,7 +18,10 @@ interface SelfieUploadCardProps {
 }
 
 export const SelfieUploadCard = ({ eventId }: SelfieUploadCardProps) => {
-  const { data: event } = api.event.get.useQuery({ id: eventId });
+  const { data: event } = api.event.get.useQuery(
+    { id: eventId },
+    { staleTime: Infinity },
+  );
 
   return (
     <Card className="row-span-2 flex flex-col gap-10 bg-primary/5">

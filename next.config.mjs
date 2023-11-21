@@ -6,7 +6,9 @@ await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
-  images: { domains: ["better-event.s3.eu-north-1.amazonaws.com"] },
+  images: {
+    domains: ["dt6j9fprfunik.cloudfront.net"],
+  },
 };
 
 export default config;

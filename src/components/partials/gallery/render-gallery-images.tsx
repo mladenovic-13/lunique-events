@@ -3,7 +3,6 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useModal } from "@/hooks/use-modal-store";
 import { api } from "@/trpc/react";
-import { type ImageAttributes } from "@/types";
 import Image from "next/image";
 import { useMemo } from "react";
 
@@ -14,17 +13,15 @@ interface RenderGalleryImagesProps {
 export const RenderGalleryImages = ({ eventId }: RenderGalleryImagesProps) => {
   const { onOpen } = useModal();
 
-  const { data: event } = api.event.get.useQuery({ id: eventId });
-
-  const { data: urls } = api.s3.getEventImages.useQuery(
-    { eventId: event?.id, userId: event?.ownerId },
-    { enabled: !!event?.id && !!event.ownerId },
+  const { data } = api.event.getImages.useQuery(
+    { eventId },
+    { staleTime: Infinity },
   );
 
-  const images = useMemo<ImageAttributes[]>(() => {
-    if (!urls) return [];
-    return urls.map((url, idx) => ({ id: idx, src: url }));
-  }, [urls]);
+  const images = useMemo(() => {
+    if (!data) return [];
+    return data.map((image, idx) => ({ id: idx, src: image.url }));
+  }, [data]);
 
   return (
     <>

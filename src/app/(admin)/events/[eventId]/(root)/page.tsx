@@ -21,14 +21,11 @@ export default async function EventIdPage({
   const event = await api.event.get.query({ id: params.eventId });
   if (!event?.id) redirect(paths.events.root);
 
-  const urls = await api.s3.getEventImages.query({
-    eventId: event.id,
-    userId: session.user.id,
-  });
+  const _images = await api.event.getImages.query({ eventId: event.id });
 
-  const images: ImageAttributes[] = urls.map((url, idx) => ({
+  const images: ImageAttributes[] = _images.map((image, idx) => ({
     id: idx,
-    src: url,
+    src: image.url,
   }));
 
   return (
