@@ -2,34 +2,40 @@
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useModal } from "@/hooks/use-modal-store";
-import { type ImageProps } from "@/types";
+import { api } from "@/trpc/react";
+import { type ImageAttributes } from "@/types";
 import Image from "next/image";
-import Link from "next/link";
+import { useMemo } from "react";
 
 interface RenderGalleryImagesProps {
-  galleryId: string;
-  images: ImageProps[];
+  eventId: string;
 }
 
-export const RenderGalleryImages = ({
-  images,
-  galleryId,
-}: RenderGalleryImagesProps) => {
+export const RenderGalleryImages = ({ eventId }: RenderGalleryImagesProps) => {
   const { onOpen } = useModal();
+
+  const { data: event } = api.event.get.useQuery({ id: eventId });
+
+  const { data: urls } = api.s3.getEventImages.useQuery(
+    { eventId: event?.id, userId: event?.ownerId },
+    { enabled: !!event?.id && !!event.ownerId },
+  );
+
+  const images = useMemo<ImageAttributes[]>(() => {
+    if (!urls) return [];
+    return urls.map((url, idx) => ({ id: idx, src: url }));
+  }, [urls]);
 
   return (
     <>
       {images.map((image, idx) => (
-        <Link
+        <div
           id={`gallery-image-${idx}`}
           key={image.id}
-          href={`/gallery/${galleryId}/?photoId=${idx}`}
-          shallow
-          scroll={false}
           onClick={() =>
             onOpen("event-gallery", {
               galleryImages: images,
-              galleryId: galleryId,
+              currentImage: idx,
             })
           }
         >
@@ -45,7 +51,7 @@ export const RenderGalleryImages = ({
               className="h-full w-full rounded-lg object-cover"
             />
           </AspectRatio>
-        </Link>
+        </div>
       ))}
     </>
   );

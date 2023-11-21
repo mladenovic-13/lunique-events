@@ -22,8 +22,8 @@ export default async function EventIdPage({
   if (!event?.id) redirect(paths.events.root);
 
   const urls = await api.s3.getEventImages.query({
-    userId: session.user.id,
     eventId: event.id,
+    userId: session.user.id,
   });
 
   const images: ImageAttributes[] = urls.map((url, idx) => ({
