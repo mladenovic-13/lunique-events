@@ -140,9 +140,11 @@ export const eventRouter = createTRPCRouter({
         data,
       });
     }),
+  // TODO: delete images, remove faces from rekognition collection
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
+      // TODO: delete rekognition collection
       return await ctx.db.event.delete({
         where: {
           ownerId: ctx.session.user.id,

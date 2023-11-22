@@ -13,7 +13,8 @@ import { ImageType } from "@prisma/client";
 import axios from "axios";
 import { ImageIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { type SyntheticEvent, useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { type SyntheticEvent, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 
@@ -24,6 +25,7 @@ interface GalleryDropzoneProps {
 export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
   const [files, setFiles] = useState<File[]>([]);
 
+  const router = useRouter();
   const form = useForm();
   const { onClose } = useModal();
   const { toast } = useToast();
@@ -32,6 +34,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getPresignedUrl.useMutation();
   const { mutate: saveImageDetails } = api.event.addImages.useMutation();
+  const { mutate: indexImage } = api.rekognition.index.useMutation();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
@@ -49,7 +52,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
     },
   });
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = async () => {
     if (files.length > 0 && session && session.user) {
       try {
         let progress = 0;
@@ -80,6 +83,14 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
 
           images.push({ key: imageKey, name: file.name, type: imageType });
 
+          indexImage(
+            { eventId, imageKey },
+            {
+              onSuccess: (res) => console.log({ index_images: res }),
+              onError: (error) => console.log({ error }),
+            },
+          );
+
           progress = progress + step;
 
           const progressEvent = new CustomEvent("uploadProgress", {
@@ -97,6 +108,8 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
                 title: "Images uploaded",
                 description: `${data.count} image(s) uploaded successfully.`,
               });
+
+              router.refresh();
               onClose();
             },
           },
@@ -110,15 +123,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
       }
     }
     setFiles([]);
-  }, [
-    eventId,
-    fetchPresignedUrls,
-    files,
-    session,
-    onClose,
-    toast,
-    saveImageDetails,
-  ]);
+  };
 
   const handleRemove = (e: SyntheticEvent, name: string) => {
     e.stopPropagation();

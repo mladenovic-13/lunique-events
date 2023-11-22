@@ -24,19 +24,33 @@ export const DeleteEventModal = () => {
 
   const { eventId } = data;
 
-  const mutation = api.event.delete.useMutation();
+  const { mutate: deleteEvent, isLoading: isDeletingEvent } =
+    api.event.delete.useMutation();
+
+  const { mutate: deleteCollection } =
+    api.rekognition.deleteCollection.useMutation();
 
   const router = useRouter();
 
   const handleDelete = () => {
     if (eventId) {
-      mutation.mutate(
+      deleteEvent(
         { id: eventId },
         {
           onSuccess: (event) => {
             toast({
               title: `${event.name} deleted!`,
             });
+
+            deleteCollection(
+              { eventId },
+              {
+                onSuccess: (response) =>
+                  console.log("[DELETE_COLLECTION]", { response }),
+                onError: (error) =>
+                  console.log("[DELETE_COLLECTION]", { error }),
+              },
+            );
 
             router.push(paths.events.root);
             router.refresh();
@@ -62,13 +76,13 @@ export const DeleteEventModal = () => {
         </DialogHeader>
         <DialogFooter className="flex flex-col gap-3">
           <Button
-            disabled={mutation.isLoading}
+            disabled={isDeletingEvent}
             variant="destructive"
             className="h-fit w-full"
             onClick={handleDelete}
           >
-            {!mutation.isLoading && <TrashIcon className="mr-1.5 h-4 w-4" />}
-            {mutation.isLoading && (
+            {!isDeletingEvent && <TrashIcon className="mr-1.5 h-4 w-4" />}
+            {isDeletingEvent && (
               <RotateCwIcon className="mr-1.5 h-4 w-4 animate-spin" />
             )}
             Delete
