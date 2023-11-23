@@ -34,7 +34,8 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
   const { mutateAsync: fetchPresignedUrls } =
     api.s3.getPresignedUrl.useMutation();
   const { mutate: saveImageDetails } = api.event.addImages.useMutation();
-  const { mutate: indexImage } = api.rekognition.index.useMutation();
+
+  // const { mutate: indexImage } = api.event.indexImage.useMutation();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
@@ -83,13 +84,14 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
 
           images.push({ key: imageKey, name: file.name, type: imageType });
 
-          indexImage(
-            { eventId, imageKey },
-            {
-              onSuccess: (res) => console.log({ index_images: res }),
-              onError: (error) => console.log({ error }),
-            },
-          );
+          // TODO: index images on upload
+          // indexImage(
+          //   { eventId, imageKey },
+          //   {
+          //     onSuccess: (res) => console.log({ index_images: res }),
+          //     onError: (error) => console.log({ error }),
+          //   },
+          // );
 
           progress = progress + step;
 

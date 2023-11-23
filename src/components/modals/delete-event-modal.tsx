@@ -27,9 +27,6 @@ export const DeleteEventModal = () => {
   const { mutate: deleteEvent, isLoading: isDeletingEvent } =
     api.event.delete.useMutation();
 
-  const { mutate: deleteCollection } =
-    api.rekognition.deleteCollection.useMutation();
-
   const router = useRouter();
 
   const handleDelete = () => {
@@ -41,16 +38,6 @@ export const DeleteEventModal = () => {
             toast({
               title: `${event.name} deleted!`,
             });
-
-            deleteCollection(
-              { eventId },
-              {
-                onSuccess: (response) =>
-                  console.log("[DELETE_COLLECTION]", { response }),
-                onError: (error) =>
-                  console.log("[DELETE_COLLECTION]", { error }),
-              },
-            );
 
             router.push(paths.events.root);
             router.refresh();

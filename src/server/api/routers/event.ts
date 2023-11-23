@@ -10,6 +10,12 @@ import { eventSettingsSchema } from "@/validation/event-settings";
 import { ImageType } from "@prisma/client";
 import { env } from "@/env.mjs";
 import { TRPCError } from "@trpc/server";
+import { deleteS3EventFolder } from "@/server/aws/s3-utils";
+import {
+  createCollection,
+  deleteCollection,
+  indexImage,
+} from "@/server/aws/rekognition-utils";
 
 export const eventRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -61,7 +67,7 @@ export const eventRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createEventSchema)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.event.create({
+      const event = await ctx.db.event.create({
         data: {
           ...input,
           ownerId: ctx.session.user.id,
@@ -73,6 +79,10 @@ export const eventRouter = createTRPCRouter({
           },
         },
       });
+
+      await createCollection(ctx.rekognition, event.id);
+
+      return event;
     }),
   update: protectedProcedure
     .input(
@@ -140,11 +150,25 @@ export const eventRouter = createTRPCRouter({
         data,
       });
     }),
-  // TODO: delete images, remove faces from rekognition collection
+  indexImage: protectedProcedure
+    .input(z.object({ eventId: z.string(), imageKey: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { imageKey, eventId } = input;
+
+      const data = await indexImage(ctx.rekognition, eventId, imageKey);
+
+      return await ctx.db.face.createMany({
+        data,
+      });
+    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      // TODO: delete rekognition collection
+      const { id } = input;
+
+      await deleteCollection(ctx.rekognition, id);
+      await deleteS3EventFolder(ctx.s3, ctx.session.user.id, id);
+
       return await ctx.db.event.delete({
         where: {
           ownerId: ctx.session.user.id,

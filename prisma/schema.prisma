@@ -79,7 +79,7 @@ model Face {
     indexedImageId String
     imageKey       String
 
-    Event   Event?  @relation(fields: [eventId], references: [id])
+    Event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId String?
 
     @@index([eventId])
