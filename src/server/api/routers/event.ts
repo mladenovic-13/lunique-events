@@ -9,7 +9,6 @@ import { createEventSchema } from "@/validation/create-event";
 import { eventSettingsSchema } from "@/validation/event-settings";
 import { ImageType } from "@prisma/client";
 import { env } from "@/env.mjs";
-import { TRPCError } from "@trpc/server";
 import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 import {
   createCollection,
@@ -32,7 +31,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.db.event.findFirst({ where: { id: input.id } });
+      return await ctx.db.event.findFirst({
+        where: { id: input.id },
+        include: { images: { take: 1 } },
+      });
     }),
   settings: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -103,25 +105,53 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  getImages: publicProcedure
+  getImagesCount: publicProcedure
     .input(z.object({ eventId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const event = await ctx.db.event.findFirst({
+      return await ctx.db.image.count({
         where: {
-          id: input.eventId,
+          eventId: input.eventId,
         },
-        include: {
-          images: true,
+      });
+    }),
+  getImages: publicProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        limit: z.number().optional(),
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { eventId, skip, limit, cursor } = input;
+
+      const images = await ctx.db.image.findMany({
+        take: limit ? limit + 1 : undefined,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          eventId: eventId,
         },
       });
 
-      if (!event)
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Event not found.",
-        });
+      console.log("[PAGE_LENGTH]", { length: images.length });
 
-      return event.images;
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (limit && images.length > limit) {
+        const nextItem = images.pop(); // remove last item from array (cursor)
+        nextCursor = nextItem?.id;
+      }
+
+      console.log({ images: images.length, cursor: nextCursor });
+
+      return {
+        images,
+        nextCursor,
+      };
     }),
   addImages: protectedProcedure
     .input(
@@ -140,6 +170,7 @@ export const eventRouter = createTRPCRouter({
       const { images, eventId } = input;
 
       const data = images.map((image) => ({
+        key: image.key,
         eventId,
         name: image.name,
         url: `${env.AWS_CLOUDFRONT_DOMAIN}/${image.key}`,

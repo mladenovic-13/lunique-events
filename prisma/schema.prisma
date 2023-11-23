@@ -92,6 +92,7 @@ enum ImageType {
 
 model Image {
     id   String    @id @default(cuid())
+    key  String
     name String
     url  String
     type ImageType
