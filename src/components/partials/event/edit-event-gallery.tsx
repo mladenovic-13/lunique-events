@@ -117,7 +117,7 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
             <ChevronLeftIcon />
           </Button>
           <p className="text-zinc-500">
-            Page {page + 1} of {data.pages.length}
+            Page {page + 1} of {Math.round(imagesCount / 20) + 1}
           </p>
           <Button
             size="icon"

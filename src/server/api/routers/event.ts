@@ -119,34 +119,29 @@ export const eventRouter = createTRPCRouter({
       z.object({
         eventId: z.string(),
         limit: z.number().optional(),
-        cursor: z.string().nullish(),
+        cursor: z.number().optional(),
         skip: z.number().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { eventId, skip, limit, cursor } = input;
+      const { eventId, cursor, limit } = input;
 
       const images = await ctx.db.image.findMany({
-        take: limit ? limit + 1 : undefined,
-        skip: skip,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: {
-          createdAt: "desc",
-        },
         where: {
           eventId: eventId,
         },
+        take: limit ? limit + 1 : undefined,
+        skip: cursor,
+        orderBy: {
+          createdAt: "desc",
+        },
       });
-
-      console.log("[PAGE_LENGTH]", { length: images.length });
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (limit && images.length > limit) {
-        const nextItem = images.pop(); // remove last item from array (cursor)
-        nextCursor = nextItem?.id;
+        images.pop();
+        nextCursor = cursor && limit ? cursor + limit : limit;
       }
-
-      console.log({ images: images.length, cursor: nextCursor });
 
       return {
         images,
