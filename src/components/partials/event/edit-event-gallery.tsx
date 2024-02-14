@@ -8,21 +8,24 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { type Image as ImageProps } from "@prisma/client";
 import { api } from "@/trpc/react";
+import { OpenModalButton } from "@/components/buttons/open-modal-button";
 
 interface EditEventGalleryProps {
-  images: ImageProps[];
   eventId: string;
 }
 
 export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
-  const [selected, setSelected] = useState<ImageProps["key"][]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<ImageProps[]>([]);
+  const [images, setImages] = useState<ImageProps[]>([]);
+
   const [page, setPage] = useState<number>(0);
 
   const { data: imagesCount } = api.event.getImagesCount.useQuery(
@@ -37,10 +40,26 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
         limit: 20,
       },
       {
-        staleTime: Infinity,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       },
     );
+
+  useEffect(() => {
+    if (!data) return;
+    const tmpImages: ImageProps[] = [];
+
+    data?.pages.forEach((page) => {
+      page.images.forEach((image) => tmpImages.push(image));
+    });
+
+    setImages(tmpImages);
+  }, [data]);
+
+  useEffect(() => {
+    setSelectedImages(() =>
+      images.filter((image) => selected.includes(image.key)),
+    );
+  }, [images, selected]);
 
   const handleFetchNextPage = async () => {
     await fetchNextPage();
@@ -55,9 +74,19 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
 
   return (
     <div className="space-y-3">
-      <p className="text-zinc-500">
-        {selected.length} of {imagesCount} selected
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-zinc-500">
+          {selected.length} of {imagesCount} selected
+        </p>
+        <OpenModalButton
+          modalType="delete-event-images"
+          modalData={{ galleryImages: selectedImages }}
+          variant="destructive"
+          disabled={selected.length === 0}
+        >
+          Delete
+        </OpenModalButton>
+      </div>
       <div className="flex items-center gap-3 md:flex-col md:items-start md:gap-1.5"></div>
       <ToggleGroup.Root
         type="multiple"
@@ -98,7 +127,7 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
           </ToggleGroup.Item>
         ))}
       </ToggleGroup.Root>
-      {data && imagesCount && (
+      {data && imagesCount && imagesCount !== 0 && (
         <div className="flex items-center justify-center gap-5">
           <Button
             size="icon"
