@@ -18,7 +18,7 @@ import { type Image as ImageProps } from "@prisma/client";
 import { api } from "@/trpc/react";
 import { OpenModalButton } from "@/components/buttons/open-modal-button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
+import { CustomSwitch } from "@/components/buttons/custom-switch";
 
 interface EditEventGalleryProps {
   eventId: string;
@@ -118,7 +118,7 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
                 >
                   PREVIEW
                 </p>
-                <Switch
+                <CustomSwitch
                   checked={isSelectMode}
                   onCheckedChange={setIsSelectMode}
                 />
@@ -193,12 +193,7 @@ export const EditEventGallery = ({ eventId }: EditEventGalleryProps) => {
       </ToggleGroup.Root>
       {data && imagesCount && imagesCount !== 0 && (
         <div className="flex items-center justify-center gap-5">
-          <Button
-            size="icon"
-            variant="secondary"
-            // onClick={handleFetchPreviousPage}
-            disabled
-          >
+          <Button size="icon" variant="secondary" disabled>
             <ChevronsLeftIcon />
           </Button>
           <Button
