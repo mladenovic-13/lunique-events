@@ -40,6 +40,7 @@ export const images = [
 ];
 
 export type GalleryOptions = {
+  thumbs?: boolean;
   close?: boolean;
   chevrons?: boolean;
   share?: boolean;
@@ -54,6 +55,7 @@ export type GalleryHandlers = {
 type GalleryProps = GalleryOptions & GalleryHandlers;
 
 export const Gallery = ({
+  thumbs,
   chevrons = true,
   close,
   download,
@@ -184,13 +186,15 @@ export const Gallery = ({
         </div>
       </div>
 
-      <div className="absolute bottom-3 z-10 flex w-full items-center justify-center">
-        <Thumbs
-          carouselRef={thumbCarouselRef}
-          onThumbClick={onThumbClick}
-          selectedIndex={selectedIndex}
-        />
-      </div>
+      {thumbs && (
+        <div className="absolute bottom-3 z-10 flex w-full items-center justify-center">
+          <Thumbs
+            carouselRef={thumbCarouselRef}
+            onThumbClick={onThumbClick}
+            selectedIndex={selectedIndex}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -204,7 +208,7 @@ type ThumbsProps = {
 const Thumbs = ({ carouselRef, onThumbClick, selectedIndex }: ThumbsProps) => {
   return (
     <div className="overflow-hidden" ref={carouselRef}>
-      <div className="flex gap-0.5">
+      <div className="flex gap-0.5 md:gap-0">
         {images.map((src, idx) => (
           <ThumbButton
             key={idx}

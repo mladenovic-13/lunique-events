@@ -18,6 +18,7 @@ export default function GalleryComponentPage() {
   };
 
   const options: GalleryOptions = {
+    thumbs: true,
     chevrons: true,
     close: true,
     download: true,
