@@ -12,15 +12,17 @@ interface RenderGalleryImagesProps {
 export const RenderGalleryImages = ({ eventId }: RenderGalleryImagesProps) => {
   const { onOpen } = useModal();
 
-  const { data } = api.event.getImages.useQuery({ eventId });
+  const { data: images } = api.event.getImages.useQuery({ eventId });
 
-  const images = data?.images;
+  console.log({ images });
+
+  if (!images) return <div>Loading...</div>;
 
   return (
     <>
-      {images?.map((image, idx) => (
+      {images.map((image, idx) => (
         <div
-          id={`gallery-image-${idx}`}
+          // id={`gallery-image-${idx}`}
           key={image.id}
           onClick={() =>
             onOpen("event-gallery", {

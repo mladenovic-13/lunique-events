@@ -11,7 +11,8 @@ export type ModalType =
 
 type GalleryData = {
   images: Image[];
-  currentImage?: number;
+  currentImage: number;
+  selected: Image[];
 };
 
 export type ModalData = {
@@ -35,6 +36,7 @@ export const useModal = create<ModalStore>((set) => ({
   type: null,
   data: {},
   isOpen: false,
+
   onOpen: (type, data = {}) => set({ isOpen: true, type, data }),
   onClose: () => set({ type: null, isOpen: false }),
 }));

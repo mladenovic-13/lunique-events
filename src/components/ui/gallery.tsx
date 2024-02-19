@@ -6,8 +6,16 @@ import useEmblaCarousel, {
 } from "embla-carousel-react";
 import Image from "next/image";
 import { type Image as ImageType } from "@prisma/client";
-import { ChevronLeft, ChevronRight, Download, Share, X } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Share,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import * as Checkbox from "@radix-ui/react-checkbox";
 
 export type GalleryOptions = {
   thumbs?: boolean;
@@ -15,18 +23,24 @@ export type GalleryOptions = {
   chevrons?: boolean;
   share?: boolean;
   download?: boolean;
+  select?: boolean;
 };
 export type GalleryHandlers = {
   onClose?: () => void;
   onDownload?: () => void;
   onShare?: () => void;
+  onImageSelect?: (index: number) => void;
+};
+export type GalleryData = {
+  selected?: number[];
 };
 
 type GalleryProps = {
   images: ImageType[];
   currentImage: number;
 } & GalleryOptions &
-  GalleryHandlers;
+  GalleryHandlers &
+  GalleryData;
 
 export const Gallery = ({
   images,
@@ -36,11 +50,15 @@ export const Gallery = ({
   close,
   download,
   share,
+  select,
+  selected,
   onClose,
   onDownload,
   onShare,
+  onImageSelect,
 }: GalleryProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isSelected, setIsSelected] = useState(false);
 
   const [mainCarouselRef, mainCarouselApi] = useEmblaCarousel();
   const [thumbCarouselRef, thumbCarouselApi] = useEmblaCarousel({
@@ -80,6 +98,14 @@ export const Gallery = ({
     mainCarouselApi.on("reInit", onSelect);
   }, [mainCarouselApi, onSelect]);
 
+  useEffect(() => {
+    if (selected?.includes(selectedIndex)) {
+      setIsSelected(true);
+    } else {
+      setIsSelected(false);
+    }
+  }, [selectedIndex, selected]);
+
   const handleClose = () => {
     if (onClose) onClose();
   };
@@ -88,6 +114,9 @@ export const Gallery = ({
   };
   const handleShare = () => {
     if (onShare) onShare();
+  };
+  const handleImageSelect = (index: number) => {
+    if (onImageSelect) onImageSelect(index);
   };
 
   const handleLeft = () => {
@@ -100,6 +129,29 @@ export const Gallery = ({
   return (
     <div className="relative bg-primary">
       <div className="absolute right-3 top-3 z-10 flex gap-3 md:right-5 md:top-5 md:gap-5">
+        {select && (
+          <div
+            onClick={() => handleImageSelect(selectedIndex)}
+            className="flex items-center justify-center gap-1.5 rounded-full bg-white/20 p-2 px-3 transition duration-200 hover:scale-110 hover:bg-white/20"
+          >
+            <span className="text-primary-foreground">select</span>
+            <Checkbox.Root
+              checked={isSelected}
+              onCheckedChange={(c: boolean) => setIsSelected(c)}
+              className="peer h-4 w-4 rounded-full border border-primary-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
+            >
+              <Checkbox.Indicator className="flex items-center justify-center text-current">
+                <CheckIcon className="h-4 w-4" />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+          </div>
+          // <button
+          //   className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
+          //   onClick={handleDownload}
+          // >
+          //   <Download className="h-4 w-4 text-primary-foreground" />
+          // </button>
+        )}
         {download && (
           <button
             className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
