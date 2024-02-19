@@ -6,19 +6,11 @@ export type ModalType =
   | "share-event"
   | "upload-event-images"
   | "delete-event-images"
-  | "delete-event"
-  | "event-gallery";
-
-type GalleryData = {
-  images: Image[];
-  currentImage: number;
-  selected: Image[];
-};
+  | "delete-event";
 
 export type ModalData = {
   eventId?: string;
   images?: string[];
-  gallery?: GalleryData;
   galleryImages?: Image[];
   galleryId?: string;
   currentImage?: number;
