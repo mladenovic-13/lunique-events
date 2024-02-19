@@ -7,6 +7,7 @@ import useEmblaCarousel, {
 import Image from "next/image";
 import { type Image as ImageType } from "@prisma/client";
 import {
+  type LucideIcon,
   CheckIcon,
   ChevronLeft,
   ChevronRight,
@@ -128,101 +129,30 @@ export const Gallery = ({
 
   return (
     <div className="relative bg-primary">
-      <div className="absolute right-3 top-3 z-10 flex gap-3 md:right-5 md:top-5 md:gap-5">
+      <div className="absolute right-3 top-3 z-10 flex gap-2.5 md:right-5 md:top-5 md:gap-3.5">
         {select && (
-          <div
-            onClick={() => handleImageSelect(selectedIndex)}
-            className="flex items-center justify-center gap-1.5 rounded-full bg-white/20 p-2 px-3 transition duration-200 hover:scale-110 hover:bg-white/20"
-          >
-            <span className="text-primary-foreground">select</span>
-            <Checkbox.Root
-              checked={isSelected}
-              onCheckedChange={(c: boolean) => setIsSelected(c)}
-              className="peer h-4 w-4 rounded-full border border-primary-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
-            >
-              <Checkbox.Indicator className="flex items-center justify-center text-current">
-                <CheckIcon className="h-4 w-4" />
-              </Checkbox.Indicator>
-            </Checkbox.Root>
-          </div>
-          // <button
-          //   className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
-          //   onClick={handleDownload}
-          // >
-          //   <Download className="h-4 w-4 text-primary-foreground" />
-          // </button>
+          <SelectButton
+            isSelected={isSelected}
+            setIsSelected={setIsSelected}
+            onSelectChange={() => handleImageSelect(selectedIndex)}
+          />
         )}
-        {download && (
-          <button
-            className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
-            onClick={handleDownload}
-          >
-            <Download className="h-4 w-4 text-primary-foreground" />
-          </button>
-        )}
-
-        {share && (
-          <button
-            className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
-            onClick={handleShare}
-          >
-            <Share className="h-4 w-4 text-primary-foreground" />
-          </button>
-        )}
-        {close && (
-          <button
-            className="rounded-full bg-white/20 p-2 transition duration-200 hover:scale-110 hover:bg-white/20"
-            onClick={handleClose}
-          >
-            <X className="h-4 w-4 text-primary-foreground" />
-          </button>
-        )}
+        {download && <ActionButton Icon={Download} onAction={handleDownload} />}
+        {share && <ActionButton Icon={Share} onAction={handleShare} />}
+        {close && <ActionButton Icon={X} onAction={handleClose} />}
       </div>
 
-      {chevrons && (
-        <>
-          {mainCarouselApi?.canScrollPrev() && (
-            <button
-              className="group absolute left-0 top-[calc(50%-256px)] z-20 flex h-64 w-12 translate-y-[50%] items-center justify-center transition duration-200 hover:bg-white/5 md:left-5 md:w-20"
-              onClick={handleLeft}
-            >
-              <ChevronLeft className="h-6 w-6 bg-clip-content text-primary-foreground transition duration-200 group-hover:scale-110 md:h-10 md:w-10" />
-            </button>
-          )}
-          {mainCarouselApi?.canScrollNext() && (
-            <button
-              className="group absolute right-0 top-[calc(50%-256px)] z-20 flex h-64 w-12 translate-y-[50%] items-center justify-center transition duration-200 hover:bg-white/5 md:right-5 md:w-20"
-              onClick={handleRight}
-            >
-              <ChevronRight className="h-6 w-6 bg-clip-content text-primary-foreground transition duration-200 group-hover:scale-110 md:h-10 md:w-10" />
-            </button>
-          )}
-        </>
+      {chevrons && mainCarouselApi?.canScrollPrev() && (
+        <ChevronButton side="left" onAction={handleLeft} />
+      )}
+      {chevrons && mainCarouselApi?.canScrollNext() && (
+        <ChevronButton side="right" onAction={handleRight} />
       )}
 
       <div className="overflow-hidden" ref={mainCarouselRef}>
         <div className="flex touch-pan-y gap-1.5">
           {images.map((img, idx) => (
-            <div
-              style={{
-                flex: "0 0 100%",
-              }}
-              className="relative h-screen"
-              key={idx}
-            >
-              <Image
-                src={img.url}
-                fill
-                className="absolute object-cover blur-2xl brightness-75"
-                alt=""
-              />
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="relative h-[500px] w-full lg:h-[800px]">
-                  <Image src={img.url} fill alt="" className="object-contain" />
-                </div>
-                I
-              </div>
-            </div>
+            <CarouselSlide key={img.id} idx={idx} url={img.url} />
           ))}
         </div>
       </div>
@@ -240,6 +170,34 @@ export const Gallery = ({
     </div>
   );
 };
+
+type CarouselSlideProps = {
+  idx: number;
+  url: string;
+};
+
+const CarouselSlide = ({ idx, url }: CarouselSlideProps) => (
+  <div
+    style={{
+      flex: "0 0 100%",
+    }}
+    className="relative h-screen"
+    key={idx}
+  >
+    <Image
+      src={url}
+      fill
+      className="absolute object-cover blur-2xl brightness-75"
+      alt=""
+    />
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="relative h-[500px] w-full lg:h-[800px]">
+        <Image src={url} fill alt="" className="object-contain" />
+      </div>
+      I
+    </div>
+  </div>
+);
 
 type ThumbsProps = {
   images: ImageType[];
@@ -295,3 +253,69 @@ const ThumbButton = ({ index, selected, src, onClick }: ThumbButtonProps) => (
     />
   </button>
 );
+
+type ActionButtonProps = {
+  Icon: LucideIcon;
+  onAction: (idx?: number) => void;
+};
+
+const ActionButton = ({ Icon, onAction }: ActionButtonProps) => (
+  <button
+    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20  transition duration-200 hover:scale-110 hover:bg-white/20"
+    onClick={() => onAction()}
+  >
+    <Icon className="h-4 w-4 text-primary-foreground" />
+  </button>
+);
+
+type SelectButtonProps = {
+  isSelected: boolean;
+  setIsSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  onSelectChange: (idx?: number) => void;
+};
+
+const SelectButton = ({
+  isSelected,
+  setIsSelected,
+  onSelectChange,
+}: SelectButtonProps) => (
+  <div
+    onClick={() => onSelectChange()}
+    className="flex h-10 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full bg-white/20 px-4 transition duration-200 hover:scale-110 hover:bg-white/20"
+  >
+    <span className="text-xs font-bold uppercase text-primary-foreground">
+      select
+    </span>
+    <Checkbox.Root
+      checked={isSelected}
+      onCheckedChange={(c: boolean) => setIsSelected(c)}
+      className="peer h-4 w-4 rounded-full border border-primary-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
+    >
+      <Checkbox.Indicator className="flex items-center justify-center text-current">
+        <CheckIcon className="h-3 w-3" />
+      </Checkbox.Indicator>
+    </Checkbox.Root>
+  </div>
+);
+
+type ChevronButtonProps = {
+  side: "left" | "right";
+  onAction: () => void;
+};
+
+const ChevronButton = ({ side, onAction }: ChevronButtonProps) => {
+  const Icon = side === "left" ? ChevronLeft : ChevronRight;
+
+  return (
+    <button
+      className={cn(
+        "group absolute  top-[calc(50%-256px)] z-20 flex h-64 w-12 translate-y-[50%] items-center justify-center transition duration-200 hover:bg-white/5 md:w-20",
+        side === "left" && "left-0 md:left-5",
+        side === "right" && "right-0 md:right-5",
+      )}
+      onClick={onAction}
+    >
+      <Icon className="h-6 w-6 bg-clip-content text-primary-foreground transition duration-200 group-hover:scale-110 md:h-10 md:w-10" />
+    </button>
+  );
+};
