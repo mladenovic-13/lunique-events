@@ -42,13 +42,13 @@ export const RenderGalleryImages = ({ eventId }: RenderGalleryImagesProps) => {
       onValueChange={(value: string[]) => {
         updateSelected(images.filter((img) => value.includes(img.id)));
       }}
-      className="grid grid-cols-1 gap-5 md:grid-cols-2"
+      className="grid grid-cols-1 gap-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-1.5 2xl:grid-cols-4 2xl:gap-2"
     >
       {images.map((image, idx) => (
         <div key={image.id} onClick={() => onOpen(idx)} className="relative">
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute right-3 top-3 z-10"
+            className="absolute right-2 top-2 z-10"
           >
             <SelectButton
               isSelected={isSelected(image.id)}
@@ -82,7 +82,7 @@ type SelectButtonProps = {
 const SelectButton = ({ isSelected, onSelectChange }: SelectButtonProps) => (
   <div
     onClick={() => onSelectChange()}
-    className="flex h-8 cursor-pointer select-none items-center justify-center gap-1 rounded-full bg-white/20 px-3 transition duration-200 hover:scale-110 hover:bg-white/20"
+    className="flex h-7 cursor-pointer select-none items-center justify-center gap-1 rounded-full bg-white/20 px-2.5 transition duration-200 hover:scale-105 hover:bg-white/20"
   >
     <p className="text-xs font-medium uppercase text-primary">
       {isSelected ? "selected" : "select"}

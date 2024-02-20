@@ -19,9 +19,9 @@ export default async function GalleryIdPage({
   if (!event) redirect(paths.gallery.error);
 
   return (
-    <main className="dark grid grid-cols-1 bg-background md:h-screen md:grid-cols-3">
+    <main className="grid grid-cols-1 bg-background md:h-[calc(100vh-65px)] md:grid-cols-3">
       {/* TODO: Placeholder images */}
-      <div className="py-5 pl-5">
+      <div className="py-3 pl-3">
         <EventBanner
           {...event}
           url={event.images[0]?.url ?? "/overlay.jpeg"}
@@ -29,7 +29,7 @@ export default async function GalleryIdPage({
         />
       </div>
       <div className="col-span-2 hidden overflow-hidden md:block">
-        <ScrollArea className="relative h-screen p-5">
+        <ScrollArea className="relative h-screen p-3">
           <RenderGalleryImages eventId={galleryId} />
           <ScrollBar orientation="vertical" />
         </ScrollArea>

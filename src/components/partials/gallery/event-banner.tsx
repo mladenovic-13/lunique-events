@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { format } from "date-fns";
-import { MapPinIcon, SparklesIcon } from "lucide-react";
+import { MapPinIcon } from "lucide-react";
 
 interface EventBannerProps {
   name: string;
@@ -17,11 +17,7 @@ interface EventBannerProps {
 }
 
 export const EventBanner = (props: EventBannerProps) => (
-  <div className="flex h-full w-full flex-col items-center gap-10 text-primary">
-    <h1 className="flex items-center gap-3 font-serif text-5xl font-extralight">
-      <SparklesIcon className="h-8 w-8" /> Eventify
-      <SparklesIcon className="h-8 w-8" />
-    </h1>
+  <div className="flex h-full w-full flex-col items-center gap-3 text-primary">
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-3xl font-bold">{props.name}</CardTitle>
