@@ -82,7 +82,7 @@ type SelectButtonProps = {
 const SelectButton = ({ isSelected, onSelectChange }: SelectButtonProps) => (
   <div
     onClick={() => onSelectChange()}
-    className="flex h-7 cursor-pointer select-none items-center justify-center gap-1 rounded-full bg-white/20 px-2.5 transition duration-200 hover:scale-105 hover:bg-white/20"
+    className="flex h-7 cursor-pointer select-none items-center justify-center gap-1 rounded-full bg-white/20 px-2.5 transition duration-200 hover:bg-white/20 md:hover:scale-105"
   >
     <p className="text-xs font-medium uppercase text-primary">
       {isSelected ? "selected" : "select"}

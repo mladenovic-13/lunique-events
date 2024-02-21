@@ -1,4 +1,4 @@
-import { EventBanner } from "@/components/partials/gallery/event-banner";
+import { GallerySidebar } from "@/components/partials/gallery/gallery-sidebar";
 import { RenderGalleryImages } from "@/components/partials/gallery/render-gallery-images";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { paths } from "@/routes/paths";
@@ -20,13 +20,8 @@ export default async function GalleryIdPage({
 
   return (
     <main className="grid grid-cols-1 bg-background md:h-[calc(100vh-65px)] md:grid-cols-3">
-      {/* TODO: Placeholder images */}
-      <div className="py-3 pl-3">
-        <EventBanner
-          {...event}
-          url={event.images[0]?.url ?? "/overlay.jpeg"}
-          owner={event.owner.name ?? ""}
-        />
+      <div className="p-3 md:pr-0">
+        <GallerySidebar event={event} />
       </div>
       <div className="col-span-2 hidden overflow-hidden md:block">
         <ScrollArea className="relative h-screen p-3">
