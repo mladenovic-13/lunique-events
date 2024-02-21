@@ -94,7 +94,7 @@ const ImageUploadWidget = () => {
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-2">
         {!file && (
-          <AnimateFade key="upload" isVisible={!file}>
+          <AnimateFade motionKey="upload" isVisible={!file}>
             <div
               className="flex h-[220px] w-full flex-col justify-evenly rounded-lg"
               {...getRootProps()}
@@ -105,12 +105,12 @@ const ImageUploadWidget = () => {
                   <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-muted-foreground">
                     <AvatarIcon className="h-24 w-24 fill-muted-foreground" />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="space-y-1.5">
+                    <p className="text-center text-sm text-muted-foreground">
                       Drag &apos;n&apos; drop some image, or click to select
                       image
                     </p>
-                    <p className="text-center text-xs text-muted">
+                    <p className="text-center text-xs text-muted-foreground">
                       Only *.jpg and *.png images will be accepted. <br /> Files
                       over 10MB are ignored.
                     </p>
@@ -131,7 +131,7 @@ const ImageUploadWidget = () => {
           </AnimateFade>
         )}
         {file && (
-          <AnimateFade key="selfie" isVisible={!!file}>
+          <AnimateFade motionKey="selfie" isVisible={!!file}>
             <div className=" flex h-[220px] w-full items-center justify-evenly">
               <div className="flex flex-col items-center justify-center gap-3">
                 <Image
@@ -218,17 +218,17 @@ const AnimateFade = ({
   children,
   isVisible,
   initial = true,
-  key,
+  motionKey,
 }: {
   children: React.ReactNode;
   isVisible: boolean;
   initial?: boolean;
-  key: Key;
+  motionKey: Key;
 }) => (
   <AnimatePresence mode="wait" initial={initial}>
     {isVisible && (
       <motion.div
-        key={key}
+        key={motionKey}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}

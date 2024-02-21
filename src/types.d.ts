@@ -13,6 +13,10 @@ type ImageAttributes = {
   src: string;
 };
 
+type EventWithOwnerAndImages = Event & {
+  owner: User;
+};
+
 type EventWithOwner = Event & {
   owner: User;
 };
