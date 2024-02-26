@@ -1,7 +1,7 @@
 import { AspectRatio } from "../ui/aspect-ratio";
 
 export const EventImagesSkeleton = () => (
-  <div className="space-y-5 pb-20 md:space-y-8">
+  <div className="animate-pulse space-y-5 pb-20 md:space-y-8">
     <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
       <header className="space-y-3">
         <h1 className="h-7 w-72 rounded-lg bg-muted/80 md:h-8" />
