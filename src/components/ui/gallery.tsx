@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as Checkbox from "@radix-ui/react-checkbox";
+import { useArrowKey } from "@/hooks/use-arrow-key";
 
 export type GalleryOptions = {
   thumbs?: boolean;
@@ -107,39 +108,34 @@ export const Gallery = ({
     }
   }, [selectedIndex, selected]);
 
-  const handleArrowKeyDown = (event: KeyboardEvent) => {
-    const { key } = event;
-    if (key === "ArrowRight") handleRight();
-    if (key === "ArrowLeft") handleLeft();
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleArrowKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleArrowKeyDown);
-    };
-  }, [handleArrowKeyDown]);
-
-  const handleClose = () => {
-    if (onClose) onClose();
-  };
-  const handleDownload = () => {
-    if (onDownload) onDownload();
-  };
-  const handleShare = () => {
-    if (onShare) onShare();
-  };
-  const handleImageSelect = (index: number) => {
-    if (onImageSelect) onImageSelect(index);
-  };
-
-  const handleLeft = () => {
+  const handleLeft = useCallback(() => {
     mainCarouselApi?.scrollPrev();
-  };
-  const handleRight = () => {
+  }, [mainCarouselApi]);
+
+  const handleRight = useCallback(() => {
     mainCarouselApi?.scrollNext();
-  };
+  }, [mainCarouselApi]);
+
+  useArrowKey({ onArrowLeft: handleLeft, onArrowRight: handleRight });
+
+  const handleClose = useCallback(() => {
+    if (onClose) onClose();
+  }, [onClose]);
+
+  const handleDownload = useCallback(() => {
+    if (onDownload) onDownload();
+  }, [onDownload]);
+
+  const handleShare = useCallback(() => {
+    if (onShare) onShare();
+  }, [onShare]);
+
+  const handleImageSelect = useCallback(
+    (index: number) => {
+      if (onImageSelect) onImageSelect(index);
+    },
+    [onImageSelect],
+  );
 
   return (
     <div className="relative bg-primary">
@@ -275,7 +271,7 @@ type ActionButtonProps = {
 
 const ActionButton = ({ Icon, onAction }: ActionButtonProps) => (
   <button
-    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20  transition duration-200 hover:scale-110 hover:bg-white/20"
+    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20  transition duration-200 hover:bg-white/20 md:hover:scale-105"
     onClick={() => onAction()}
   >
     <Icon className="h-4 w-4 text-primary-foreground" />
@@ -295,10 +291,10 @@ const SelectButton = ({
 }: SelectButtonProps) => (
   <div
     onClick={() => onSelectChange()}
-    className="flex h-10 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full bg-white/20 px-4 transition duration-200 hover:scale-110 hover:bg-white/20"
+    className="flex h-10 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full bg-white/20 px-4 transition duration-200 hover:bg-white/20 md:hover:scale-105"
   >
     <span className="text-xs font-bold uppercase text-primary-foreground">
-      select
+      {isSelected ? "selected" : "select"}
     </span>
     <Checkbox.Root
       checked={isSelected}
@@ -329,7 +325,7 @@ const ChevronButton = ({ side, onAction }: ChevronButtonProps) => {
       )}
       onClick={onAction}
     >
-      <Icon className="h-6 w-6 bg-clip-content text-primary-foreground transition duration-200 group-hover:scale-110 md:h-10 md:w-10" />
+      <Icon className="h-6 w-6 bg-clip-content text-primary-foreground transition duration-200 md:h-10 md:w-10 md:group-hover:scale-105" />
     </button>
   );
 };
