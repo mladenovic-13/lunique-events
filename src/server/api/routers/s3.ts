@@ -9,17 +9,19 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { TRPCError } from "@trpc/server";
+import { addDays } from "date-fns";
 
 export const s3Router = createTRPCRouter({
   getPresignedUrl: protectedProcedure
-    .input(z.object({ key: z.string() }))
+    .input(z.object({ key: z.string(), deleteAfter: z.number().nullish() }))
     .mutation(async ({ ctx, input }) => {
       const { s3 } = ctx;
-      const { key } = input;
+      const { key, deleteAfter } = input;
 
       const putObjectCommand = new PutObjectCommand({
         Bucket: env.BUCKET_NAME,
         Key: key,
+        Expires: deleteAfter ? addDays(new Date(), deleteAfter) : undefined,
       });
 
       return await getSignedUrl(s3, putObjectCommand);

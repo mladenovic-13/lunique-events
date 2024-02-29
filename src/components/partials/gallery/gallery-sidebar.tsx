@@ -10,8 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getSelfieImagePath } from "@/lib/get-path";
+import { api } from "@/trpc/react";
 import { type EventWithOwner } from "@/types";
 import { Share1Icon } from "@radix-ui/react-icons";
+import axios from "axios";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -32,7 +35,7 @@ interface GallerySidebarProps {
 export const GallerySidebar = ({ event }: GallerySidebarProps) => (
   <div className="space-y-3">
     <DetailsWidget event={event} />
-    <ImageUploadWidget />
+    <ImageUploadWidget event={event} />
     <ActionsWidget />
   </div>
 );
@@ -70,7 +73,7 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
   </Card>
 );
 
-const ImageUploadWidget = () => {
+const ImageUploadWidget = ({ event }: { event: EventWithOwner }) => {
   const [file, setFile] = useState<File | null>(null);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -82,6 +85,33 @@ const ImageUploadWidget = () => {
     },
     onDropAccepted: (files) => setFile(files[0] ?? null),
   });
+
+  const { mutateAsync: fetchPresignedUrl } =
+    api.s3.getPresignedUrl.useMutation();
+
+  const { mutate: findImages } = api.event.findImages.useMutation();
+
+  const handleFindImages = async () => {
+    if (!file) return;
+
+    const key = getSelfieImagePath(event.id, file.name);
+    const presignedUrl = await fetchPresignedUrl({
+      // deleteAfter: 1,
+      key,
+    });
+
+    await axios.put(presignedUrl, file.slice(), {
+      headers: { "Content-Type": file.type },
+    });
+
+    findImages(
+      { eventId: event.id, imageKey: key },
+      {
+        onSuccess: (data) => console.log({ data }),
+        onError: (err) => console.log(err),
+      },
+    );
+  };
 
   return (
     <Card className="w-full">
@@ -137,9 +167,7 @@ const ImageUploadWidget = () => {
                 <img
                   src={URL.createObjectURL(file)}
                   alt=""
-                  width={128}
-                  height={128}
-                  className="h-32 w-32 rounded-full"
+                  className="h-32 w-32 rounded-full object-cover"
                 />
                 <Button
                   disabled={!file}
@@ -157,7 +185,7 @@ const ImageUploadWidget = () => {
                   disabled={!file}
                   size="sm"
                   className="w-full"
-                  onClick={() => alert(`File: ${file?.name}`)}
+                  onClick={handleFindImages}
                 >
                   <SparklesIcon className="mr-1.5 h-4 w-4" />
                   Find My Images

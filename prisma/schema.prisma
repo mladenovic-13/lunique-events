@@ -79,6 +79,7 @@ model Face {
     indexedImageId String
     imageKey       String
 
+    // TODO: create Face Image relation
     Event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId String?
 

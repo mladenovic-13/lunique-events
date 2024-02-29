@@ -13,6 +13,7 @@ import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 import {
   createCollection,
   deleteCollection,
+  findImages,
   indexImage,
 } from "@/server/aws/rekognition-utils";
 import { TRPCError } from "@trpc/server";
@@ -199,6 +200,9 @@ export const eventRouter = createTRPCRouter({
         return res;
       });
     }),
+  // TODO:
+  // Move to addImages procedure because it's
+  // easier to undu S3 upload if image indexing fails
   indexImage: protectedProcedure
     .input(z.object({ eventId: z.string(), imageKey: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -209,6 +213,13 @@ export const eventRouter = createTRPCRouter({
       return await ctx.db.face.createMany({
         data,
       });
+    }),
+  findImages: protectedProcedure
+    .input(z.object({ eventId: z.string(), imageKey: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { imageKey, eventId } = input;
+
+      return await findImages(ctx.db, ctx.rekognition, eventId, imageKey);
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))

@@ -35,7 +35,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
     api.s3.getPresignedUrl.useMutation();
   const { mutate: saveImageDetails } = api.event.addImages.useMutation();
 
-  // const { mutate: indexImage } = api.event.indexImage.useMutation();
+  const { mutate: indexImage } = api.event.indexImage.useMutation();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
@@ -86,14 +86,13 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
 
           images.push({ key: imageKey, name: file.name, type: imageType });
 
-          // TODO: index images on upload
-          // indexImage(
-          //   { eventId, imageKey },
-          //   {
-          //     onSuccess: (res) => console.log({ index_images: res }),
-          //     onError: (error) => console.log({ error }),
-          //   },
-          // );
+          indexImage(
+            { eventId, imageKey },
+            {
+              onSuccess: (res) => console.log({ index_images: res }),
+              onError: (error) => console.log({ error }),
+            },
+          );
 
           progress = progress + step;
 
@@ -120,6 +119,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
           },
         );
       } catch (error) {
+        console.error(error);
         toast({
           variant: "destructive",
           title: "Failed to upload images",
