@@ -9,19 +9,19 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { TRPCError } from "@trpc/server";
-import { addDays } from "date-fns";
 
 export const s3Router = createTRPCRouter({
   getPresignedUrl: protectedProcedure
-    .input(z.object({ key: z.string(), deleteAfter: z.number().nullish() }))
+    .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { s3 } = ctx;
-      const { key, deleteAfter } = input;
+      const { key } = input;
 
       const putObjectCommand = new PutObjectCommand({
         Bucket: env.BUCKET_NAME,
         Key: key,
-        Expires: deleteAfter ? addDays(new Date(), deleteAfter) : undefined,
+        // TODO: delete after 1 day, solution below doesn't work
+        // Expires: deleteAfter ? addDays(new Date(), deleteAfter) : undefined,
       });
 
       return await getSignedUrl(s3, putObjectCommand);

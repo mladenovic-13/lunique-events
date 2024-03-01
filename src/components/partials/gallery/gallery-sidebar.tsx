@@ -10,9 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
+import { useImagesStore } from "@/hooks/use-images-store";
 import { getSelfieImagePath } from "@/lib/get-path";
 import { api } from "@/trpc/react";
 import { type EventWithOwner } from "@/types";
+import { type Image } from "@prisma/client";
 import { Share1Icon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { format } from "date-fns";
@@ -25,17 +29,18 @@ import {
   TrashIcon,
   UploadCloudIcon,
 } from "lucide-react";
-import { type Key, useState } from "react";
+import { type Key, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface GallerySidebarProps {
   event: EventWithOwner;
+  images: Image[];
 }
 
-export const GallerySidebar = ({ event }: GallerySidebarProps) => (
+export const GallerySidebar = ({ event, images }: GallerySidebarProps) => (
   <div className="space-y-3">
     <DetailsWidget event={event} />
-    <ImageUploadWidget event={event} />
+    <ImageUploadWidget event={event} images={images} />
     <ActionsWidget />
   </div>
 );
@@ -73,8 +78,17 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
   </Card>
 );
 
-const ImageUploadWidget = ({ event }: { event: EventWithOwner }) => {
+const ImageUploadWidget = ({
+  event,
+  images,
+}: {
+  event: EventWithOwner;
+  images: Image[];
+}) => {
   const [file, setFile] = useState<File | null>(null);
+  const { updateImages: updateFoundImages } = useImagesStore();
+  const { updateImages: updateGalleryImages, updateSelected } =
+    useGalleryModal();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: false,
@@ -91,12 +105,13 @@ const ImageUploadWidget = ({ event }: { event: EventWithOwner }) => {
 
   const { mutate: findImages } = api.event.findImages.useMutation();
 
+  const { toast } = useToast();
+
   const handleFindImages = async () => {
     if (!file) return;
 
     const key = getSelfieImagePath(event.id, file.name);
     const presignedUrl = await fetchPresignedUrl({
-      // deleteAfter: 1,
       key,
     });
 
@@ -107,11 +122,26 @@ const ImageUploadWidget = ({ event }: { event: EventWithOwner }) => {
     findImages(
       { eventId: event.id, imageKey: key },
       {
-        onSuccess: (data) => console.log({ data }),
-        onError: (err) => console.log(err),
+        onSuccess: (images) => updateFoundImages(images),
+        onError: (err) => {
+          console.error(err);
+          toast({
+            variant: "destructive",
+            title: "Failed to find images",
+            description:
+              "Looks like we can not find you in this event. Please try again with different image.",
+          });
+        },
       },
     );
   };
+
+  const handleRemoveImage = useCallback(() => {
+    setFile(null);
+    updateFoundImages([]);
+    updateSelected([]);
+    updateGalleryImages(images);
+  }, [images, updateGalleryImages, updateFoundImages, updateSelected]);
 
   return (
     <Card className="w-full">
@@ -174,7 +204,7 @@ const ImageUploadWidget = ({ event }: { event: EventWithOwner }) => {
                   className="w-full"
                   size="sm"
                   variant="destructive"
-                  onClick={() => setFile(null)}
+                  onClick={handleRemoveImage}
                 >
                   <TrashIcon className="mr-1.5 h-4 w-4" />
                   Remove
