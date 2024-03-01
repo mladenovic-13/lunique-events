@@ -86,7 +86,8 @@ const ImageUploadWidget = ({
   images: Image[];
 }) => {
   const [file, setFile] = useState<File | null>(null);
-  const { updateImages: updateFoundImages } = useImagesStore();
+  const { updateImages: updateFoundImages, images: foundImages } =
+    useImagesStore();
   const { updateImages: updateGalleryImages, updateSelected } =
     useGalleryModal();
 
@@ -122,15 +123,33 @@ const ImageUploadWidget = ({
     findImages(
       { eventId: event.id, imageKey: key },
       {
-        onSuccess: (images) => updateFoundImages(images),
+        onSuccess: (images) => {
+          if (images.length > 0) {
+            updateFoundImages(images);
+          } else {
+            toast({
+              title: "We can not find you. :)",
+            });
+          }
+        },
         onError: (err) => {
-          console.error(err);
-          toast({
-            variant: "destructive",
-            title: "Failed to find images",
-            description:
-              "Looks like we can not find you in this event. Please try again with different image.",
-          });
+          if (err.data?.code === "TOO_MANY_REQUESTS") {
+            toast({
+              title: "Slow down",
+              description: "You can create only one request per minute",
+            });
+          } else {
+            toast({
+              title: "We can not find you.",
+              description: "Something went wront. Please try again.",
+            });
+          }
+          // toast({
+          //   variant: "destructive",
+          //   title: "Slow down my friend. :)",
+          //   description:
+          //     "We are still in development mode, so you can create only 1 requeste per 60 seconds.",
+          // });
         },
       },
     );
@@ -212,7 +231,7 @@ const ImageUploadWidget = ({
               </div>
               <div className="flex w-44 flex-col gap-3">
                 <Button
-                  disabled={!file}
+                  disabled={!file || !!foundImages.length}
                   size="sm"
                   className="w-full"
                   onClick={handleFindImages}
@@ -221,7 +240,7 @@ const ImageUploadWidget = ({
                   Find My Images
                 </Button>
                 <Button
-                  disabled={true}
+                  disabled={!foundImages.length}
                   size="sm"
                   variant="outline"
                   className="w-full"
@@ -231,7 +250,7 @@ const ImageUploadWidget = ({
                   Download My Images
                 </Button>
                 <Button
-                  disabled={true}
+                  disabled={!foundImages.length}
                   size="sm"
                   variant="outline"
                   className="w-full"

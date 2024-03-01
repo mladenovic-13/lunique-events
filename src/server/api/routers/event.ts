@@ -18,6 +18,14 @@ import {
 } from "@/server/aws/rekognition-utils";
 import { TRPCError } from "@trpc/server";
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(1, "2 m"),
+  analytics: true,
+});
 
 export const eventRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -218,6 +226,11 @@ export const eventRouter = createTRPCRouter({
     .input(z.object({ eventId: z.string(), imageKey: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { imageKey, eventId } = input;
+
+      const { success } = await ratelimit.limit(eventId);
+      if (!success) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      }
 
       return await findImages(ctx.db, ctx.rekognition, eventId, imageKey);
     }),
