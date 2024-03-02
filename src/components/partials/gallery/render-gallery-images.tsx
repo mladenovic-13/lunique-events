@@ -5,7 +5,7 @@ import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { motion, useInView } from "framer-motion";
-import { type RefObject, useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowUpFromLineIcon, CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/shared";
