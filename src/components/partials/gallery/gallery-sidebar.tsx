@@ -135,8 +135,10 @@ const ImageUploadWidget = ({
         onError: (err) => {
           if (err.data?.code === "TOO_MANY_REQUESTS") {
             toast({
-              title: "Slow down",
-              description: "You can create only one request per minute",
+              variant: "destructive",
+              title: "Slow down man. :)",
+              description:
+                "We are still in development, so you can create only one request per two minutes",
             });
           } else {
             toast({
@@ -144,12 +146,6 @@ const ImageUploadWidget = ({
               description: "Something went wront. Please try again.",
             });
           }
-          // toast({
-          //   variant: "destructive",
-          //   title: "Slow down my friend. :)",
-          //   description:
-          //     "We are still in development mode, so you can create only 1 requeste per 60 seconds.",
-          // });
         },
       },
     );
