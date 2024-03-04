@@ -10,31 +10,41 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
+import { useImagesStore } from "@/hooks/use-images-store";
+import { getSelfieImagePath } from "@/lib/get-path";
+import { api } from "@/trpc/react";
 import { type EventWithOwner } from "@/types";
+import { type Image } from "@prisma/client";
 import { Share1Icon } from "@radix-ui/react-icons";
+import axios from "axios";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
+import JSZip from "jszip";
 import {
   DownloadIcon,
+  Loader2Icon,
   MapPinIcon,
-  ShareIcon,
+  // ShareIcon,
   SparklesIcon,
   TrashIcon,
   UploadCloudIcon,
 } from "lucide-react";
-import Image from "next/image";
-import { type Key, useState } from "react";
+import { type Key, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface GallerySidebarProps {
   event: EventWithOwner;
+  images: Image[];
 }
 
-export const GallerySidebar = ({ event }: GallerySidebarProps) => (
+export const GallerySidebar = ({ event, images }: GallerySidebarProps) => (
   <div className="space-y-3">
     <DetailsWidget event={event} />
-    <ImageUploadWidget />
-    <ActionsWidget />
+    <ImageUploadWidget event={event} images={images} />
+    {/* TODO: Implement action widget */}
+    {/* <ActionsWidget /> */}
   </div>
 );
 
@@ -71,8 +81,20 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
   </Card>
 );
 
-const ImageUploadWidget = () => {
+const ImageUploadWidget = ({
+  event,
+  images,
+}: {
+  event: EventWithOwner;
+  images: Image[];
+}) => {
+  const [searching, setSearching] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+
+  const { updateImages: updateFoundImages, images: foundImages } =
+    useImagesStore();
+  const { updateImages: updateGalleryImages, updateSelected } =
+    useGalleryModal();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: false,
@@ -83,6 +105,94 @@ const ImageUploadWidget = () => {
     },
     onDropAccepted: (files) => setFile(files[0] ?? null),
   });
+
+  const { mutateAsync: fetchPresignedUrl } =
+    api.s3.getPresignedUrl.useMutation();
+
+  const { mutate: findImages } = api.event.findImages.useMutation();
+
+  const { toast } = useToast();
+
+  const handleFindImages = async () => {
+    if (!file) return;
+
+    setSearching(true);
+
+    const key = getSelfieImagePath(event.id, file.name);
+    const presignedUrl = await fetchPresignedUrl({
+      key,
+    });
+
+    await axios.put(presignedUrl, file.slice(), {
+      headers: { "Content-Type": file.type },
+    });
+
+    findImages(
+      { eventId: event.id, imageKey: key },
+      {
+        onSuccess: (images) => {
+          if (images.length > 0) {
+            updateFoundImages(images);
+          } else {
+            toast({
+              title: "We can not find you. :)",
+            });
+          }
+        },
+        onError: (err) => {
+          if (err.data?.code === "TOO_MANY_REQUESTS") {
+            toast({
+              variant: "destructive",
+              title: "Slow down man. :)",
+              description:
+                "We are still in development, so you can create only one request per two minutes",
+            });
+          } else {
+            toast({
+              title: "We can not find you.",
+              description: "Something went wront. Please try again.",
+            });
+          }
+        },
+      },
+    );
+
+    setSearching(false);
+  };
+
+  const handleRemoveImage = useCallback(() => {
+    setFile(null);
+    updateFoundImages([]);
+    updateSelected([]);
+    updateGalleryImages(images);
+  }, [images, updateGalleryImages, updateFoundImages, updateSelected]);
+
+  const handleDownloadMyImages = useCallback(async () => {
+    const zip = new JSZip();
+
+    try {
+      const downloadPromises = foundImages.map(async (img) => {
+        const response = await fetch(img.url);
+        const blob = await response.blob();
+        const filename = img.url.substring(img.url.lastIndexOf("/") + 1);
+        zip.file(filename, blob);
+      });
+
+      await Promise.all(downloadPromises);
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+
+      const zipFileUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = zipFileUrl;
+      link.setAttribute("download", `${event.name.toLowerCase()}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [foundImages, event]);
 
   return (
     <Card className="w-full">
@@ -132,21 +242,20 @@ const ImageUploadWidget = () => {
         )}
         {file && (
           <AnimateFade motionKey="selfie" isVisible={!!file}>
-            <div className=" flex h-[220px] w-full items-center justify-evenly">
+            <div className=" flex h-[220px] w-full items-center justify-between md:justify-evenly">
               <div className="flex flex-col items-center justify-center gap-3">
-                <Image
+                {/* eslint-disable-next-line */}
+                <img
                   src={URL.createObjectURL(file)}
                   alt=""
-                  width={128}
-                  height={128}
-                  className="h-32 w-32 rounded-full"
+                  className="h-32 w-32 rounded-full object-cover"
                 />
                 <Button
                   disabled={!file}
                   className="w-full"
                   size="sm"
                   variant="destructive"
-                  onClick={() => setFile(null)}
+                  onClick={handleRemoveImage}
                 >
                   <TrashIcon className="mr-1.5 h-4 w-4" />
                   Remove
@@ -154,20 +263,23 @@ const ImageUploadWidget = () => {
               </div>
               <div className="flex w-44 flex-col gap-3">
                 <Button
-                  disabled={!file}
+                  disabled={!file || !!foundImages.length || searching}
                   size="sm"
                   className="w-full"
-                  onClick={() => alert(`File: ${file?.name}`)}
+                  onClick={handleFindImages}
                 >
                   <SparklesIcon className="mr-1.5 h-4 w-4" />
                   Find My Images
+                  {searching && (
+                    <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />
+                  )}
                 </Button>
                 <Button
-                  disabled={true}
+                  disabled={!foundImages.length}
                   size="sm"
                   variant="outline"
                   className="w-full"
-                  onClick={() => alert(`File: ${file?.name}`)}
+                  onClick={handleDownloadMyImages}
                 >
                   <DownloadIcon className="mr-1.5 h-4 w-4" />
                   Download My Images
@@ -191,28 +303,28 @@ const ImageUploadWidget = () => {
   );
 };
 
-const ActionsWidget = () => (
-  <Card className="flex justify-evenly p-3">
-    <Button size="icon" variant="secondary" className="rounded-full ">
-      <DownloadIcon className="h-4 w-4" />
-    </Button>
-    <Button size="icon" variant="secondary" className="rounded-full">
-      <ShareIcon className="h-4 w-4" />
-    </Button>
-    <Button size="icon" variant="secondary" className="rounded-full">
-      <DownloadIcon className="h-4 w-4" />
-    </Button>
-    <Button size="icon" variant="secondary" className="rounded-full">
-      <ShareIcon className="h-4 w-4" />
-    </Button>
-    <Button size="icon" variant="secondary" className="rounded-full">
-      <DownloadIcon className="h-4 w-4" />
-    </Button>
-    <Button size="icon" variant="secondary" className="rounded-full">
-      <ShareIcon className="h-4 w-4" />
-    </Button>
-  </Card>
-);
+// const ActionsWidget = () => (
+//   <Card className="flex justify-evenly p-3">
+//     <Button size="icon" variant="secondary" className="rounded-full ">
+//       <DownloadIcon className="h-4 w-4" />
+//     </Button>
+//     <Button size="icon" variant="secondary" className="rounded-full">
+//       <ShareIcon className="h-4 w-4" />
+//     </Button>
+//     <Button size="icon" variant="secondary" className="rounded-full">
+//       <DownloadIcon className="h-4 w-4" />
+//     </Button>
+//     <Button size="icon" variant="secondary" className="rounded-full">
+//       <ShareIcon className="h-4 w-4" />
+//     </Button>
+//     <Button size="icon" variant="secondary" className="rounded-full">
+//       <DownloadIcon className="h-4 w-4" />
+//     </Button>
+//     <Button size="icon" variant="secondary" className="rounded-full">
+//       <ShareIcon className="h-4 w-4" />
+//     </Button>
+//   </Card>
+// );
 
 const AnimateFade = ({
   children,
