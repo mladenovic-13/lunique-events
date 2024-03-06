@@ -4,10 +4,9 @@ import { EventCard } from "@/components/cards/event-card";
 import { paths } from "@/routes/paths";
 import { type RouterOutputs } from "@/trpc/shared";
 import Link from "next/link";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NoEvents } from "./no-events";
 import { useState } from "react";
 import { api } from "@/trpc/react";
+import { EventDateTabs } from "./event-date-tabs";
 
 interface ListEventsProps {
   events: NonNullable<RouterOutputs["event"]["list"]>;
@@ -16,32 +15,22 @@ interface ListEventsProps {
 type EventDate = "upcoming" | "past";
 
 export const ListEvents = ({ events }: ListEventsProps) => {
-  const [tab, setTab] = useState<EventDate>("upcoming");
+  const [tab, setTab] = useState<EventDate>(() => "upcoming");
 
-  const { data } = api.event.list.useQuery(
+  const {
+    data,
+    // isLoading, -> iskoristi ovo za loading state kad se menja tab
+    // isError, -> ne bi bilo lose i greska da se hendluje
+    // error handling: https://nextjs.org/docs/app/building-your-application/routing/error-handling
+  } = api.event.list.useQuery(
     { date: tab },
-    { initialData: events },
+    { enabled: !!tab, initialData: events },
   );
 
   return (
-    <div>
-      <Tabs
-        value={tab}
-        className="mb-8"
-        onValueChange={(value) => {
-          setTab(value as EventDate);
-        }}
-      >
-        <TabsList>
-          <TabsTrigger value="upcoming" className="w-[100px]">
-            Upcoming
-          </TabsTrigger>
+    <div className="space-y-3 md:space-y-5">
+      <EventDateTabs value={tab} onValueChange={setTab} />
 
-          <TabsTrigger value="past" className="w-[100px]">
-            Past
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
       <div className="grid gap-3 md:grid-cols-4">
         {data.map((event) => (
           <Link
