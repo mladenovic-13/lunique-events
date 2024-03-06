@@ -5,7 +5,7 @@ import { api } from "@/trpc/server";
 import { PlusCircleIcon } from "lucide-react";
 
 export default async function EventsPage() {
-  const events = await api.event.list.query();
+  const events = await api.event.list.query({});
 
   return (
     <div className="space-y-5  md:space-y-8">
