@@ -98,7 +98,7 @@ export async function processWebhookEvent(
   }
 
   let processingError = "";
-  const eventBody = webhookEvent.body;
+  const eventBody = JSON.parse(webhookEvent.body) as unknown;
 
   if (!webhookHasMeta(eventBody)) {
     processingError = "Event body is missing the 'meta' property.";
@@ -107,6 +107,11 @@ export async function processWebhookEvent(
       // Save subscription invoices; eventBody is a SubscriptionInvoice
       // Not implemented.
     } else if (webhookEvent.name.startsWith("subscription_")) {
+      console.log(
+        "[PROCESS_WEBHOOK_EVENT]",
+        "ENTERED SUBSCRIPTION EVENT HANDLER",
+      );
+
       // Save subscription events; obj is a Subscription
       const attributes = eventBody.data.attributes;
       const variantId = attributes.variant_id as string;
@@ -161,7 +166,6 @@ export async function processWebhookEvent(
           await db.subscription.create({ data: newSubscription });
         } catch (err) {
           processingError = `Failed to upsert Subscription #${newSubscription.lemonSqueezyId} to the database.`;
-          console.error(err);
         }
       }
     } else if (webhookEvent.name.startsWith("order_")) {

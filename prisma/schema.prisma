@@ -60,7 +60,7 @@ model BillingWebhookEvent {
     id              String   @id @default(cuid())
     name            String
     processed       Boolean  @default(false)
-    body            Json
+    body            String
     processingError String?
     createdAt       DateTime @default(now())
 }

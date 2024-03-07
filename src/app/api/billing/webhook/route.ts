@@ -9,9 +9,6 @@ import { db } from "@/server/db";
 import { env } from "@/env.mjs";
 
 export async function POST(request: Request) {
-  console.log("[BILLING_WEBHOOK_LOG]");
-  console.error("[BILLING_WEBHOOK_ERROR]");
-
   const rawBody = await request.text();
   const secret = env.LEMONSQUEEZY_WEBHOOK_SECRET;
 
@@ -37,7 +34,7 @@ export async function POST(request: Request) {
     );
 
     // Non-blocking call to process the webhook event.
-    await processWebhookEvent(db, webhookEventId);
+    void processWebhookEvent(db, webhookEventId);
 
     return new Response("OK", { status: 200 });
   }
