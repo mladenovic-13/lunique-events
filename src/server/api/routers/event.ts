@@ -43,7 +43,7 @@ export const eventRouter = createTRPCRouter({
   list: protectedProcedure
     .input(
       z.object({
-        date: z.enum(["past", "upcoming"]).nullish(),
+        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -56,8 +56,8 @@ export const eventRouter = createTRPCRouter({
         where: {
           ownerId: ctx.session?.user.id,
           date: {
-            gt: input.date === "upcoming" ? new Date() : undefined,
-            lte: input.date === "past" ? new Date() : undefined,
+            gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
+            lte: input.eventTimeFrame === "past" ? new Date() : undefined,
           },
         },
         include: { images: { take: 1 }, owner: true },
