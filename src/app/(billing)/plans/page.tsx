@@ -1,13 +1,15 @@
 // import { CheckoutButton } from "@/components/partials/billing/checkout-button";
-import { api } from "@/trpc/server";
+// import { api } from "@/trpc/server";
 // import { type Plan } from "@prisma/client";
 
-export default async function Plans() {
-  const plans = await api.billing.getAllPlans.query();
+// export const dynamic = "auto";
 
-  if (!plans.length) {
-    return <p>No plans available.</p>;
-  }
+export default function Plans() {
+  // const plans = await api.billing.getAllPlans.query();
+
+  // if (!plans.length) {
+  //   return <p>No plans available.</p>;
+  // }
 
   return (
     <div>
