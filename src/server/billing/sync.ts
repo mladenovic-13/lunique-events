@@ -1,12 +1,11 @@
-import { env } from "@/env.mjs";
 import {
   type Variant,
   getProduct,
-  lemonSqueezySetup,
   listPrices,
   listProducts,
 } from "@lemonsqueezy/lemonsqueezy.js";
-import {  type PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
+import { configureLemonSqueezy } from "./lemon-squeeze";
 
 type PlanFeatures = {
   images: number;
@@ -40,12 +39,7 @@ type InternalVariant = {
 };
 
 export async function syncPlans(db: PrismaClient) {
-  lemonSqueezySetup({
-    apiKey: env.LEMONSQUEEZY_API_KEY,
-    onError: (error) => {
-      throw new Error(`Lemon Squeezy API error: ${error.message}`);
-    },
-  });
+  configureLemonSqueezy();
 
   // Fetch all the variants from the database.
   const productVariants = await db.plan.findMany();
