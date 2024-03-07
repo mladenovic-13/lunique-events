@@ -100,18 +100,19 @@ export async function processWebhookEvent(
   let processingError = "";
   const eventBody = JSON.parse(webhookEvent.body) as unknown;
 
+  console.log(typeof eventBody);
+
   if (!webhookHasMeta(eventBody)) {
+    console.log("MISSING META DATA");
+
     processingError = "Event body is missing the 'meta' property.";
   } else if (webhookHasData(eventBody)) {
+    console.log("WEBHOOK HAS BODY DATA");
+
     if (webhookEvent.name.startsWith("subscription_payment_")) {
       // Save subscription invoices; eventBody is a SubscriptionInvoice
       // Not implemented.
     } else if (webhookEvent.name.startsWith("subscription_")) {
-      console.log(
-        "[PROCESS_WEBHOOK_EVENT]",
-        "ENTERED SUBSCRIPTION EVENT HANDLER",
-      );
-
       // Save subscription events; obj is a Subscription
       const attributes = eventBody.data.attributes;
       const variantId = attributes.variant_id as string;
@@ -124,7 +125,6 @@ export async function processWebhookEvent(
         processingError = `Plan with variantId ${variantId} not found.`;
       } else {
         // Update the subscription in the database.
-
         const priceId = attributes.first_subscription_item.price_id;
 
         // Get the price data from Lemon Squeezy.
@@ -158,12 +158,11 @@ export async function processWebhookEvent(
 
         try {
           // TODO: create or update
-          // await db.subscription.upsert({
-          //   where: { lemonSqueezyId: newSubscription.lemonSqueezyId },
-          //   create: newSubscription,
-          //   update: newSubscription,
-          // });
-          await db.subscription.create({ data: newSubscription });
+          await db.subscription.upsert({
+            where: { lemonSqueezyId: newSubscription.lemonSqueezyId },
+            create: newSubscription,
+            update: newSubscription,
+          });
         } catch (err) {
           processingError = `Failed to upsert Subscription #${newSubscription.lemonSqueezyId} to the database.`;
         }
@@ -191,13 +190,13 @@ export async function processWebhookEvent(
 export async function storeWebhookEvent(
   db: PrismaClient,
   name: string,
-  body: BillingWebhookEvent["body"],
+  body: string,
 ) {
   return await db.billingWebhookEvent.create({
     data: {
       name,
       processed: false,
-      body: JSON.stringify(body),
+      body: body,
     },
   });
 }

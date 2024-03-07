@@ -1,11 +1,11 @@
-import { CheckoutButton } from "@/components/partials/billing/checkout-button";
+import { Plan } from "@/components/partials/billing/subscription-plan";
 import { api } from "@/trpc/server";
-import { type Plan } from "@prisma/client";
-
-// export const dynamic = "auto";
 
 export default async function Plans() {
   const plans = await api.billing.getAllPlans.query();
+  const currentPlan = await api.billing.getCurrentPlan.query();
+
+  console.log(currentPlan);
 
   if (!plans.length) {
     return <p>No plans available.</p>;
@@ -17,36 +17,11 @@ export default async function Plans() {
 
       <div className="mb-5 mt-3 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
         {plans.map((plan, index) => {
-          return <Plan key={`plan-${index}`} plan={plan} />;
+          return (
+            <Plan key={`plan-${index}`} plan={plan} currentPlan={currentPlan} />
+          );
         })}
       </div>
-    </div>
-  );
-}
-
-export function Plan({ plan }: { plan: Plan }) {
-  const { description, productName, name, price } = plan;
-
-  return (
-    <div>
-      <h2>
-        {productName} ({name})
-      </h2>
-
-      {description ? (
-        <div
-          dangerouslySetInnerHTML={{
-            // Ideally sanitize the description first.
-            __html: description,
-          }}
-        ></div>
-      ) : null}
-
-      <p>${price}</p>
-
-      <CheckoutButton plan={plan} embed={true}>
-        Get Plan
-      </CheckoutButton>
     </div>
   );
 }

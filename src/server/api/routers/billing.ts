@@ -9,6 +9,7 @@ import {
   createCheckout,
   lemonSqueezySetup,
 } from "@lemonsqueezy/lemonsqueezy.js";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const billingRouter = createTRPCRouter({
@@ -20,6 +21,21 @@ export const billingRouter = createTRPCRouter({
     }
 
     return plans;
+  }),
+  getCurrentPlan: protectedProcedure.query(async ({ ctx }) => {
+    const subscription = await ctx.db.subscription.findFirst({
+      where: { userId: ctx.session.user.id },
+      select: { plan: { include: { features: true } } },
+    });
+
+    if (!subscription) {
+      throw new TRPCError({
+        message: "Subscription not found",
+        code: "NOT_FOUND",
+      });
+    }
+
+    return subscription.plan;
   }),
   getCheckoutUrl: protectedProcedure
     .input(z.object({ variantId: z.number(), embed: z.boolean() }))
