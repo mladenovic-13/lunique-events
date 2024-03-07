@@ -1,10 +1,15 @@
+import { env } from "@/env.mjs";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { syncPlans } from "@/server/billing/sync";
-import { listProducts } from "@lemonsqueezy/lemonsqueezy.js";
+import {
+  createCheckout,
+  lemonSqueezySetup,
+} from "@lemonsqueezy/lemonsqueezy.js";
+import { z } from "zod";
 
 export const billingRouter = createTRPCRouter({
   getAllPlans: publicProcedure.query(async ({ ctx }) => {
@@ -16,12 +21,42 @@ export const billingRouter = createTRPCRouter({
 
     return plans;
   }),
-  getLemonSqueezyData: protectedProcedure.query(async () => {
-    const products = await listProducts({
-      filter: { storeId: process.env.LEMONSQUEEZY_STORE_ID },
-      include: ["variants"],
-    });
+  getCheckoutUrl: protectedProcedure
+    .input(z.object({ variantId: z.number(), embed: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { variantId, embed } = input;
 
-    return products;
-  }),
+      lemonSqueezySetup({
+        apiKey: env.LEMONSQUEEZY_API_KEY,
+        onError: (error) => {
+          throw new Error(`Lemon Squeezy API error: ${error.message}`);
+        },
+      });
+
+      const checkout = await createCheckout(
+        env.LEMONSQUEEZY_STORE_ID,
+        variantId,
+        {
+          checkoutOptions: {
+            embed,
+            media: false,
+            logo: !embed,
+          },
+          checkoutData: {
+            email: ctx.session.user.email ?? undefined,
+            custom: {
+              user_id: ctx.session.user.id,
+            },
+          },
+          productOptions: {
+            enabledVariants: [variantId],
+            redirectUrl: `https://${env.NEXT_PUBLIC_VERCEL_URL}/events`,
+            receiptButtonText: "Go to Dashboard",
+            receiptThankYouNote: "Thank you for signing up to Lemon Stand!",
+          },
+        },
+      );
+
+      return checkout.data?.data.attributes.url;
+    }),
 });

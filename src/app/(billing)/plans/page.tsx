@@ -1,5 +1,6 @@
+import { CheckoutButton } from "@/components/partials/billing/checkout-button";
 import { api } from "@/trpc/server";
-import { Plan } from "@prisma/client";
+import { type Plan } from "@prisma/client";
 
 export default async function Plans() {
   const plans = await api.billing.getAllPlans.query();
@@ -21,7 +22,7 @@ export default async function Plans() {
   );
 }
 
-function Plan({ plan }: { plan: Plan }) {
+export function Plan({ plan }: { plan: Plan }) {
   const { description, productName, name, price } = plan;
 
   return (
@@ -40,6 +41,10 @@ function Plan({ plan }: { plan: Plan }) {
       ) : null}
 
       <p>${price}</p>
+
+      <CheckoutButton plan={plan} embed={true}>
+        Get Plan
+      </CheckoutButton>
     </div>
   );
 }

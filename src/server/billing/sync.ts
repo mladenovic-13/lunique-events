@@ -6,7 +6,38 @@ import {
   listPrices,
   listProducts,
 } from "@lemonsqueezy/lemonsqueezy.js";
-import { type Plan, type PrismaClient } from "@prisma/client";
+import {  type PrismaClient } from "@prisma/client";
+
+type PlanFeatures = {
+  images: number;
+  branding: boolean;
+};
+
+const PLAN_VARIANT_MAP: Record<string, PlanFeatures> = {
+  "281951": {
+    images: 50,
+    branding: true,
+  },
+  "281950": {
+    images: 500,
+    branding: false,
+  },
+} as const;
+
+type InternalVariant = {
+  name: string;
+  description: string;
+  price: string;
+  interval: string;
+  intervalCount: number;
+  isUsageBased: boolean;
+  productId: number;
+  productName: string;
+  variantId: number;
+  trialInterval: string;
+  trialIntervalCount: number;
+  sort: number;
+};
 
 export async function syncPlans(db: PrismaClient) {
   lemonSqueezySetup({
@@ -20,13 +51,16 @@ export async function syncPlans(db: PrismaClient) {
   const productVariants = await db.plan.findMany();
 
   // Helper function to add a variant to the productVariants array and sync it with the database.
-  async function _addVariant(variant: Omit<Plan, "id">) {
+  async function _addVariant(variant: InternalVariant) {
     console.log(`Syncing variant ${variant.name} with the database...`);
 
-    const _variant = await db.plan.upsert({
-      where: { variantId: variant.variantId },
-      create: variant,
-      update: variant,
+    const _variant = await db.plan.create({
+      data: {
+        ...variant,
+        features: {
+          create: PLAN_VARIANT_MAP[variant.variantId],
+        },
+      },
     });
 
     /* eslint-disable no-console -- allow */
@@ -73,6 +107,7 @@ export async function syncPlans(db: PrismaClient) {
       });
 
       const currentPriceObj = variantPriceObject.data?.data.at(0);
+
       const isUsageBased =
         currentPriceObj?.attributes.usage_aggregation !== null;
       const interval = currentPriceObj?.attributes.renewal_interval_unit;
@@ -86,7 +121,13 @@ export async function syncPlans(db: PrismaClient) {
         ? currentPriceObj?.attributes.unit_price_decimal
         : currentPriceObj.attributes.unit_price;
 
-      const priceString = price !== null ? price?.toString() ?? "" : "";
+      // cents -> dollars and create string
+      const priceStringCents = price !== null ? price?.toString() ?? "" : "";
+      const priceCents = parseInt(priceStringCents);
+      const dollars = (priceCents / 100).toLocaleString("en-US", {
+        // style: "currency",
+        currency: "USD",
+      });
 
       const isSubscription =
         currentPriceObj?.attributes.category === "subscription";
@@ -99,7 +140,7 @@ export async function syncPlans(db: PrismaClient) {
       await _addVariant({
         name: variant.name,
         description: variant.description,
-        price: priceString,
+        price: dollars,
         interval: interval ?? "",
         intervalCount: intervalCount ?? 0,
         isUsageBased,
