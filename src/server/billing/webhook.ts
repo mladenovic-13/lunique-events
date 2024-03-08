@@ -98,7 +98,7 @@ export async function processWebhookEvent(
   }
 
   let processingError = "";
-  const eventBody = JSON.parse(webhookEvent.body) as unknown;
+  const eventBody = JSON.parse(event.body) as unknown;
 
   console.log(typeof eventBody);
 
@@ -157,7 +157,6 @@ export async function processWebhookEvent(
         };
 
         try {
-          // TODO: create or update
           await db.subscription.upsert({
             where: { lemonSqueezyId: newSubscription.lemonSqueezyId },
             create: newSubscription,

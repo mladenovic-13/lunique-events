@@ -4,24 +4,62 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { configureLemonSqueezy } from "@/server/billing/lemon-squeeze";
 import { syncPlans } from "@/server/billing/sync";
 import {
+  cancelSubscription,
   createCheckout,
-  lemonSqueezySetup,
 } from "@lemonsqueezy/lemonsqueezy.js";
+import { type PlanFeatures, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+type PlanType = "personal" | "professional";
+
+export const PLAN_MAP: Record<PlanType, Omit<PlanFeatures, "id">> = {
+  personal: {
+    images: 50,
+    branding: true,
+  },
+  professional: {
+    images: 500,
+    branding: false,
+  },
+} as const;
+
+const PROFESSIONAL_PLAN_ID = 281950 as const;
+const PERSONAL_PLAN_ID = 281951 as const;
+
 export const billingRouter = createTRPCRouter({
-  getAllPlans: publicProcedure.query(async ({ ctx }) => {
-    let plans = await ctx.db.plan.findMany();
+  getPlan: publicProcedure
+    .input(z.object({ type: z.enum(["personal", "professional"]) }))
+    .query(async ({ ctx, input }) => {
+      const variantId =
+        input.type === "personal" ? PERSONAL_PLAN_ID : PROFESSIONAL_PLAN_ID;
 
-    if (!plans.length) {
-      plans = await syncPlans(ctx.db);
-    }
+      const plan = await ctx.db.plan.findFirst({
+        where: { variantId },
+        include: { features: true },
+      });
 
-    return plans;
-  }),
+      if (!plan) {
+        await syncPlans(ctx.db);
+        const syncedPlan = await ctx.db.plan.findFirst({
+          where: { variantId },
+          include: { features: true },
+        });
+        if (!syncedPlan) {
+          throw new TRPCError({
+            message: "Failed to sync LemonSqueezy plans with DB",
+            code: "INTERNAL_SERVER_ERROR",
+          });
+        }
+
+        return syncedPlan;
+      }
+
+      return plan;
+    }),
   getCurrentPlan: protectedProcedure.query(async ({ ctx }) => {
     const subscription = await ctx.db.subscription.findFirst({
       where: { userId: ctx.session.user.id },
@@ -37,12 +75,60 @@ export const billingRouter = createTRPCRouter({
 
     return subscription.plan;
   }),
-  cancelSubscription: protectedProcedure.query(({}) => {
-    // TODO
-    // - create cancel subscriptio helper function
-    // - handle webhook event on cancel (update user in db)
-    throw new TRPCError({ code: "NOT_IMPLEMENTED" });
+  getSubscription: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.subscription.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        plan: true,
+      },
+    });
   }),
+  cancelSubscription: protectedProcedure
+    .input(
+      z.object({
+        lemonSqueezyId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { lemonSqueezyId } = input;
+
+      configureLemonSqueezy();
+
+      const subscription = await getUserSubscription(
+        ctx.db,
+        ctx.session.user.id,
+      );
+
+      if (!subscription) {
+        throw new TRPCError({
+          message: "User do not have subscription",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const cancelled = await cancelSubscription(lemonSqueezyId);
+
+      if (cancelled.error) {
+        throw new TRPCError({
+          message: cancelled.error.message,
+          code: "INTERNAL_SERVER_ERROR",
+          cause: cancelled.error.cause,
+        });
+      }
+
+      await ctx.db.subscription.update({
+        where: { lemonSqueezyId },
+        data: {
+          status: cancelled.data?.data.attributes.status,
+          statusFormatted: cancelled.data?.data.attributes.status_formatted,
+          endsAt: cancelled.data?.data.attributes.ends_at,
+        },
+      });
+
+      return cancelled.data?.data.attributes;
+    }),
   pauseSubscription: protectedProcedure.query(({}) => {
     // TODO
     // - create pause subscriptio helper function
@@ -54,12 +140,7 @@ export const billingRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { variantId, embed } = input;
 
-      lemonSqueezySetup({
-        apiKey: env.LEMONSQUEEZY_API_KEY,
-        onError: (error) => {
-          throw new Error(`Lemon Squeezy API error: ${error.message}`);
-        },
-      });
+      configureLemonSqueezy();
 
       const checkout = await createCheckout(
         env.LEMONSQUEEZY_STORE_ID,
@@ -88,3 +169,15 @@ export const billingRouter = createTRPCRouter({
       return checkout.data?.data.attributes.url;
     }),
 });
+
+async function getUserSubscription(db: PrismaClient, userId: string) {
+  const subscription = await db.subscription.findFirst({
+    where: {
+      userId,
+    },
+  });
+
+  if (!subscription) return null;
+
+  return subscription;
+}

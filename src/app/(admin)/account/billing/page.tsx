@@ -1,8 +1,9 @@
 import { BillingPlanCard } from "@/components/cards/billing-plan-card";
 import { LicenseCodeCard } from "@/components/cards/license-code-card";
-import { SubscriptionCard } from "@/components/cards/subscription-card";
 
 export default function UsagePage() {
+  // TODO: fetch billing data
+
   return (
     <div className="space-y-8">
       <header>
@@ -12,12 +13,9 @@ export default function UsagePage() {
         </p>
       </header>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="space-y-3">
         <BillingPlanCard />
-        <div className="flex flex-col gap-5">
-          <SubscriptionCard />
-          <LicenseCodeCard />
-        </div>
+        <LicenseCodeCard />
       </div>
     </div>
   );
