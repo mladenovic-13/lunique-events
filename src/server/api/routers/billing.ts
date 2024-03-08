@@ -37,6 +37,18 @@ export const billingRouter = createTRPCRouter({
 
     return subscription.plan;
   }),
+  cancelSubscription: protectedProcedure.query(({}) => {
+    // TODO
+    // - create cancel subscriptio helper function
+    // - handle webhook event on cancel (update user in db)
+    throw new TRPCError({ code: "NOT_IMPLEMENTED" });
+  }),
+  pauseSubscription: protectedProcedure.query(({}) => {
+    // TODO
+    // - create pause subscriptio helper function
+    // - handle webhook event on pause (update user in db)
+    throw new TRPCError({ code: "NOT_IMPLEMENTED" });
+  }),
   getCheckoutUrl: protectedProcedure
     .input(z.object({ variantId: z.number(), embed: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
