@@ -110,6 +110,7 @@ export async function processWebhookEvent(
     console.log("WEBHOOK HAS BODY DATA");
 
     if (webhookEvent.name.startsWith("subscription_payment_")) {
+      // TODO
       // Save subscription invoices; eventBody is a SubscriptionInvoice
       // Not implemented.
     } else if (webhookEvent.name.startsWith("subscription_")) {
@@ -158,18 +159,17 @@ export async function processWebhookEvent(
 
         try {
           await db.subscription.upsert({
-            where: { lemonSqueezyId: newSubscription.lemonSqueezyId },
+            where: { userId: newSubscription.userId },
             create: newSubscription,
             update: newSubscription,
           });
         } catch (err) {
+          console.log(err);
           processingError = `Failed to upsert Subscription #${newSubscription.lemonSqueezyId} to the database.`;
         }
       }
-    } else if (webhookEvent.name.startsWith("order_")) {
-      // Save orders; eventBody is a "Order"
-      /* Not implemented */
     } else if (webhookEvent.name.startsWith("license_")) {
+      // TODO
       // Save license keys; eventBody is a "License key"
       /* Not implemented */
     }

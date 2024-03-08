@@ -1,8 +1,12 @@
 import { BillingPlanCard } from "@/components/cards/billing-plan-card";
 import { LicenseCodeCard } from "@/components/cards/license-code-card";
+import { api } from "@/trpc/server";
 
-export default function UsagePage() {
-  // TODO: fetch billing data
+export default async function UsagePage() {
+  const subscription = await api.billing.getSubscription.query();
+  const professionalPlan = await api.billing.getPlan.query({
+    type: "professional",
+  });
 
   return (
     <div className="space-y-8">
@@ -14,7 +18,10 @@ export default function UsagePage() {
       </header>
 
       <div className="space-y-3">
-        <BillingPlanCard />
+        <BillingPlanCard
+          subscription={subscription}
+          professionalPlan={professionalPlan}
+        />
         <LicenseCodeCard />
       </div>
     </div>

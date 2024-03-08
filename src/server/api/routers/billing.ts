@@ -10,22 +10,9 @@ import {
   cancelSubscription,
   createCheckout,
 } from "@lemonsqueezy/lemonsqueezy.js";
-import { type PlanFeatures, type PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
-type PlanType = "personal" | "professional";
-
-export const PLAN_MAP: Record<PlanType, Omit<PlanFeatures, "id">> = {
-  personal: {
-    images: 50,
-    branding: true,
-  },
-  professional: {
-    images: 500,
-    branding: false,
-  },
-} as const;
 
 const PROFESSIONAL_PLAN_ID = 281950 as const;
 const PERSONAL_PLAN_ID = 281951 as const;
@@ -159,7 +146,7 @@ export const billingRouter = createTRPCRouter({
           },
           productOptions: {
             enabledVariants: [variantId],
-            redirectUrl: `http://${env.NEXT_PUBLIC_VERCEL_URL}/events`,
+            redirectUrl: `http://${env.NEXT_PUBLIC_VERCEL_URL}/account/billing`,
             receiptButtonText: "Go to Dashboard",
             receiptThankYouNote: "Thank you for signing up to Lemon Stand!",
           },
