@@ -1,8 +1,14 @@
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Card, CardFooter } from "../ui/card";
 import { format } from "date-fns";
-import { CalendarIcon, GalleryThumbnailsIcon, MapPinIcon } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarIcon,
+  GalleryThumbnailsIcon,
+  MapPinIcon,
+} from "lucide-react";
 import { type RouterOutputs } from "@/trpc/shared";
+import { Button } from "../ui/button";
 
 interface EventCardProps {
   event: RouterOutputs["event"]["list"][number];
@@ -30,7 +36,7 @@ export const EventCard = ({ event }: EventCardProps) => {
       </AspectRatio>
       <CardFooter className="relative flex flex-col items-baseline gap-1 py-3">
         <p className="text-lg font-semibold">{name}</p>
-        <div className="space-y-0.5">
+        <div className="space-y-2">
           <p className="flex items-center gap-2 text-sm text-zinc-500">
             <CalendarIcon className="h-4 w-4" />
             {format(date, "do MMMM, yyy")}
@@ -41,6 +47,10 @@ export const EventCard = ({ event }: EventCardProps) => {
               {location}
             </p>
           )}
+          <Button className="h-8 gap-x-2 bg-slate-500">
+            <p>Manage Event</p>
+            <ArrowRight className="h-4" />
+          </Button>
         </div>
       </CardFooter>
     </Card>
