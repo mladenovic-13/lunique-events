@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 interface UseActionKeyProps {
-  onArrowRight: () => void;
-  onArrowLeft: () => void;
-  onImageSelect: () => void;
+  onArrowRight?: () => void;
+  onArrowLeft?: () => void;
+  onImageSelect?: () => void;
 }
 
 export const useActionKeys = ({
@@ -14,13 +14,13 @@ export const useActionKeys = ({
   const [state, setState] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!onArrowLeft || !onArrowRight) return;
+    if (!onArrowLeft || !onArrowRight || !onImageSelect) return;
 
     const handleArrowKeyDown = (event: KeyboardEvent) => {
       const { key } = event;
       if (key === "ArrowLeft") onArrowLeft();
       if (key === "ArrowRight") onArrowRight();
-      if (key === "s") onImageSelect();
+      if (key === "s" || key === "S") onImageSelect();
     };
 
     setState(true);

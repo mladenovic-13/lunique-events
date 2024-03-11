@@ -162,12 +162,14 @@ export const Gallery = ({
     mainCarouselApi?.scrollNext();
   }, [mainCarouselApi]);
 
+  const handleSelectKey = () => {
+    handleImageSelect(selectedIndex);
+  };
+
   useActionKeys({
     onArrowLeft: handleLeft,
     onArrowRight: handleRight,
-    onImageSelect() {
-      handleImageSelect(selectedIndex);
-    },
+    onImageSelect: handleSelectKey,
   });
 
   const handleClose = useCallback(() => {
