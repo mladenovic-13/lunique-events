@@ -1,7 +1,12 @@
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Card, CardFooter } from "../ui/card";
 import { format } from "date-fns";
-import { CalendarIcon, GalleryThumbnailsIcon, MapPinIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  GalleryThumbnailsIcon,
+  MapPinIcon,
+  Users,
+} from "lucide-react";
 import { type RouterOutputs } from "@/trpc/shared";
 
 interface EventCardProps {
@@ -9,7 +14,7 @@ interface EventCardProps {
 }
 
 export const EventCard = ({ event }: EventCardProps) => {
-  const { images, name, date, location } = event;
+  const { images, name, date, location, guests } = event;
 
   return (
     <Card className="border-t-[0px]">
@@ -39,6 +44,12 @@ export const EventCard = ({ event }: EventCardProps) => {
             <p className="flex items-center gap-2 text-sm text-zinc-500">
               <MapPinIcon className="h-4 w-4" />
               {location}
+            </p>
+          )}
+          {guests && (
+            <p className="flex items-center gap-2 text-sm text-zinc-500">
+              <Users className="h-4 w-4" />
+              {guests.length}
             </p>
           )}
         </div>

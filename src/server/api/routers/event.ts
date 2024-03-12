@@ -60,7 +60,7 @@ export const eventRouter = createTRPCRouter({
             lte: input.eventTimeFrame === "past" ? new Date() : undefined,
           },
         },
-        include: { images: { take: 1 }, owner: true },
+        include: { images: { take: 1 }, owner: true, guests: true },
       });
     }),
   get: publicProcedure
