@@ -5,5 +5,5 @@ export default function EmailPage({
     eventId: string;
   };
 }) {
-  return <div>TODO: Emails {params.eventId} page </div>;
+  return <div>TODO: {params.eventId} - Emails</div>;
 }

@@ -5,5 +5,5 @@ export default function RegistrationPage({
     eventId: string;
   };
 }) {
-  return <div>TODO: {params.eventId} overview</div>;
+  return <div>TODO: {params.eventId} registration</div>;
 }
