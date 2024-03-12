@@ -7,6 +7,10 @@ import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 
+// TODO:
+// - replace root with redirect to overview
+// - move images to /{eventID}/images
+
 export default async function EventIdPage({
   params,
 }: {
