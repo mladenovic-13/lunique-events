@@ -119,6 +119,7 @@ model Event {
     name     String
     date     DateTime
     location String
+    guests   Guest[]
 
     owner   User   @relation(fields: [ownerId], references: [id])
     ownerId String
@@ -131,6 +132,14 @@ model Event {
     updatedAt DateTime @updatedAt
 
     @@index([id, ownerId])
+}
+
+model Guest {
+    id      String  @id @default(cuid())
+    name    String?
+    email   String? @unique
+    Event   Event?  @relation(fields: [eventId], references: [id])
+    eventId String?
 }
 
 model Face {
