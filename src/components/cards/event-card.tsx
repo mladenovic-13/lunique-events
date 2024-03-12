@@ -6,7 +6,7 @@ import {
   CalendarIcon,
   GalleryThumbnailsIcon,
   MapPinIcon,
-  Users2Icon,
+  Users,
 } from "lucide-react";
 import { type RouterOutputs } from "@/trpc/shared";
 import { Button } from "../ui/button";
@@ -23,11 +23,14 @@ export const EventCard = ({ event }: EventCardProps) => {
   const router = useRouter();
 
   const handleClick = (dest: TargetClick) => {
+    console.log(dest);
     if (dest === "eventPage") {
       router.push(paths.events.event(String(event.id)));
+      return;
     }
     if (dest === "manageEventPage") {
       router.push(paths.events.settings(String(event.id)));
+      return;
     }
   };
 
@@ -68,7 +71,7 @@ export const EventCard = ({ event }: EventCardProps) => {
           )}
           {guests && (
             <p className="flex items-center gap-2 text-sm text-zinc-500">
-              <Users2Icon className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               {guests.length}
             </p>
           )}
