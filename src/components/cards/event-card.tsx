@@ -1,10 +1,9 @@
 import { Card, CardHeader, CardTitle } from "../ui/card";
-import { format } from "date-fns";
 import {
   ArrowRight,
-  CalendarIcon,
   GalleryThumbnailsIcon,
   MapPinIcon,
+  Users2Icon,
 } from "lucide-react";
 import { type RouterOutputs } from "@/trpc/shared";
 import { Button } from "../ui/button";
@@ -19,7 +18,7 @@ interface EventCardProps {
 type TargetClick = "eventPage" | "manageEventPage";
 
 export const EventCard = ({ event }: EventCardProps) => {
-  const { images, name, date, location } = event;
+  const { images, name, location, guests } = event;
   const router = useRouter();
 
   const handleClick = (dest: TargetClick) => {
@@ -53,13 +52,17 @@ export const EventCard = ({ event }: EventCardProps) => {
           {name}
         </CardTitle>
         <div className="space-y-2">
-          <p className="flex items-center gap-2 text-sm text-zinc-500">
+          {/* <p className="flex items-center gap-2 text-sm text-zinc-500">
             <CalendarIcon className="h-4 w-4" />
             {format(date, "do MMMM, yyy")}
-          </p>
+          </p> */}
           <p className="flex items-center gap-2 text-sm text-zinc-500">
             <MapPinIcon className="h-4 w-4" />
             {location ? location : "Missing location "}
+          </p>
+          <p className="flex items-center gap-2 text-sm text-zinc-500">
+            <Users2Icon className="h-4 w-4" />
+            {guests.length !== 0 ? `${guests.length} guests` : "No guests yet"}
           </p>
         </div>
         <Button

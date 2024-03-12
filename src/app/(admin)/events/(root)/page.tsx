@@ -4,7 +4,7 @@ import { PlusCircleIcon } from "lucide-react";
 
 export default function EventsPage() {
   return (
-    <div className="mx-auto max-w-4xl  space-y-5 md:space-y-8">
+    <div className="mx-auto max-w-4xl space-y-5 md:space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold md:text-2xl">Events</h1>

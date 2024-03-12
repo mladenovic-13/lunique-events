@@ -44,10 +44,10 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     return (
       <div className="flex">
         {data.map((event) => (
-          <div key={event.id}>
+          <div key={event.id} className="w-full">
             <div className="flex">
               <div className="w-1/6 md:w-1/3">Date Graph</div>
-              <div className="flex">
+              <div className="flex-1">
                 <EventCard event={event} />
               </div>
             </div>
