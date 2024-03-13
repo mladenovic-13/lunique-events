@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { PlusCircleIcon } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 
-const timeframes: Timeframe[] = ["upcoming", "past"] as const;
+const timeframes: Timeframe[] = ["upcoming", "past"];
 
 export const EventActions = () => {
   const router = useRouter();
