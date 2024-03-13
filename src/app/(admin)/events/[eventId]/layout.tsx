@@ -8,6 +8,8 @@ interface SettingsLayoutProps {
   children: React.ReactNode;
 }
 
+export const runtime = "edge";
+
 export default async function SettingsLayout({
   children,
   params: { eventId },
