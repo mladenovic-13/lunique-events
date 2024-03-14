@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ControlBar } from "./control-bar";
-import { EventSelectImages } from "./event-select-images";
 import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
 import { type Image } from "@prisma/client";
+import { ControlBar } from "./control-bar";
 import { EventImagesPagination } from "./event-images-pagination";
+import { EventSelectImages } from "./event-select-images";
 
 interface EditEventGalleryProps {
   images: Image[];

@@ -1,5 +1,5 @@
-import { AspectRatio } from "../ui/aspect-ratio";
-import { Card, CardFooter } from "../ui/card";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card, CardFooter } from "@/components/ui/card";
 
 export const EventsSleketon = () => (
   <div className="animate-pulse  space-y-5 md:space-y-8">

@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { GalleryDropzone } from "../partials/event/gallery-dropzone";
+import { GalleryDropzone } from "./gallery-dropzone";
 
 export const UploadImagesModal = () => {
   const { isOpen, type, onClose, data } = useModal();

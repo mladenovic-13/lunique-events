@@ -1,28 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import useEmblaCarousel, {
-  type UseEmblaCarouselType,
-} from "embla-carousel-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { type EmblaCarouselType } from "embla-carousel";
 import { type Image as ImageType } from "@prisma/client";
-import {
-  type LucideIcon,
-  CheckIcon,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Share,
-  X,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import * as Checkbox from "@radix-ui/react-checkbox";
+import { Download, Share, X } from "lucide-react";
 
-import Image from "next/image";
-import { awsImageLoader } from "@/lib/image-loader";
 import { useActionKeys } from "@/hooks/use-action-keys";
-
-const PLACEHOLDER_URL = "/images/placeholder.jpg" as const;
+import { Thumbs } from "./thumbs";
+import { CarouselSlide } from "./slide";
+import { ActionButton, ChevronButton, SelectButton } from "./buttons";
 
 export type GalleryOptions = {
   thumbs?: boolean;
@@ -255,165 +242,5 @@ export const Gallery = ({
         </div>
       )}
     </div>
-  );
-};
-
-type CarouselSlideProps = {
-  idx: number;
-  url: string;
-  isInView: boolean;
-};
-
-const CarouselSlide = ({ idx, url, isInView }: CarouselSlideProps) => (
-  <div
-    style={{
-      flex: "0 0 100%",
-    }}
-    className="h-fill relative"
-    key={idx}
-  >
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="relative h-[500px] w-full lg:h-[800px] 2xl:h-[700px]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={isInView ? url : PLACEHOLDER_URL}
-          alt=""
-          className="h-full w-full object-contain"
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </div>
-);
-
-type ThumbsProps = {
-  images: ImageType[];
-  inView: number[];
-  onThumbClick: (index: number) => void;
-  carouselRef: UseEmblaCarouselType["0"];
-  selectedIndex: number;
-};
-
-const Thumbs = ({
-  images,
-  inView,
-  carouselRef,
-  onThumbClick,
-  selectedIndex,
-}: ThumbsProps) => {
-  return (
-    <div className="w-full overflow-hidden" ref={carouselRef}>
-      <div className="flex gap-0.5 md:gap-0">
-        {images.map((img, idx) => (
-          <ThumbButton
-            key={idx}
-            index={idx}
-            isInView={inView.includes(idx)}
-            selected={idx === selectedIndex}
-            onClick={() => onThumbClick(idx)}
-            src={img.url}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-type ThumbButtonProps = {
-  onClick: (index: number) => void;
-  selected: boolean;
-  isInView: boolean;
-  index: number;
-  src: string;
-};
-
-const ThumbButton = ({
-  index,
-  selected,
-  src,
-  isInView,
-  onClick,
-}: ThumbButtonProps) => (
-  <button
-    onClick={() => onClick(index)}
-    className={cn(
-      "h-16 w-1/5 flex-none flex-shrink-0 flex-grow-0 rounded-sm transition duration-200 md:h-16 md:w-[7%] 2xl:h-20 ",
-      !selected && "scale-90 opacity-25 hover:opacity-50",
-    )}
-  >
-    <Image
-      loader={awsImageLoader}
-      className="h-full w-full rounded-sm object-cover"
-      src={isInView ? src : PLACEHOLDER_URL}
-      width={172}
-      height={60}
-      alt=""
-    />
-  </button>
-);
-
-type ActionButtonProps = {
-  Icon: LucideIcon;
-  onAction: (idx?: number) => void;
-};
-
-const ActionButton = ({ Icon, onAction }: ActionButtonProps) => (
-  <button
-    className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10  transition duration-200 hover:bg-primary/20 md:hover:scale-105"
-    onClick={() => onAction()}
-  >
-    <Icon className="h-4 w-4 text-primary" />
-  </button>
-);
-
-type SelectButtonProps = {
-  isSelected: boolean;
-  setIsSelected: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectChange: (idx?: number) => void;
-};
-
-const SelectButton = ({
-  isSelected,
-  setIsSelected,
-  onSelectChange,
-}: SelectButtonProps) => (
-  <div
-    onClick={() => onSelectChange()}
-    className="flex h-10 cursor-pointer select-none items-center justify-center gap-1.5 rounded-full bg-primary/10 px-4 transition duration-200 hover:bg-primary/20 md:hover:scale-105"
-  >
-    <span className="text-xs font-bold uppercase text-primary">
-      {isSelected ? "selected" : "select"}
-    </span>
-    <Checkbox.Root
-      checked={isSelected}
-      onCheckedChange={(c: boolean) => setIsSelected(c)}
-      className="peer h-4 w-4 rounded-full border border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
-    >
-      <Checkbox.Indicator className="flex items-center justify-center text-current">
-        <CheckIcon className="h-3 w-3" />
-      </Checkbox.Indicator>
-    </Checkbox.Root>
-  </div>
-);
-
-type ChevronButtonProps = {
-  side: "left" | "right";
-  onAction: () => void;
-};
-
-const ChevronButton = ({ side, onAction }: ChevronButtonProps) => {
-  const Icon = side === "left" ? ChevronLeft : ChevronRight;
-
-  return (
-    <button
-      className={cn(
-        "group absolute top-[calc(50%-256px)] z-20 flex h-64 w-12 translate-y-[50%] items-center justify-center transition duration-200 hover:bg-muted-foreground/10 md:w-20",
-        side === "left" && "left-0 md:left-5",
-        side === "right" && "right-0 md:right-5",
-      )}
-      onClick={onAction}
-    >
-      <Icon className="h-6 w-6 bg-clip-content text-primary transition duration-200 md:h-10 md:w-10 md:group-hover:scale-105" />
-    </button>
   );
 };

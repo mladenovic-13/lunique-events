@@ -1,9 +1,9 @@
 "use client";
 
-import { GoogleIcon } from "../icons/google-icon";
-import { Button } from "../ui/button";
+import { GoogleIcon } from "@/components/icons/google-icon";
+import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
-import { toast } from "../ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { RotateCwIcon } from "lucide-react";
 

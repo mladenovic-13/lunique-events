@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
+
 import { ModalProvider } from "@/components/providers/modal-provider";
 import NextAuthProvider from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";

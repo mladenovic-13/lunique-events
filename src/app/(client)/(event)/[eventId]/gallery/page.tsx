@@ -1,8 +1,8 @@
-import { GallerySidebar } from "@/components/partials/gallery/gallery-sidebar";
-import { RenderGalleryImages } from "@/components/partials/gallery/render-gallery-images";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
+import { GallerySidebar } from "./_components/gallery-sidebar";
+import { RenderGalleryImages } from "./_components/render-gallery-images";
 
 export default async function GalleryIdPage({
   params,

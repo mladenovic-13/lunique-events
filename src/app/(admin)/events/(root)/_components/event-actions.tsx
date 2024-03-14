@@ -1,13 +1,13 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { EventTimeframeTabs } from "./event-date-tabs";
-import { type Timeframe } from "./events";
 import { buttonVariants } from "@/components/ui/button";
 import { useEffect } from "react";
 import { PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { paths } from "@/routes/paths";
+import { type Timeframe } from "./events";
+import { EventTimeframeTabs } from "./event-date-tabs";
 
 const timeframes: Timeframe[] = ["upcoming", "past"];
 

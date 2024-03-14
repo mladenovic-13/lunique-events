@@ -1,14 +1,11 @@
 "use client";
 
-import { CalendarSelect } from "@/components/partials/event/event-calendar-select";
-import { VisibilitySelect } from "@/components/partials/event/event-visibility-select";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useModal } from "@/hooks/use-modal-store";
-import { cn } from "@/lib/utils";
 import thumbImage from "@/public/images/placeholder.jpg";
 import {
   AppWindowIcon,
@@ -16,7 +13,6 @@ import {
   CircleIcon,
   GlobeIcon,
   ImagePlusIcon,
-  type LucideIcon,
   MapPinIcon,
   NewspaperIcon,
   PenIcon,
@@ -26,6 +22,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { CalendarSelect } from "./_components/event-calendar-select";
+import { VisibilitySelect } from "./_components/event-visibility-select";
+import { EventOptionButton } from "./_components/event-option-button";
 
 export default function CreateEventPage() {
   const { onOpen } = useModal();
@@ -189,34 +188,3 @@ export default function CreateEventPage() {
     </div>
   );
 }
-
-const EventOptionButton = (props: {
-  Icon: LucideIcon;
-  isActive: boolean;
-  activeColorClass: string;
-  title: string;
-  slot: React.ReactNode;
-  onClick?: () => void;
-}) => {
-  const { Icon } = props;
-  const { title, slot, activeColorClass, isActive } = props;
-  const { onClick } = props;
-
-  return (
-    <div
-      onClick={onClick}
-      className="flex w-full items-center justify-between gap-3 px-3.5 py-2"
-    >
-      <span className="flex items-center gap-3">
-        <Icon
-          className={cn(
-            "h-4 w-4 text-muted-foreground",
-            isActive && activeColorClass,
-          )}
-        />
-        <span>{title}</span>
-      </span>
-      <span>{slot}</span>
-    </div>
-  );
-};

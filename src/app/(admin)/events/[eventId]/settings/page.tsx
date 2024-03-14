@@ -1,9 +1,9 @@
+import { api } from "@/trpc/server";
 import {
   DeleteEvent,
   EditEventInfo,
   EventGalleryConfig,
-} from "@/components/partials/event/event-setting";
-import { api } from "@/trpc/server";
+} from "./_components/event-setting";
 
 export default async function EventSettingsPage({
   params,

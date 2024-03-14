@@ -6,7 +6,7 @@ import {
   type GalleryData,
   type GalleryHandlers,
   type GalleryOptions,
-} from "../ui/gallery";
+} from "@/components/gallery";
 import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
 import { useMemo } from "react";
 

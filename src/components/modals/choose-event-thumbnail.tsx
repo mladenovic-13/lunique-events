@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { CreateEventForm } from "../forms/create-event-form";
 
 export const ChooseThumbnailModal = () => {
   const { isOpen, type, onClose } = useModal();

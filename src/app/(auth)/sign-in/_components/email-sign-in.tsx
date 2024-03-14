@@ -7,14 +7,14 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { getCsrfToken } from "next-auth/react";
 import axios from "axios";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useCallback, useState } from "react";
 import { RotateCwIcon } from "lucide-react";
 

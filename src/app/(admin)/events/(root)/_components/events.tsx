@@ -1,7 +1,7 @@
 "use client";
 
-import { RenderTimeframe } from "./render-events";
 import { useSearchParams } from "next/navigation";
+import { RenderTimeframe } from "./render-events";
 
 export type Timeframe = "upcoming" | "past";
 

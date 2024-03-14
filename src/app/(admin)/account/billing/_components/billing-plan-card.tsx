@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCheck, Loader2Icon } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -9,11 +9,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "@/components/ui/card";
 import { api } from "@/trpc/react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { type RouterOutputs } from "@/trpc/shared";
 import { PLAN_MAP } from "@/config";
 import { formatDate } from "@/lib/utils";

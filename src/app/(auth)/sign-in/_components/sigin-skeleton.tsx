@@ -1,4 +1,9 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const SigninSkeleton = () => (
   <main className="h-fill flex animate-pulse items-center justify-center">
