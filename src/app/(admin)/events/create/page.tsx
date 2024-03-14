@@ -32,7 +32,7 @@ export default function CreateEventPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-5 p-3 pb-10 md:flex  md:space-x-8 md:space-y-0 ">
-      <div className="w-full space-y-5 px-10 md:flex-1 md:px-0">
+      <div className="w-full space-y-5 md:flex-1">
         <div className="relative">
           <AspectRatio ratio={1 / 1}>
             <Image
@@ -76,28 +76,28 @@ export default function CreateEventPage() {
 
         <div className="flex gap-2">
           <div className="flex-1 rounded-md bg-muted p-1">
-            <div className="flex h-full gap-8">
+            <div className="flex h-full justify-between ">
               <div className="flex">
                 <div className="flex h-full flex-col items-center p-3 py-2.5">
                   <CircleIcon className="h-3 w-3 rounded-full bg-muted-foreground/80 text-muted-foreground/80" />
                   <div className="flex-1 border-r border-dashed border-muted-foreground/50" />
                   <CircleIcon className="h-3 w-3 text-muted-foreground/80" />
                 </div>
-                <div className="flex flex-col justify-between py-[5px] font-light">
-                  <span>Start</span>
-                  <span>End</span>
+                <div className="flex flex-col justify-between py-1.5 font-light">
+                  <span className="text-sm md:text-base">Start</span>
+                  <span className="text-sm md:text-base">End</span>
                 </div>
               </div>
-              <div className="flex h-full flex-1 flex-col gap-1">
-                <div className="flex h-full justify-between rounded-md bg-muted-foreground/20 font-light">
+              <div className="flex h-full w-44 flex-col gap-1 md:w-60">
+                <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
                   <span className="px-2 py-1">Wed 6, Mar</span>
-                  <span className="w-16 border-l-2 border-muted py-1 text-center ">
+                  <span className="h-full w-16 border-l-2 border-muted py-1 text-center md:w-20 ">
                     11:30
                   </span>
                 </div>
-                <div className="flex h-full justify-between rounded-md bg-muted-foreground/20 font-light">
+                <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
                   <span className="px-2 py-1">Wed 20, Mar</span>
-                  <span className="w-16 border-l-2 border-muted py-1 text-center ">
+                  <span className="h-full w-16 border-l-2 border-muted py-1 text-center md:w-20 ">
                     12:30
                   </span>
                 </div>
@@ -105,11 +105,13 @@ export default function CreateEventPage() {
             </div>
           </div>
 
-          <div className="flex w-36 flex-col gap-1.5 rounded-md bg-muted px-3 py-1.5">
-            <GlobeIcon className="h-5 w-5 text-muted-foreground" />
+          <div className="flex w-24 flex-col justify-between gap-1.5 rounded-md bg-muted px-3 py-1.5">
+            <GlobeIcon className="h-5 w-5 text-muted-foreground md:h-6 md:w-6" />
             <div className="flex flex-col">
-              <span className="text-sm">GMT+01:00</span>
-              <span className="text-xs text-muted-foreground">Belgrade</span>
+              <span className="text-xs md:text-sm">GMT+01:00</span>
+              <span className="text-xs text-muted-foreground md:text-sm">
+                Belgrade
+              </span>
             </div>
           </div>
         </div>
@@ -117,11 +119,11 @@ export default function CreateEventPage() {
         <div>
           <button className="w-full rounded-md border border-border bg-muted px-3.5 py-1.5 transition duration-300 hover:border-muted-foreground/60 hover:bg-muted-foreground/30">
             <span className="flex flex-col items-start">
-              <span className="flex items-center gap-3">
-                <MapPinIcon className="h-4 w-4 text-muted-foreground" />
+              <span className="flex items-center gap-3 md:gap-5">
+                <MapPinIcon className="h-4 w-4 text-muted-foreground md:h-5 md:w-5" />
                 <span className="text-lg font-medium">Add Event Location</span>
               </span>
-              <span className="pl-7 text-sm text-muted-foreground">
+              <span className="pl-7 text-sm text-muted-foreground md:pl-9">
                 Offline location or virtual link
               </span>
             </span>
@@ -129,8 +131,8 @@ export default function CreateEventPage() {
         </div>
 
         <div>
-          <button className="flex w-full items-center gap-3 rounded-md border border-border bg-muted px-3.5 py-1.5 transition duration-300 hover:border-muted-foreground/60 hover:bg-muted-foreground/30">
-            <NewspaperIcon className="h-4 w-4 text-muted-foreground" />
+          <button className="flex w-full items-center gap-3 rounded-md border border-border bg-muted px-3.5 py-1.5 transition duration-300 hover:border-muted-foreground/60 hover:bg-muted-foreground/30 md:gap-5">
+            <NewspaperIcon className="h-4 w-4 text-muted-foreground md:h-5 md:w-5" />
             <span className="text-lg font-medium">Add Description</span>
           </button>
         </div>
@@ -153,6 +155,7 @@ export default function CreateEventPage() {
                 </span>
               }
             />
+            <div className="h-0.5 w-full bg-background" />
             <EventOptionButton
               title="Require approval"
               Icon={UserCheckIcon}
@@ -162,6 +165,7 @@ export default function CreateEventPage() {
                 <Switch className="focus-visible:ring-0 data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-muted-foreground" />
               }
             />
+            <div className="h-0.5 w-full bg-background" />
             <EventOptionButton
               title="Capacity"
               Icon={ArrowUpToLineIcon}
@@ -201,7 +205,7 @@ const EventOptionButton = (props: {
   return (
     <div
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-3 px-3.5 py-1.5"
+      className="flex w-full items-center justify-between gap-3 px-3.5 py-2"
     >
       <span className="flex items-center gap-3">
         <Icon
