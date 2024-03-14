@@ -16,6 +16,9 @@ export const paths = {
     settings: (id: string) => `/events/${id}/settings`,
     create: () => `/events/create`,
   },
+  event: {
+    root: (id: string) => `/${id}`,
+  },
   account: {
     root: "/account",
     settings: "/account/settings",
