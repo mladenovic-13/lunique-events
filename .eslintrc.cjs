@@ -47,7 +47,7 @@ const config = {
       files: ["*.js", "*.jsx", "*.ts", "*.tsx"],
       rules: {
         "simple-import-sort/imports": [
-          "error",
+          "warn",
           {
             groups: [
               // Packages `react` related packages come first.
