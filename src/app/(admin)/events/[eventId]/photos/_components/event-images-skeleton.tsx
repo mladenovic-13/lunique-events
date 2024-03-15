@@ -10,7 +10,7 @@ export const EventImagesSkeleton = () => (
           .map((_, index) => index + 1)
           .map((i) => (
             <AspectRatio ratio={1 / 1} key={i}>
-              <div className="h-full w-full rounded-lg bg-muted/50" />
+              <div className="size-full rounded-lg bg-muted/50" />
             </AspectRatio>
           ))}
       </div>

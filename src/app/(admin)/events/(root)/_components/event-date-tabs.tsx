@@ -1,7 +1,9 @@
 "use client";
 
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tabs } from "@radix-ui/react-tabs";
+
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { type Timeframe } from "./events";
 
 interface EventDateTabsProps {

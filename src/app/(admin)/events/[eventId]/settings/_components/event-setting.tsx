@@ -1,3 +1,5 @@
+import { type Event, type EventSettings } from "@prisma/client";
+
 import { EditEventForm } from "@/components/forms/edit-event-form";
 import { EventSettingsForm } from "@/components/forms/event-settings-form";
 import {
@@ -7,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { type EventSettings, type Event } from "@prisma/client";
+
 import { DeleteEventControl } from "./delete-event-control";
 
 interface EditEventInfo {

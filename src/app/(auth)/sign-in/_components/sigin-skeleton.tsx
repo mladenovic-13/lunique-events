@@ -20,9 +20,9 @@ export const SigninSkeleton = () => (
             <div className="h-9 w-full rounded-lg bg-muted/60" />
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="h-[1px] flex-1 bg-muted/50" />
+            <div className="h-px flex-1 bg-muted/50" />
             <span className="h-3 w-32 rounded-lg bg-muted/20" />
-            <div className="h-[1px] flex-1 bg-muted/50" />
+            <div className="h-px flex-1 bg-muted/50" />
           </div>
           <div className="h-9 w-full rounded-lg bg-muted/60" />
         </div>

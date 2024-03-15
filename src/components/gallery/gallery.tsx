@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import { type EmblaCarouselType } from "embla-carousel";
 import { type Image as ImageType } from "@prisma/client";
+import { type EmblaCarouselType } from "embla-carousel";
+import useEmblaCarousel from "embla-carousel-react";
 import { Download, Share, X } from "lucide-react";
 
 import { useActionKeys } from "@/hooks/use-action-keys";
-import { Thumbs } from "./thumbs";
-import { CarouselSlide } from "./slide";
+
 import { ActionButton, ChevronButton, SelectButton } from "./buttons";
+import { CarouselSlide } from "./slide";
+import { Thumbs } from "./thumbs";
 
 export type GalleryOptions = {
   thumbs?: boolean;
@@ -200,10 +201,10 @@ export const Gallery = ({
         )}
         {download && (
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10  transition duration-200 hover:bg-primary/20 md:hover:scale-105"
+            className="flex size-10 items-center justify-center rounded-full bg-primary/10 transition  duration-200 hover:bg-primary/20 md:hover:scale-105"
             onClick={() => handleDownload(images[selectedIndex]?.url ?? "")}
           >
-            <Download className="h-4 w-4 text-primary" />
+            <Download className="size-4 text-primary" />
           </button>
         )}
         {share && <ActionButton Icon={Share} onAction={handleShare} />}

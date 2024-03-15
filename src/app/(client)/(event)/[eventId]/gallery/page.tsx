@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
+
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/server";
-import { redirect } from "next/navigation";
+
 import { GallerySidebar } from "./_components/gallery-sidebar";
 import { RenderGalleryImages } from "./_components/render-gallery-images";
 

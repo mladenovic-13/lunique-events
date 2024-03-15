@@ -1,9 +1,10 @@
+import { type Image } from "@prisma/client";
+import { TrashIcon } from "lucide-react";
+
 import { OpenModalButton } from "@/components/buttons/open-modal-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { type Image } from "@prisma/client";
-import { TrashIcon } from "lucide-react";
 
 interface ControlBarProps {
   selected: Image[];
@@ -23,8 +24,8 @@ export const ControlBar = ({
   onDeselectAll,
 }: ControlBarProps) => {
   return (
-    <div className="bg-transaprent flex h-8 w-full items-center rounded-lg border">
-      <div className="flex h-full w-full items-center">
+    <div className="flex h-8 w-full items-center rounded-lg border bg-transparent">
+      <div className="flex size-full items-center">
         <div className="flex h-full items-center border-r-2 border-primary-foreground px-3">
           <Checkbox
             disabled={!isSelectMode}
@@ -67,7 +68,7 @@ export const ControlBar = ({
                 modalType="delete-event-images"
                 modalData={{ galleryImages: selected }}
               >
-                <TrashIcon className="h-5 w-5 " />
+                <TrashIcon className="size-5 " />
               </OpenModalButton>
             </div>
           </div>

@@ -1,6 +1,8 @@
+import Image from "next/image";
+
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+
 import { PLACEHOLDER_URL } from "./config";
 
 type ThumbButtonProps = {
@@ -27,7 +29,7 @@ export const ThumbButton = ({
   >
     <Image
       loader={awsImageLoader}
-      className="h-full w-full rounded-sm object-cover"
+      className="size-full rounded-sm object-cover"
       src={isInView ? src : PLACEHOLDER_URL}
       width={172}
       height={60}

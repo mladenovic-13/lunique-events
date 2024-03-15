@@ -1,15 +1,16 @@
 "use client";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
-import { awsImageLoader } from "@/lib/image-loader";
-import { cn } from "@/lib/utils";
+import { Fragment } from "react";
 import { type Image as ImageType } from "@prisma/client";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { CheckIcon } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { Fragment } from "react";
+
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
+import { awsImageLoader } from "@/lib/image-loader";
+import { cn } from "@/lib/utils";
 
 interface EventSelectImagesProps {
   imagesPerPage: number;
@@ -67,7 +68,7 @@ export const EventSelectImages = ({
                   src={image.url}
                   width={172}
                   height={172}
-                  className="h-full w-full rounded-lg object-cover"
+                  className="size-full rounded-lg object-cover"
                   loading="lazy"
                 />
               </AspectRatio>
@@ -102,7 +103,7 @@ export const EventSelectImages = ({
                 src={image.url}
                 width={172}
                 height={172}
-                className="h-full w-full rounded-lg object-cover"
+                className="size-full rounded-lg object-cover"
                 loading="lazy"
               />
             </AspectRatio>

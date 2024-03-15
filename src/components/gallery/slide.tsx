@@ -14,13 +14,13 @@ export const CarouselSlide = ({ idx, url, isInView }: CarouselSlideProps) => (
     className="h-fill relative"
     key={idx}
   >
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="flex size-full items-center justify-center">
       <div className="relative h-[500px] w-full lg:h-[800px] 2xl:h-[700px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={isInView ? url : PLACEHOLDER_URL}
           alt=""
-          className="h-full w-full object-contain"
+          className="size-full object-contain"
           loading="lazy"
         />
       </div>

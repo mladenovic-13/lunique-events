@@ -1,13 +1,15 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { buttonVariants } from "@/components/ui/button";
 import { useEffect } from "react";
 import { PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import { buttonVariants } from "@/components/ui/button";
 import { paths } from "@/routes/paths";
-import { type Timeframe } from "./events";
+
 import { EventTimeframeTabs } from "./event-date-tabs";
+import { type Timeframe } from "./events";
 
 const timeframes: Timeframe[] = ["upcoming", "past"];
 
@@ -42,7 +44,7 @@ export const EventActions = () => {
           href={paths.events.create}
           className={buttonVariants({ variant: "ghost" })}
         >
-          Create Event <PlusCircleIcon className="ml-1.5 h-4 w-4" />
+          Create Event <PlusCircleIcon className="ml-1.5 size-4" />
         </Link>
         <EventTimeframeTabs
           value={timeframe as Timeframe}

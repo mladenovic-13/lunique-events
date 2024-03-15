@@ -1,14 +1,14 @@
 "use client";
 
-import { OpenModalButton } from "@/components/buttons/open-modal-button";
-import { CalendarOff, CircleIcon, Plus, Users2Icon } from "lucide-react";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
+import { CalendarOff, CircleIcon, Plus, Users2Icon } from "lucide-react";
 import { ArrowRight, MapPinIcon } from "lucide-react";
-import { type RouterOutputs } from "@/trpc/shared";
-import { redirect, useRouter } from "next/navigation";
-import { paths } from "@/routes/paths";
 import Image from "next/image";
-import { awsImageLoader } from "@/lib/image-loader";
+import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
+
+import { OpenModalButton } from "@/components/buttons/open-modal-button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,11 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
-import { api } from "@/trpc/react";
-import { type Timeframe } from "./events";
+import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
+import { type RouterOutputs } from "@/trpc/shared";
+
+import { type Timeframe } from "./events";
 
 type RenderTimeframeProps = {
   timeframe: Timeframe;
@@ -51,7 +53,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
                 <EventDate date={event.date} />
               </div>
               <div className="flex h-full flex-col items-center md:px-10  ">
-                <CircleIcon className="h-4 w-4 text-border" />
+                <CircleIcon className="size-4 text-border" />
                 <div
                   className={cn(
                     "relative -mb-6 h-[105%] w-[1px] border-l-2 border-dashed border-border/80 md:mb-0",
@@ -116,11 +118,11 @@ export const EventCard = ({ event }: EventCardProps) => {
         </CardTitle>
         <div className="space-y-1.5 text-muted-foreground">
           <p className="flex items-center gap-1.5 text-sm">
-            <MapPinIcon className="h-4 w-4" />
+            <MapPinIcon className="size-4" />
             {location ? location : "Missing location "}
           </p>
           <p className="flex items-center gap-1.5 text-sm">
-            <Users2Icon className="h-4 w-4" />
+            <Users2Icon className="size-4" />
             {/* TODO: add real guests number */}
             No Guests
           </p>
@@ -135,7 +137,7 @@ export const EventCard = ({ event }: EventCardProps) => {
           onClick={(e) => e.stopPropagation()}
         >
           <p>Manage Event</p>
-          <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+          <ArrowRight className="ml-1.5 size-3.5" />
         </Link>
       </CardHeader>
       {images[0] && (
@@ -146,7 +148,7 @@ export const EventCard = ({ event }: EventCardProps) => {
             height={281}
             src={images[0].url ?? ""}
             alt={name}
-            className="rounded-lg object-cover md:h-[180px] md:w-[180px] "
+            className="rounded-lg object-cover md:size-[180px] "
           />
         </CardContent>
       )}
@@ -157,8 +159,8 @@ export const EventCard = ({ event }: EventCardProps) => {
 const NoEvents = ({ timeframe: timeFrame }: { timeframe: Timeframe }) => {
   return (
     <div className="flex h-96 w-full flex-col items-center justify-center gap-8 rounded-lg border border-dashed text-center">
-      <div className="h-fit w-fit rounded-full bg-primary/40 p-5">
-        <CalendarOff className="h-16 w-16 text-primary-foreground" />
+      <div className="size-fit rounded-full bg-primary/40 p-5">
+        <CalendarOff className="size-16 text-primary-foreground" />
       </div>
       {timeFrame === "upcoming" && (
         <div className="space-y-1">
@@ -178,7 +180,7 @@ const NoEvents = ({ timeframe: timeFrame }: { timeframe: Timeframe }) => {
       )}
       {timeFrame === "upcoming" && (
         <OpenModalButton modalType="create-event" variant="outline">
-          <Plus className="mr-1.5 h-5 w-5" /> Create Event
+          <Plus className="mr-1.5 size-5" /> Create Event
         </OpenModalButton>
       )}
     </div>
@@ -198,7 +200,7 @@ const Skeleton = () => (
               <div className="h-5 w-20 rounded-md bg-muted/60" />
             </div>
             <div className="flex h-full flex-col items-center md:px-10  ">
-              <CircleIcon className="h-4 w-4 text-border" />
+              <CircleIcon className="size-4 text-border" />
               <div
                 className={cn(
                   " -mb-6 h-[105%] w-[1px] border-l-2 border-dashed border-border/80 md:mb-0",

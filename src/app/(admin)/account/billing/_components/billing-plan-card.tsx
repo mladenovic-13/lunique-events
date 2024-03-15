@@ -1,7 +1,11 @@
 "use client";
 
+import { useCallback } from "react";
 import { CheckCheck, Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,15 +14,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@/trpc/react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { type RouterOutputs } from "@/trpc/shared";
 import { PLAN_MAP } from "@/config";
-import { formatDate } from "@/lib/utils";
 import { useModal } from "@/hooks/use-modal-store";
-import { useCallback } from "react";
+import { formatDate } from "@/lib/utils";
+import { api } from "@/trpc/react";
+import { type RouterOutputs } from "@/trpc/shared";
 
 export const BillingPlanCard = ({
   subscription,
@@ -86,23 +87,23 @@ export const BillingPlanCard = ({
       <CardContent>
         <ul className="text-zinc-500">
           <li className="flex items-center">
-            <CheckCheck className="mr-1.5 h-5 w-5 text-primary" />{" "}
+            <CheckCheck className="mr-1.5 size-5 text-primary" />{" "}
             {features.images} Total photos
           </li>
           <li className="flex items-center">
-            <CheckCheck className="mr-1.5 h-5 w-5 text-primary" />{" "}
+            <CheckCheck className="mr-1.5 size-5 text-primary" />{" "}
             {features.images} Indexed images
           </li>
           <li className="flex items-center">
-            <CheckCheck className="mr-1.5 h-5 w-5 text-primary" /> Unlimited
+            <CheckCheck className="mr-1.5 size-5 text-primary" /> Unlimited
             Galleries
           </li>
           <li className="flex items-center">
-            <CheckCheck className="mr-1.5 h-5 w-5 text-primary" /> Unlimited
+            <CheckCheck className="mr-1.5 size-5 text-primary" /> Unlimited
             Gallery sharing
           </li>
           <li className="flex items-center">
-            <CheckCheck className="mr-1.5 h-5 w-5 text-primary" /> Unlimited
+            <CheckCheck className="mr-1.5 size-5 text-primary" /> Unlimited
             Unlimited face searches
           </li>
         </ul>
@@ -115,7 +116,7 @@ export const BillingPlanCard = ({
             className="w-full md:w-fit"
           >
             {checkoutUrlMutation.isLoading && (
-              <Loader2Icon className="mr-1.5 h-4 w-4 animate-spin" />
+              <Loader2Icon className="mr-1.5 size-4 animate-spin" />
             )}
             {isOnGracePeriod ? "Renew subscription" : "Get Professional Plan"}
           </Button>

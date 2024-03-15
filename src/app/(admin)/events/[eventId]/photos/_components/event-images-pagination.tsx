@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import {
   Pagination,
   PaginationContent,
@@ -12,8 +15,6 @@ import {
   PaginationStart,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 export const EventImagesPagination = ({ pages }: { pages: number }) => {
   const router = useRouter();

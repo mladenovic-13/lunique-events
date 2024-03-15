@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { GlobeIcon, KeyIcon } from "lucide-react";
+
 import {
   Select,
   SelectContent,
@@ -7,8 +10,6 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { GlobeIcon, KeyIcon } from "lucide-react";
-import { useState } from "react";
 
 type EventVisibility = "public" | "private";
 
@@ -16,8 +17,8 @@ export function VisibilitySelect() {
   const [value, setValue] = useState<EventVisibility>("public");
 
   const icon: Record<EventVisibility, JSX.Element> = {
-    public: <GlobeIcon className="h-4 w-4 text-muted-foreground" />,
-    private: <KeyIcon className="h-4 w-4 text-muted-foreground" />,
+    public: <GlobeIcon className="size-4 text-muted-foreground" />,
+    private: <KeyIcon className="size-4 text-muted-foreground" />,
   };
 
   return (
@@ -34,7 +35,7 @@ export function VisibilitySelect() {
           <SelectGroup>
             <SelectItem value="public" className="px-0">
               <div className="flex items-center gap-3 p-3">
-                <GlobeIcon className="h-5 w-5 text-muted-foreground" />
+                <GlobeIcon className="size-5 text-muted-foreground" />
                 <div className="flex flex-col gap-0.5">
                   <p>Public</p>
                   <p className="max-w-xs text-muted-foreground">
@@ -45,7 +46,7 @@ export function VisibilitySelect() {
             </SelectItem>
             <SelectItem value="private" className="px-0">
               <div className="flex items-center gap-3 p-3">
-                <GlobeIcon className="h-5 w-5 text-muted-foreground" />
+                <GlobeIcon className="size-5 text-muted-foreground" />
                 <div className="flex flex-col gap-0.5">
                   <p>Private</p>
                   <p className="max-w-xs text-muted-foreground">

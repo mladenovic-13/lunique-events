@@ -1,5 +1,14 @@
 "use client";
 
+import { type SyntheticEvent, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { useForm } from "react-hook-form";
+import { ImageType } from "@prisma/client";
+import axios from "axios";
+import { ImageIcon, UploadCloudIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -9,14 +18,6 @@ import { getGalleryImagePath } from "@/lib/get-path";
 import { convertToMB } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type RouterInputs } from "@/trpc/shared";
-import { ImageType } from "@prisma/client";
-import axios from "axios";
-import { ImageIcon, UploadCloudIcon, XIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { type SyntheticEvent, useState, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
-import { useForm } from "react-hook-form";
 
 interface GalleryDropzoneProps {
   eventId: string;
@@ -158,8 +159,8 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
           <input {...getInputProps()} />
           {files.length === 0 && (
             <div className="flex flex-col items-center justify-center gap-5">
-              <div className="h-fit w-fit rounded-full bg-primary/40 p-5">
-                <UploadCloudIcon className="h-16 w-16 text-primary-foreground" />
+              <div className="size-fit rounded-full bg-primary/40 p-5">
+                <UploadCloudIcon className="size-16 text-primary-foreground" />
               </div>
               {isDragActive ? (
                 <p>Drop the files here ...</p>
@@ -188,7 +189,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
                       className="flex w-full items-center justify-between rounded-md border border-border px-3 py-1.5"
                     >
                       <span className="flex items-center gap-3">
-                        <ImageIcon className="mr-1.5 h-5 w-5 text-zinc-700" />
+                        <ImageIcon className="mr-1.5 size-5 text-zinc-700" />
                         <span className="text-sm font-semibold text-zinc-600">
                           {file.name.split(".")[0]}
                         </span>
@@ -202,7 +203,7 @@ export const GalleryDropzone = ({ eventId }: GalleryDropzoneProps) => {
                           variant="ghost"
                           onClick={(e) => handleRemove(e, file.name)}
                         >
-                          <XIcon className="h-4 w-4" />
+                          <XIcon className="size-4" />
                         </Button>
                       </div>
                     </li>

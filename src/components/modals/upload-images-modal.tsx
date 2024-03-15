@@ -1,6 +1,7 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
+
 import {
   Dialog,
   DialogContent,
@@ -8,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+
 import { GalleryDropzone } from "./gallery-dropzone";
 
 export const UploadImagesModal = () => {

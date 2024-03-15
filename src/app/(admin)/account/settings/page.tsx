@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import { EditAccountForm } from "./_components/edit-account-form";
 
 export default function AccountSettingsPage() {

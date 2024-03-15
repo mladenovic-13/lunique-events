@@ -1,6 +1,14 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { RotateCwIcon } from "lucide-react";
+import { getCsrfToken } from "next-auth/react";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,15 +16,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { getCsrfToken } from "next-auth/react";
-import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
-import { useCallback, useState } from "react";
-import { RotateCwIcon } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please add valid email." }),
@@ -95,7 +96,7 @@ export const EmailSignInForm = () => {
         />
         <Button type="submit" disabled={sendingEmail} className="mt-5 w-full">
           {sendingEmail && (
-            <RotateCwIcon className="mr-1.5 h-5 w-5 animate-spin" />
+            <RotateCwIcon className="mr-1.5 size-5 animate-spin" />
           )}
           {sendingEmail ? "Sending Email..." : "Sign In with Email"}
         </Button>

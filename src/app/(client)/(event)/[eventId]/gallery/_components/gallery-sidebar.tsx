@@ -1,5 +1,23 @@
 "use client";
 
+import { type Key, useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { type Image } from "@prisma/client";
+import { Share1Icon } from "@radix-ui/react-icons";
+import axios from "axios";
+import { format } from "date-fns";
+import { AnimatePresence, motion } from "framer-motion";
+import JSZip from "jszip";
+import {
+  DownloadIcon,
+  Loader2Icon,
+  MapPinIcon,
+  // ShareIcon,
+  SparklesIcon,
+  TrashIcon,
+  UploadCloudIcon,
+} from "lucide-react";
+
 import { AvatarIcon } from "@/components/icons/avatar-icon";
 import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { Button } from "@/components/ui/button";
@@ -16,23 +34,6 @@ import { useImagesStore } from "@/hooks/use-images-store";
 import { getSelfieImagePath } from "@/lib/get-path";
 import { api } from "@/trpc/react";
 import { type EventWithOwner } from "@/types";
-import { type Image } from "@prisma/client";
-import { Share1Icon } from "@radix-ui/react-icons";
-import axios from "axios";
-import { format } from "date-fns";
-import { AnimatePresence, motion } from "framer-motion";
-import JSZip from "jszip";
-import {
-  DownloadIcon,
-  Loader2Icon,
-  MapPinIcon,
-  // ShareIcon,
-  SparklesIcon,
-  TrashIcon,
-  UploadCloudIcon,
-} from "lucide-react";
-import { type Key, useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
 
 interface GallerySidebarProps {
   event: EventWithOwner;
@@ -67,7 +68,7 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-md border">
+        <div className="flex size-11 items-center justify-center rounded-md border">
           <MapPinIcon />
         </div>
         <div>
@@ -212,8 +213,8 @@ const ImageUploadWidget = ({
               <input {...getInputProps()} />
               {!isDragActive && !file && (
                 <div className="flex cursor-pointer flex-col items-center gap-3">
-                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-muted-foreground">
-                    <AvatarIcon className="h-24 w-24 fill-muted-foreground" />
+                  <div className="flex size-32 items-center justify-center rounded-full border-4 border-muted-foreground">
+                    <AvatarIcon className="size-24 fill-muted-foreground" />
                   </div>
                   <div className="space-y-1.5">
                     <p className="text-center text-sm text-muted-foreground">
@@ -230,7 +231,7 @@ const ImageUploadWidget = ({
               {isDragActive && (
                 <div className="flex h-[280px] w-full items-center justify-center border-muted-foreground">
                   <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                    <UploadCloudIcon className="h-16 w-16" />
+                    <UploadCloudIcon className="size-16" />
                     <p className="text-xs font-bold uppercase">
                       Drop your selfie image here
                     </p>
@@ -248,7 +249,7 @@ const ImageUploadWidget = ({
                 <img
                   src={URL.createObjectURL(file)}
                   alt=""
-                  className="h-32 w-32 rounded-full object-cover"
+                  className="size-32 rounded-full object-cover"
                 />
                 <Button
                   disabled={!file}
@@ -257,7 +258,7 @@ const ImageUploadWidget = ({
                   variant="destructive"
                   onClick={handleRemoveImage}
                 >
-                  <TrashIcon className="mr-1.5 h-4 w-4" />
+                  <TrashIcon className="mr-1.5 size-4" />
                   Remove
                 </Button>
               </div>
@@ -268,10 +269,10 @@ const ImageUploadWidget = ({
                   className="w-full"
                   onClick={handleFindImages}
                 >
-                  <SparklesIcon className="mr-1.5 h-4 w-4" />
+                  <SparklesIcon className="mr-1.5 size-4" />
                   Find My Images
                   {searching && (
-                    <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />
+                    <Loader2Icon className="ml-1.5 size-4 animate-spin" />
                   )}
                 </Button>
                 <Button
@@ -281,7 +282,7 @@ const ImageUploadWidget = ({
                   className="w-full"
                   onClick={handleDownloadMyImages}
                 >
-                  <DownloadIcon className="mr-1.5 h-4 w-4" />
+                  <DownloadIcon className="mr-1.5 size-4" />
                   Download My Images
                 </Button>
                 <Button
@@ -291,7 +292,7 @@ const ImageUploadWidget = ({
                   className="w-full"
                   onClick={() => alert(`File: ${file?.name}`)}
                 >
-                  <Share1Icon className="mr-1.5 h-4 w-4" />
+                  <Share1Icon className="mr-1.5 size-4" />
                   Share My Images
                 </Button>
               </div>

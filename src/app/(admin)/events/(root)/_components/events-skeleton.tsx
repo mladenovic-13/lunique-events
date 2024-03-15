@@ -17,7 +17,7 @@ export const EventsSleketon = () => (
         .map((i) => (
           <Card key={i} className="border-muted/50">
             <AspectRatio ratio={16 / 9}>
-              <div className="h-full w-full rounded-lg bg-muted/60" />
+              <div className="size-full rounded-lg bg-muted/60" />
             </AspectRatio>
             <CardFooter className="relative flex flex-col items-baseline gap-1 py-3">
               <p className="h-5 w-56 rounded-lg bg-muted/60" />

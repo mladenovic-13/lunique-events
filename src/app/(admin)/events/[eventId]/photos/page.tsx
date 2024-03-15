@@ -1,9 +1,11 @@
+import { redirect } from "next/navigation";
+
 import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { redirect } from "next/navigation";
-import { EventActionButtons } from "./_components/event-action-buttons";
+
 import { EditEventGallery } from "./_components/edit-event-gallery";
+import { EventActionButtons } from "./_components/event-action-buttons";
 import { NoEventImages } from "./_components/no-event-images";
 
 // TODO:

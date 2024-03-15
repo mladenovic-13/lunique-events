@@ -1,19 +1,20 @@
 "use client";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import * as Checkbox from "@radix-ui/react-checkbox";
-import { motion, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
+import * as Checkbox from "@radix-ui/react-checkbox";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import { motion, useInView } from "framer-motion";
 import { ArrowUpFromLineIcon, CheckIcon } from "lucide-react";
+import Image from "next/image";
+
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
+import { useImagesStore } from "@/hooks/use-images-store";
+import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/shared";
-import Image from "next/image";
-import { useImagesStore } from "@/hooks/use-images-store";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
-import { awsImageLoader } from "@/lib/image-loader";
 
 interface RenderGalleryImagesProps {
   event: NonNullable<RouterOutputs["event"]["get"]>;
@@ -43,10 +44,10 @@ export const RenderGalleryImages = ({
 const ScrollTopButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <button
-      className="fixed bottom-5 right-5 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground"
+      className="fixed bottom-5 right-5 z-20 flex size-10 items-center justify-center rounded-full bg-primary-foreground"
       onClick={onClick}
     >
-      <ArrowUpFromLineIcon className="h-4 w-4 text-primary" />
+      <ArrowUpFromLineIcon className="size-4 text-primary" />
     </button>
   );
 };
@@ -118,7 +119,7 @@ export const GalleryImages = ({ images }: RenderGalleryImagesProps) => {
                 width={308}
                 height={231}
                 alt={`Gallery Image ${image.id}`}
-                className="h-full w-full rounded-lg object-cover"
+                className="size-full rounded-lg object-cover"
                 loading="lazy"
               />
             </AspectRatio>
@@ -148,10 +149,10 @@ const SelectButton = ({ isSelected, onSelectChange }: SelectButtonProps) => (
     </p>
     <Checkbox.Root
       checked={isSelected}
-      className="peer h-3.5 w-3.5 rounded-full border border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
+      className="peer size-3.5 rounded-full border border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600 data-[state=checked]:text-primary-foreground"
     >
       <Checkbox.Indicator className="flex items-center justify-center text-current">
-        <CheckIcon className="h-2.5 w-2.5 text-primary" />
+        <CheckIcon className="size-2.5 text-primary" />
       </Checkbox.Indicator>
     </Checkbox.Root>
   </motion.div>

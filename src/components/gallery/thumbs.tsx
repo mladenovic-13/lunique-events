@@ -1,6 +1,6 @@
 import { type Image as ImageType } from "@prisma/client";
-
 import { type UseEmblaCarouselType } from "embla-carousel-react";
+
 import { ThumbButton } from "./thumb-button";
 
 type ThumbsProps = {
