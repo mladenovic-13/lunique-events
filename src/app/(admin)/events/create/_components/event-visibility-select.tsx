@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { GlobeIcon, KeyIcon } from "lucide-react";
 
 import {
@@ -13,23 +12,33 @@ import {
 
 type EventVisibility = "public" | "private";
 
-export function VisibilitySelect() {
-  const [value, setValue] = useState<EventVisibility>("public");
+interface VisibilitySelectProps {
+  value: boolean;
+  onChange: (value: boolean) => void;
+}
 
+export function VisibilitySelect({ value, onChange }: VisibilitySelectProps) {
   const icon: Record<EventVisibility, JSX.Element> = {
     public: <GlobeIcon className="size-4 text-muted-foreground" />,
     private: <KeyIcon className="size-4 text-muted-foreground" />,
   };
 
+  const handleOnChange = (value: string) => {
+    if (value === "public") {
+      onChange(true);
+    } else {
+      onChange(false);
+    }
+  };
+
+  const innerValue = value ? "public" : "private";
+
   return (
     <div>
-      <Select
-        value={value}
-        onValueChange={(value) => setValue(value as EventVisibility)}
-      >
+      <Select value={innerValue} onValueChange={handleOnChange}>
         <SelectTrigger className="h-8 w-32 border-muted-foreground/10 bg-muted capitalize data-[state=open]:bg-muted-foreground/50">
-          {icon[value]}
-          {value}
+          {icon[innerValue]}
+          {innerValue}
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
