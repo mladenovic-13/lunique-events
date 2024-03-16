@@ -1,9 +1,16 @@
 "use client";
 
+import * as React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { format } from "date-fns";
 import { CircleIcon } from "lucide-react";
 
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -14,7 +21,7 @@ import {
 import { type EventSchema } from "./validation";
 
 export const EventDatePicker = () => {
-  const methos = useFormContext<EventSchema>();
+  const methods = useFormContext<EventSchema>();
 
   return (
     <div className="flex-1 rounded-md bg-muted p-1">
@@ -32,29 +39,79 @@ export const EventDatePicker = () => {
         </div>
         <div className="flex h-full w-44 flex-col gap-1 md:w-60">
           <Controller
-            control={methos.control}
+            control={methods.control}
             name="startDate"
             render={({ field }) => (
               <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
-                <span className="px-2 py-1">Wed 6, Mar</span>
-                <span className="h-full w-16 border-l-2 border-muted text-center md:w-20 ">
+                <span className="flex flex-1 justify-center">
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                </span>
+                <span className="h-full w-14 border-l-2 border-muted text-center md:w-20 ">
                   <TimePicker value={field.value} onChange={field.onChange} />
                 </span>
               </div>
             )}
           />
-
-          <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
-            <span className="px-2 py-1">Wed 20, Mar</span>
-            <span className="h-full w-16 border-l-2 border-muted py-1 text-center md:w-20 ">
-              12:30
-            </span>
-          </div>
+          <Controller
+            control={methods.control}
+            name="endDate"
+            render={({ field }) => (
+              <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
+                <span className="flex flex-1 justify-center">
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                </span>
+                <span className="h-full w-14 border-l-2 border-muted text-center md:w-20 ">
+                  <TimePicker value={field.value} onChange={field.onChange} />
+                </span>
+              </div>
+            )}
+          />
         </div>
       </div>
     </div>
   );
 };
+
+interface DatePickerProps {
+  value: Date;
+  onChange: (date: Date | undefined) => void;
+}
+
+export function DatePicker({ value, onChange }: DatePickerProps) {
+  const onSelect = (date: Date | undefined) => {
+    if (!date) return;
+
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+
+    const newDate = date;
+    date.setUTCHours(hours);
+    date.setUTCMinutes(minutes);
+
+    onChange(newDate);
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="size-full text-sm focus-visible:ring-0 md:text-base"
+        >
+          {value ? format(value, "iii do, yyyy") : <span>Pick a date</span>}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="my-1.5 w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={value}
+          onSelect={onSelect}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 interface TimePickerProps {
   value: Date;
@@ -86,7 +143,7 @@ const TimePicker = ({ value, onChange }: TimePickerProps) => {
     <Select value={innerValue} onValueChange={onValueChange}>
       <SelectTrigger
         icon={false}
-        className="flex size-full items-center justify-center rounded-l-none border-none bg-transparent p-0 text-base shadow-none focus:ring-0 data-[state=open]:bg-muted-foreground/30"
+        className="flex size-full items-center justify-center rounded-l-none border-none bg-transparent p-0 text-sm shadow-none focus:ring-0 data-[state=open]:bg-muted-foreground/30 md:text-base"
       >
         {innerValue}
       </SelectTrigger>

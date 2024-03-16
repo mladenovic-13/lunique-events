@@ -65,7 +65,14 @@ export const CreateEventForm = () => {
 
           <div className="flex gap-2">
             <EventDatePicker />
-            <EventTimezone />
+
+            <Controller
+              control={methods.control}
+              name="timeZone"
+              render={({ field }) => (
+                <EventTimezone value={field.value} onChange={field.onChange} />
+              )}
+            />
           </div>
 
           <EventLocation />
