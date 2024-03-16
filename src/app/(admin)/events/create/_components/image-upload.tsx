@@ -23,6 +23,7 @@ export const ImageUpload = () => {
         />
       </AspectRatio>
       <Button
+        type="button"
         variant="secondary"
         onClick={() => onOpen("choose-event-thumbnail")}
         className="absolute bottom-3 right-3 size-10 rounded-full p-0"

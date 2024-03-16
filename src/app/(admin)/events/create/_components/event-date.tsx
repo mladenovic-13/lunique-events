@@ -43,7 +43,7 @@ export const EventDatePicker = () => {
             name="startDate"
             render={({ field }) => (
               <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
-                <span className="flex flex-1 justify-center">
+                <span className="flex h-full flex-1 justify-center">
                   <DatePicker value={field.value} onChange={field.onChange} />
                 </span>
                 <span className="h-full w-14 border-l-2 border-muted text-center md:w-20 ">
@@ -57,7 +57,7 @@ export const EventDatePicker = () => {
             name="endDate"
             render={({ field }) => (
               <div className="flex h-full items-center justify-between rounded-md bg-muted-foreground/20 font-light">
-                <span className="flex flex-1 justify-center">
+                <span className="flex h-full flex-1 justify-center">
                   <DatePicker value={field.value} onChange={field.onChange} />
                 </span>
                 <span className="h-full w-14 border-l-2 border-muted text-center md:w-20 ">
@@ -96,7 +96,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="size-full text-sm focus-visible:ring-0 md:text-base"
+          className="size-full rounded-l-md text-sm focus-visible:ring-0 data-[state=open]:bg-muted-foreground/30 md:text-base"
         >
           {value ? format(value, "iii do, yyyy") : <span>Pick a date</span>}
         </button>

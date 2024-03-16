@@ -40,6 +40,7 @@ export const env = createEnv({
     LEMONSQUEEZY_STORE_ID: z.string(),
     LEMONSQUEEZY_WEBHOOK_SECRET: z.string(),
     LEMONSQUEEZY_WEBHOOK_URL: z.string(),
+    GOOGLE_MAPS_API_KEY: z.string(),
   },
 
   /**
@@ -80,6 +81,7 @@ export const env = createEnv({
     NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     LEMONSQUEEZY_WEBHOOK_URL: process.env.LEMONSQUEEZY_WEBHOOK_URL,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

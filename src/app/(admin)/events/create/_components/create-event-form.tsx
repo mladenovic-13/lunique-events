@@ -36,12 +36,12 @@ export const CreateEventForm = () => {
         onSubmit={methods.handleSubmit(onSubmit, onErrors)}
         className="w-full space-y-5 md:flex md:flex-1 md:gap-5"
       >
-        <div className="space-y-3 md:col-span-1 md:flex-1 md:space-y-5">
+        <div className="space-y-3 md:col-span-1 md:flex-1">
           <ImageUpload />
           <EventTheme />
         </div>
 
-        <div className="space-y-5 md:w-3/5">
+        <div className="space-y-3 md:w-3/5">
           <div className="flex justify-between">
             <CalendarSelect />
 
@@ -68,7 +68,7 @@ export const CreateEventForm = () => {
 
             <Controller
               control={methods.control}
-              name="timeZone"
+              name="timezone"
               render={({ field }) => (
                 <EventTimezone value={field.value} onChange={field.onChange} />
               )}
@@ -78,7 +78,7 @@ export const CreateEventForm = () => {
           <EventLocation />
           <EventDescription />
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <p className="text-sm font-semibold text-muted-foreground">
               Event Options
             </p>
