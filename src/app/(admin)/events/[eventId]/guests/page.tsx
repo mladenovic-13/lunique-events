@@ -44,7 +44,7 @@ export default function EventGuestsPage({}: {
       </div>
 
       <div className="flex flex-col space-y-2">
-        <div className="flex justify-start space-x-2 text-green-300">
+        <div className="flex justify-start space-x-2 text-green-500">
           <div className=" ">
             <p className="text-2xl">1</p>
           </div>
@@ -54,15 +54,15 @@ export default function EventGuestsPage({}: {
         </div>
 
         <div className="flex space-x-0.5">
-          <div className="h-[7px] w-full rounded-l-sm bg-green-300">{}</div>
+          <div className="h-[7px] w-full rounded-l-sm bg-green-500">{}</div>
           <div className="h-[7px] w-full rounded-r-sm bg-muted-foreground">
             {}
           </div>
         </div>
 
         <div className="flex space-x-3">
-          <div className="flex items-center space-x-2 text-green-300">
-            <CircleIcon className="size-1.5 rounded-full bg-green-300 text-green-300" />
+          <div className="flex items-center space-x-2 text-green-500">
+            <CircleIcon className=" size-1.5 rounded-full bg-green-500 text-green-500" />
             <p>1 Going</p>
           </div>
           <div className="flex items-center space-x-2 text-muted-foreground">
@@ -71,7 +71,7 @@ export default function EventGuestsPage({}: {
           </div>
         </div>
       </div>
-      <div className="grid grid-flow-col justify-stretch space-x-2">
+      <div className="flex gap-1.5 overflow-x-auto pb-1.5 md:grid md:grid-cols-3 md:overflow-hidden">
         <ActionButton
           title="Invite Guests"
           Icon={MailOpenIcon}
@@ -83,9 +83,9 @@ export default function EventGuestsPage({}: {
           onClick={() => alert("Invite Guests")}
         />
         <ActionButton
-          title="Invite Guests"
+          title="Guest List"
           Icon={UsersIcon}
-          onClick={() => alert("Invite Guests")}
+          onClick={() => alert("Guest List")}
         />
       </div>
       <div className="space-y-8">
@@ -153,8 +153,6 @@ export default function EventGuestsPage({}: {
           </div>
           <div>
             <Table>
-              <TableCaption>Event Guests</TableCaption>
-
               <TableBody>
                 <TableRow>
                   <TableCell className="text-muted-foreground ">
