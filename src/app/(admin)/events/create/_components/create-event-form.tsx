@@ -75,7 +75,14 @@ export const CreateEventForm = () => {
             />
           </div>
 
-          <EventLocation />
+          <Controller
+            control={methods.control}
+            name="location"
+            render={({ field }) => (
+              <EventLocation value={field.value} onChange={field.onChange} />
+            )}
+          />
+
           <EventDescription />
 
           <div className="space-y-1.5">

@@ -13,7 +13,14 @@ export const eventSchema = z.object({
     label: z.string(),
     city: z.string(),
   }),
-  location: z.string(),
+  location: z
+    .object({
+      placeId: z.string(),
+      descripton: z.string(),
+      mainText: z.string(),
+      secondaryText: z.string(),
+    })
+    .nullish(),
   description: z.string(),
   capacity: z.number().nullish(),
   requireApproval: z.boolean(),
@@ -33,7 +40,7 @@ export const defaultValues: EventSchema = {
   description: "",
   startDate: date,
   endDate: date,
-  location: "",
+  location: null,
   timezone,
   capacity: null,
   requireApproval: false,

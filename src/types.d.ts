@@ -20,3 +20,10 @@ type EventWithOwnerAndImages = Event & {
 type EventWithOwner = Event & {
   owner: User;
 };
+
+type Place = {
+  placeId: string;
+  descripton: string;
+  mainText: string;
+  secondaryText: string;
+};
