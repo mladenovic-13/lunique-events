@@ -64,6 +64,7 @@ export const CreateEventForm = () => {
           />
 
           <div className="flex gap-2">
+            {/* TODO: split in two components wrapped inside controller's render method */}
             <EventDatePicker />
 
             <Controller
@@ -83,12 +84,20 @@ export const CreateEventForm = () => {
             )}
           />
 
-          <EventDescription />
+          <Controller
+            control={methods.control}
+            name="description"
+            render={({ field }) => (
+              <EventDescription value={field.value} onChange={field.onChange} />
+            )}
+          />
 
           <div className="space-y-1.5">
             <p className="text-sm font-semibold text-muted-foreground">
               Event Options
             </p>
+
+            {/* TODO: split into three different components and wrap with controller */}
             <EventOptions />
           </div>
 
