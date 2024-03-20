@@ -1,22 +1,95 @@
 "use client";
 
 import { CircleIcon } from "lucide-react";
+import style from "styled-jsx/style";
 
-export const GuestsProgressBar = () => {
+import { cn } from "@/lib/utils";
+
+import { type GuestStatus } from "../page";
+
+interface GuestsProgressBarProps {
+  guestStatuses: GuestStatus[];
+}
+
+export const GuestsProgressBar = ({
+  guestStatuses,
+}: GuestsProgressBarProps) => {
+  const data = [
+    {
+      name: "Going",
+      counts: guestStatuses.filter((s) => s === "going").length,
+      color: "#3BC561",
+    },
+    {
+      name: "Invited",
+      counts: guestStatuses.filter((s) => s === "invited").length,
+      color: "#2963EA",
+    },
+    {
+      name: "Not going",
+      counts: guestStatuses.filter((s) => s === "not going").length,
+      color: "#64758A",
+    },
+  ];
+
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex justify-start space-x-2 text-green-500">
+      <div className="flex justify-start space-x-2">
         <div>
-          <p className="text-2xl">1</p>
+          {guestStatuses.filter((g) => g === "going").length > 0 && (
+            <p className="text-2xl text-green-500">{guestStatuses.length}</p>
+          )}
+          {guestStatuses.filter((g) => g === "going").length === 0 && (
+            <p className="text-2xl text-foreground/50">
+              {guestStatuses.length}
+            </p>
+          )}
         </div>
         <div className="flex flex-col-reverse">
-          <p>guest</p>
+          <p>{guestStatuses.length === 1 ? "guest" : "guests"}</p>
         </div>
       </div>
 
-      <div className="flex justify-center space-x-0.5">
-        <div className="flex h-2 w-full rounded-l-sm bg-green-500"></div>
-        <div className="flex h-2 w-full rounded-r-sm bg-muted-foreground"></div>
+      <div className="flex  space-x-0.5 ">
+        {guestStatuses.length > 0 &&
+          data
+            .filter((status) => status.counts > 0)
+            .map((status, idx) => {
+              const percentage = (
+                (status.counts /
+                  data.reduce(
+                    (acc, currentValue) => acc + currentValue.counts,
+                    0,
+                  )) *
+                100
+              ).toFixed(0);
+
+              console.log(data);
+
+              const borderRadiusLeft = idx === 0 ? "4px" : "0px";
+              const borderRadiusRight =
+                idx === data.filter((x) => x.counts > 0).length - 1
+                  ? "4px"
+                  : "0px";
+
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    width: `${percentage}%`,
+                    height: 8,
+                    backgroundColor: `${status.color}`,
+                    borderTopLeftRadius: `${borderRadiusLeft}`,
+                    borderBottomLeftRadius: `${borderRadiusLeft}`,
+                    borderTopRightRadius: `${borderRadiusRight}`,
+                    borderBottomRightRadius: `${borderRadiusRight}`,
+                  }}
+                ></div>
+              );
+            })}
+        {guestStatuses.length === 0 && (
+          <div className="h-2 w-full rounded bg-foreground/50"></div>
+        )}
       </div>
 
       <div className="flex space-x-3">
