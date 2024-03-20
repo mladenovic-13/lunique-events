@@ -1,22 +1,21 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import React, { type HTMLAttributes, useCallback, useState } from "react";
 import * as Popover from "@radix-ui/react-dialog";
 import { type Libraries, useLoadScript } from "@react-google-maps/api";
-import { MapPinIcon, VideoIcon, XIcon } from "lucide-react";
-import usePlacesAutocomplete from "use-places-autocomplete";
+import { MapPinIcon, SearchIcon, VideoIcon, XIcon } from "lucide-react";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
 
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import { env } from "@/env.mjs";
+import { cn } from "@/lib/utils";
 import { type Place } from "@/types";
+
+import { LocationMap } from "./location-map";
 
 const libraries: Libraries = ["places"];
 
@@ -34,7 +33,7 @@ export const EventLocation = ({ value, onChange }: EventLocationProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="space-y-1.5">
       <div className="relative">
         <Popover.Root open={open} onOpenChange={setOpen}>
           <Popover.Trigger
@@ -58,9 +57,9 @@ export const EventLocation = ({ value, onChange }: EventLocationProps) => {
 
           <Popover.Overlay className="fixed inset-0 -top-3 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 md:hidden" />
 
-          <Popover.Content className="fixed left-1/2  top-0 z-50 w-full max-w-lg -translate-x-1/2 p-3 duration-200 focus:outline-none focus-visible:ring-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]  sm:rounded-lg md:absolute md:left-0 md:top-16 md:w-full md:max-w-full md:translate-x-0 md:p-0 md:data-[state=closed]:slide-out-to-right-0 md:data-[state=closed]:slide-out-to-top-1/4 md:data-[state=open]:slide-in-from-left-0 md:data-[state=open]:slide-in-from-top-1/2">
+          <Popover.Content className="fixed left-1/2  top-0 z-50 w-full max-w-lg -translate-x-1/2 p-3 duration-200  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom-1/2 data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-bottom-1/2 data-[state=open]:slide-in-from-left-1/2 sm:rounded-lg md:absolute md:left-0 md:top-16  md:w-full md:max-w-full md:translate-x-0 md:p-0 md:data-[state=closed]:slide-out-to-bottom-0 md:data-[state=closed]:slide-out-to-left-0 md:data-[state=open]:slide-in-from-bottom-0 md:data-[state=open]:slide-in-from-left-0">
             {isLoaded && (
-              <PlacesAutocomplete onChange={onChange} setOpen={setOpen} />
+              <PlacesAutocomplete setOpen={setOpen} onChange={onChange} />
             )}
           </Popover.Content>
         </Popover.Root>
@@ -78,9 +77,7 @@ export const EventLocation = ({ value, onChange }: EventLocationProps) => {
         )}
       </div>
 
-      {value && (
-        <div className="py-3">TODO: Render map for {value.placeId}</div>
-      )}
+      {value && <LocationMap position={value.position} />}
     </div>
   );
 };
@@ -98,73 +95,174 @@ const PlacesAutocomplete = (props: {
     suggestions: { status, data },
   } = usePlacesAutocomplete();
 
-  console.log({ data });
-
   const onSelect = useCallback(
-    (value: string) => {
+    async (value: string) => {
       const place = data.find((item) => item.place_id === value);
       if (!place) return;
+
+      const results = await getGeocode({ placeId: value });
+
+      if (!results[0]) return;
+
+      const position = getLatLng(results[0]);
 
       onChange({
         placeId: place.place_id,
         descripton: place.description,
         mainText: place.structured_formatting.main_text,
         secondaryText: place.structured_formatting.secondary_text,
+        position,
       });
       setOpen(false);
     },
     [onChange, data, setOpen],
   );
 
+  const isResultOpen = !!status;
+
   return (
-    <Command className="rounded-lg border shadow-md">
-      <CommandInput
-        disabled={!ready}
+    <div>
+      <AutocompleteInput
         value={value}
         onValueChange={setValue}
-        placeholder="Enter event location..."
+        disabled={!ready}
+        placeholder="Enter location..."
       />
-      <CommandList>
-        {status === "ZERO_RESULTS" && (
-          <CommandEmpty>No results found.</CommandEmpty>
-        )}
-        {status === "OK" && (
-          <CommandGroup>
+
+      <AutocompleteResult>
+        {isResultOpen && status === "OK" && (
+          <AutocompleteResultGroup heading="Locations">
             {data.map(({ place_id, description }) => (
-              <CommandItem
+              <AutocompleteResultItem
                 key={place_id}
                 value={place_id}
                 onSelect={onSelect}
-                keywords={[description]}
               >
-                <MapPinIcon className="mr-1.5 size-4" />
+                <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
                 {description}
-              </CommandItem>
+              </AutocompleteResultItem>
             ))}
-          </CommandGroup>
+          </AutocompleteResultGroup>
         )}
-        {!value && (
-          // TODO: add recently used locations
-          <CommandGroup heading="Recent Locations">
-            <p className="px-2 text-sm text-muted-foreground">
-              No recently used locations.
-            </p>
-          </CommandGroup>
+        {isResultOpen && status === "ZERO_RESULTS" && (
+          <AutocompleteResultEmpty />
         )}
-        {!value && (
-          // TODO: add zoom integrations
-          <CommandGroup heading="Virtual Options">
-            <CommandItem>
-              <VideoIcon className="mr-1.5 size-4" />
-              Create Zoom meeting
-            </CommandItem>
-            <CommandItem>
-              <VideoIcon className="mr-1.5 size-4" />
-              Select existing Zoom
-            </CommandItem>
-          </CommandGroup>
+        {!isResultOpen && (
+          <>
+            <AutocompleteResultGroup heading="Recent Locations">
+              <p className="px-3 text-sm text-muted-foreground">
+                No recently used locations.
+              </p>
+            </AutocompleteResultGroup>
+            <AutocompleteResultGroup heading="Virtual Options">
+              <AutocompleteResultItem
+                value=""
+                onSelect={() => alert("Create Zoom meeting")}
+              >
+                <VideoIcon className="mr-1.5 size-4" />
+                Create Zoom meeting
+              </AutocompleteResultItem>
+              <AutocompleteResultItem
+                value=""
+                onSelect={() => alert("Create Zoom meeting")}
+              >
+                <VideoIcon className="mr-1.5 size-4" />
+                Select existing Zoom
+              </AutocompleteResultItem>
+            </AutocompleteResultGroup>
+          </>
         )}
-      </CommandList>
-    </Command>
+      </AutocompleteResult>
+    </div>
+  );
+};
+
+interface AutocompleteInputProps extends HTMLAttributes<HTMLInputElement> {
+  value: string;
+  onValueChange: (value: string) => void;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+const AutocompleteInput = ({
+  value,
+  onValueChange,
+  className,
+  disabled,
+  placeholder,
+  ...props
+}: AutocompleteInputProps) => {
+  return (
+    <span className="relative">
+      <Input
+        disabled={disabled}
+        placeholder={placeholder}
+        className={cn(
+          "h-10 rounded-b-none bg-background pl-10 focus-visible:ring-0",
+          className,
+        )}
+        value={value}
+        onChange={(e) => onValueChange(e.target.value)}
+        {...props}
+      />
+      <div className="absolute left-0 top-0 flex size-10 items-center justify-center">
+        <SearchIcon className="size-4" />
+      </div>
+    </span>
+  );
+};
+
+const AutocompleteResultEmpty = () => (
+  <div className="px-3 py-2 text-sm text-muted-foreground">
+    Looks like there is no results. Try again with different terms.
+  </div>
+);
+
+interface AutocompleteResultProps {
+  children: React.ReactNode;
+}
+
+const AutocompleteResult = (props: AutocompleteResultProps) => (
+  <div className="space-y-1.5 rounded-b-md border border-t-0 bg-background p-1.5">
+    {props.children}
+  </div>
+);
+
+interface AutocompleteResultGroupProps {
+  heading?: string;
+  children?: React.ReactNode;
+}
+
+const AutocompleteResultGroup = (props: AutocompleteResultGroupProps) => (
+  <div>
+    {props.heading && (
+      <p className="px-3 py-2 text-sm font-semibold text-muted-foreground">
+        {props.heading}
+      </p>
+    )}
+    <div>{props.children}</div>
+  </div>
+);
+
+interface AutocompleteResultItemProps {
+  value: string;
+  onSelect: (value: string) => void;
+  children?: React.ReactNode;
+  disabled?: boolean;
+}
+
+const AutocompleteResultItem = (props: AutocompleteResultItemProps) => {
+  const { value, onSelect, disabled } = props;
+
+  return (
+    <Button
+      type="button"
+      disabled={disabled}
+      variant="ghost"
+      onClick={() => onSelect(value)}
+      className="flex w-full items-center justify-start px-3 hover:bg-accent/50"
+    >
+      {props.children}
+    </Button>
   );
 };

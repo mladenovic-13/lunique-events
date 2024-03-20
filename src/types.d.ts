@@ -26,4 +26,8 @@ type Place = {
   descripton: string;
   mainText: string;
   secondaryText: string;
+  position: {
+    lat: number;
+    lng: number;
+  };
 };

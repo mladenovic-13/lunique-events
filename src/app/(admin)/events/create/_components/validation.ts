@@ -19,6 +19,10 @@ export const eventSchema = z.object({
       descripton: z.string(),
       mainText: z.string(),
       secondaryText: z.string(),
+      position: z.object({
+        lat: z.number(),
+        lng: z.number(),
+      }),
     })
     .nullish(),
   description: z.string(),

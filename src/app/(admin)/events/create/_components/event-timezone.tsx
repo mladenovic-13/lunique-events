@@ -57,7 +57,7 @@ export const EventTimezone = ({ value, onChange }: EventTimezoneProps) => {
 
       <PopoverContent
         className="mr-3 w-[300px] p-0 md:mr-0 md:w-[400px]"
-        align="center"
+        align="end"
       >
         <Command>
           <CommandInput placeholder="Search timezone..." className="h-9" />
