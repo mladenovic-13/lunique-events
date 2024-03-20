@@ -6,12 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { EventApproval } from "./event-approval";
 import { CalendarSelect } from "./event-calendar-select";
+import { EventCapacity } from "./event-capacity";
 import { EventDatePicker } from "./event-date";
 import { EventDescription } from "./event-description";
 import { EventLocation } from "./event-location";
-import { EventOptions } from "./event-options";
 import { EventTheme } from "./event-theme";
+import { EventTickets } from "./event-tickets";
 import { EventTimezone } from "./event-timezone";
 import { VisibilitySelect } from "./event-visibility-select";
 import { ImageUpload } from "./image-upload";
@@ -96,9 +98,37 @@ export const CreateEventForm = () => {
             <p className="text-sm font-semibold text-muted-foreground">
               Event Options
             </p>
-
-            {/* TODO: split into three different components and wrap with controller */}
-            <EventOptions />
+            <div className="rounded-md bg-muted ">
+              <Controller
+                control={methods.control}
+                name="tickets"
+                render={({ field }) => (
+                  <EventTickets value={field.value} onChange={field.onChange} />
+                )}
+              />
+              <div className="h-0.5 w-full bg-background" />
+              <Controller
+                control={methods.control}
+                name="requireApproval"
+                render={({ field }) => (
+                  <EventApproval
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <div className="h-0.5 w-full bg-background" />
+              <Controller
+                control={methods.control}
+                name="capacity"
+                render={({ field }) => (
+                  <EventCapacity
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           <Button type="submit" size="lg" className="w-full">

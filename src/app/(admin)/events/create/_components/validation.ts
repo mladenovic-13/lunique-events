@@ -26,8 +26,12 @@ export const eventSchema = z.object({
     })
     .nullish(),
   description: z.string(),
-  capacity: z.number().nullish(),
+  capacity: z.object({
+    value: z.number().nullable(),
+    waitlist: z.boolean(),
+  }),
   requireApproval: z.boolean(),
+  tickets: z.boolean(),
 });
 
 const date = new Date();
@@ -46,8 +50,12 @@ export const defaultValues: EventSchema = {
   endDate: date,
   location: null,
   timezone,
-  capacity: null,
+  capacity: {
+    value: null,
+    waitlist: false,
+  },
   requireApproval: false,
+  tickets: false,
 };
 
 export type EventSchema = z.infer<typeof eventSchema>;
