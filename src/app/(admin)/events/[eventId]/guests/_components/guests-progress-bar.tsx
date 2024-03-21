@@ -34,8 +34,6 @@ const StatusProgressBar = ({ guestStatuses }: GuestsProgressBarProps) => {
               100
             ).toFixed(0);
 
-            console.log(data);
-
             const borderRadiusLeft = idx === 0 ? "4px" : "0px";
             const borderRadiusRight =
               idx === data.filter((x) => x.counts > 0).length - 1
