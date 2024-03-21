@@ -1,24 +1,23 @@
 import { Separator } from "@/components/ui/separator";
 
 import GuestsActionButtons from "./_components/guests-action-buttons";
-import { GuestsProgressBar } from "./_components/guests-progress-bar";
+import { GuestsStatus } from "./_components/guests-status";
 import { GuestsTable } from "./guests-table";
 
 export type GuestStatus = "going" | "not going" | "invited";
+export type GuestsArray = Array<Guest>;
+export interface Guest {
+  name: string;
+  email: string;
+  status: GuestStatus;
+  dateRegistered: string;
+}
 
 export default function EventGuestsPage({}: {
   params: {
     eventId: string;
   };
 }) {
-  interface Guest {
-    name: string;
-    email: string;
-    status: GuestStatus;
-    dateRegistered: string;
-  }
-  type GuestsArray = Array<Guest>;
-
   const guests: GuestsArray = [
     {
       name: "Luka Stojadinovic",
@@ -41,7 +40,7 @@ export default function EventGuestsPage({}: {
     {
       name: "Janko Jankovic",
       email: "janko@lunique.tech",
-      status: "invited",
+      status: "not going",
       dateRegistered: "Mar 13",
     },
   ];
@@ -49,10 +48,10 @@ export default function EventGuestsPage({}: {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-semibold">At a Glance</h1>
-      <GuestsProgressBar guestStatuses={guests.map((g) => g.status)} />
+      <GuestsStatus guestStatuses={guests.map((g) => g.status)} />
       <GuestsActionButtons />
       <Separator />
-      <GuestsTable />
+      <GuestsTable guests={guests} />
     </div>
   );
 }
