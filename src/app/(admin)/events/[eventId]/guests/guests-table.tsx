@@ -1,3 +1,4 @@
+import { GuestListActions } from "./_components/guest-list-actions";
 import { columns, type Guest } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -41,7 +42,8 @@ export default async function GuestsTable() {
   const data = await getData();
 
   return (
-    <div className="container mx-auto px-0 py-10">
+    <div className="container mx-auto px-0 ">
+      <GuestListActions />
       <DataTable columns={columns} data={data} />
     </div>
   );
