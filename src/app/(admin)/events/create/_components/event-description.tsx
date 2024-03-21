@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NewspaperIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,10 @@ export const EventDescription = ({
   value,
   onChange,
 }: EventDescriptionProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         type="button"
         className="flex w-full items-center gap-3 rounded-md border border-border bg-muted px-3.5 py-1.5 transition duration-300 hover:border-muted-foreground/60 hover:bg-muted-foreground/30 md:gap-5"
@@ -41,7 +44,7 @@ export const EventDescription = ({
           rows={8}
         />
         <DialogFooter>
-          <Button>Done</Button>
+          <Button onClick={() => setOpen(false)}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

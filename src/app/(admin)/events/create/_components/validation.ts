@@ -7,35 +7,46 @@ const dateTimeSchema = z.object({
   time: z.string(),
 });
 
+const themeSchema = z.object({
+  theme: z.string(),
+  font: z.string(),
+  mode: z.string(),
+});
+
+const timezoneSchema = z.object({
+  id: z.number(),
+  value: z.string(),
+  label: z.string(),
+  city: z.string(),
+});
+
+const locationSchema = z.object({
+  placeId: z.string(),
+  descripton: z.string(),
+  mainText: z.string(),
+  secondaryText: z.string(),
+  position: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+});
+
+const capacitySchema = z.object({
+  value: z.number().nullable(),
+  waitlist: z.boolean(),
+});
+
 export const eventSchema = z.object({
   public: z.boolean(),
   name: z.string(),
   thumbnailUrl: z.string().nullable(),
+  theme: themeSchema,
   startDateTime: dateTimeSchema,
   endDateTime: dateTimeSchema,
-  timezone: z.object({
-    id: z.number(),
-    value: z.string(),
-    label: z.string(),
-    city: z.string(),
-  }),
-  location: z
-    .object({
-      placeId: z.string(),
-      descripton: z.string(),
-      mainText: z.string(),
-      secondaryText: z.string(),
-      position: z.object({
-        lat: z.number(),
-        lng: z.number(),
-      }),
-    })
-    .nullish(),
+  timezone: timezoneSchema,
+  location: locationSchema.nullish(),
   description: z.string(),
-  capacity: z.object({
-    value: z.number().nullable(),
-    waitlist: z.boolean(),
-  }),
+  capacity: capacitySchema,
   requireApproval: z.boolean(),
   tickets: z.boolean(),
 });
@@ -53,6 +64,11 @@ export const defaultValues: EventSchema = {
   thumbnailUrl: null,
   name: "",
   description: "",
+  theme: {
+    theme: "zinc",
+    mode: "system",
+    font: "inter",
+  },
   startDateTime: {
     date: date,
     time: "18:00",

@@ -46,7 +46,13 @@ export const CreateEventForm = () => {
             <ImageUpload value={field.value} onChange={field.onChange} />
           )}
         />
-        <EventTheme />
+        <Controller
+          control={methods.control}
+          name="theme"
+          render={({ field }) => (
+            <EventTheme value={field.value} onChange={field.onChange} />
+          )}
+        />
       </div>
 
       <div className="space-y-3 md:w-3/5">
