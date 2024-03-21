@@ -2,11 +2,16 @@ import * as z from "zod";
 
 import { timezones } from "@/lib/timezones";
 
+const dateTimeSchema = z.object({
+  date: z.date(),
+  time: z.string(),
+});
+
 export const eventSchema = z.object({
   public: z.boolean(),
   name: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDateTime: dateTimeSchema,
+  endDateTime: dateTimeSchema,
   timezone: z.object({
     id: z.number(),
     value: z.string(),
@@ -46,8 +51,14 @@ export const defaultValues: EventSchema = {
   public: true,
   name: "",
   description: "",
-  startDate: date,
-  endDate: date,
+  startDateTime: {
+    date: date,
+    time: "18:00",
+  },
+  endDateTime: {
+    date: date,
+    time: "20:00",
+  },
   location: null,
   timezone,
   capacity: {

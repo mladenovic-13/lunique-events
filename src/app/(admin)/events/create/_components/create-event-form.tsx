@@ -1,15 +1,16 @@
 "use client";
 
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { EventApproval } from "./event-approval";
 import { CalendarSelect } from "./event-calendar-select";
 import { EventCapacity } from "./event-capacity";
-import { EventDatePicker } from "./event-date";
+import { EventDateTime } from "./event-date-time";
 import { EventDescription } from "./event-description";
 import { EventLocation } from "./event-location";
 import { EventTheme } from "./event-theme";
@@ -33,109 +34,126 @@ export const CreateEventForm = () => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onSubmit, onErrors)}
-        className="w-full space-y-5 md:flex md:flex-1 md:gap-5"
-      >
-        <div className="space-y-3 md:col-span-1 md:flex-1">
-          <ImageUpload />
-          <EventTheme />
+    <form
+      onSubmit={methods.handleSubmit(onSubmit, onErrors)}
+      className="w-full space-y-5 md:flex md:flex-1 md:gap-5"
+    >
+      <div className="space-y-3 md:col-span-1 md:flex-1">
+        <ImageUpload />
+        <EventTheme />
+      </div>
+
+      <div className="space-y-3 md:w-3/5">
+        <div className="flex justify-between">
+          <CalendarSelect />
+
+          <Controller
+            control={methods.control}
+            name="public"
+            render={({ field }) => (
+              <VisibilitySelect value={field.value} onChange={field.onChange} />
+            )}
+          />
         </div>
 
-        <div className="space-y-3 md:w-3/5">
-          <div className="flex justify-between">
-            <CalendarSelect />
+        <Input
+          className="h-12 border-none text-4xl font-medium focus-visible:ring-0"
+          placeholder="Event name"
+          {...methods.register("name")}
+        />
 
-            <Controller
-              control={methods.control}
-              name="public"
-              render={({ field }) => (
-                <VisibilitySelect
-                  value={field.value}
-                  onChange={field.onChange}
+        <div className="flex gap-2">
+          <div className="flex-1 rounded-md bg-muted p-1">
+            <div className="flex h-full flex-col gap-1">
+              <div className="flex items-center">
+                <Label className="w-24 px-5 md:w-32">Start</Label>
+                <Controller
+                  control={methods.control}
+                  name="startDateTime"
+                  render={({ field }) => (
+                    <EventDateTime
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
-              )}
-            />
-          </div>
-
-          <Input
-            className="h-12 border-none text-4xl font-medium focus-visible:ring-0"
-            placeholder="Event name"
-            {...methods.register("name")}
-          />
-
-          <div className="flex gap-2">
-            {/* TODO: split in two components wrapped inside controller's render method */}
-            <EventDatePicker />
-
-            <Controller
-              control={methods.control}
-              name="timezone"
-              render={({ field }) => (
-                <EventTimezone value={field.value} onChange={field.onChange} />
-              )}
-            />
-          </div>
-
-          <Controller
-            control={methods.control}
-            name="location"
-            render={({ field }) => (
-              <EventLocation value={field.value} onChange={field.onChange} />
-            )}
-          />
-
-          <Controller
-            control={methods.control}
-            name="description"
-            render={({ field }) => (
-              <EventDescription value={field.value} onChange={field.onChange} />
-            )}
-          />
-
-          <div className="space-y-1.5">
-            <p className="text-sm font-semibold text-muted-foreground">
-              Event Options
-            </p>
-            <div className="rounded-md bg-muted ">
-              <Controller
-                control={methods.control}
-                name="tickets"
-                render={({ field }) => (
-                  <EventTickets value={field.value} onChange={field.onChange} />
-                )}
-              />
-              <div className="h-0.5 w-full bg-background" />
-              <Controller
-                control={methods.control}
-                name="requireApproval"
-                render={({ field }) => (
-                  <EventApproval
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              <div className="h-0.5 w-full bg-background" />
-              <Controller
-                control={methods.control}
-                name="capacity"
-                render={({ field }) => (
-                  <EventCapacity
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+              </div>
+              <div className="flex items-center">
+                <Label className="w-24 px-5 md:w-32">End</Label>
+                <Controller
+                  control={methods.control}
+                  name="endDateTime"
+                  render={({ field }) => (
+                    <EventDateTime
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
-          <Button type="submit" size="lg" className="w-full">
-            Create Event
-          </Button>
+          <Controller
+            control={methods.control}
+            name="timezone"
+            render={({ field }) => (
+              <EventTimezone value={field.value} onChange={field.onChange} />
+            )}
+          />
         </div>
-      </form>
-    </FormProvider>
+
+        <Controller
+          control={methods.control}
+          name="location"
+          render={({ field }) => (
+            <EventLocation value={field.value} onChange={field.onChange} />
+          )}
+        />
+
+        <Controller
+          control={methods.control}
+          name="description"
+          render={({ field }) => (
+            <EventDescription value={field.value} onChange={field.onChange} />
+          )}
+        />
+
+        <div className="space-y-1.5">
+          <p className="text-sm font-semibold text-muted-foreground">
+            Event Options
+          </p>
+          <div className="rounded-md bg-muted ">
+            <Controller
+              control={methods.control}
+              name="tickets"
+              render={({ field }) => (
+                <EventTickets value={field.value} onChange={field.onChange} />
+              )}
+            />
+            <div className="h-0.5 w-full bg-background" />
+            <Controller
+              control={methods.control}
+              name="requireApproval"
+              render={({ field }) => (
+                <EventApproval value={field.value} onChange={field.onChange} />
+              )}
+            />
+            <div className="h-0.5 w-full bg-background" />
+            <Controller
+              control={methods.control}
+              name="capacity"
+              render={({ field }) => (
+                <EventCapacity value={field.value} onChange={field.onChange} />
+              )}
+            />
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full">
+          Create Event
+        </Button>
+      </div>
+    </form>
   );
 };
