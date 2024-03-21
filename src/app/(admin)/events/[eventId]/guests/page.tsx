@@ -51,7 +51,7 @@ export default function EventGuestsPage({}: {
       <GuestsStatus guestStatuses={guests.map((g) => g.status)} />
       <GuestsActionButtons />
       <Separator />
-      <GuestsTable guests={guests} />
+      <GuestsTable />
     </div>
   );
 }
