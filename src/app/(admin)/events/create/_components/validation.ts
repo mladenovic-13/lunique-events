@@ -10,6 +10,7 @@ const dateTimeSchema = z.object({
 export const eventSchema = z.object({
   public: z.boolean(),
   name: z.string(),
+  thumbnailUrl: z.string().nullable(),
   startDateTime: dateTimeSchema,
   endDateTime: dateTimeSchema,
   timezone: z.object({
@@ -49,6 +50,7 @@ const timezone =
 
 export const defaultValues: EventSchema = {
   public: true,
+  thumbnailUrl: null,
   name: "",
   description: "",
   startDateTime: {

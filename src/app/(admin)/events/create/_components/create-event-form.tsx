@@ -27,7 +27,7 @@ export const CreateEventForm = () => {
   });
 
   const onSubmit = (data: EventSchema) => {
-    alert(JSON.stringify(data));
+    console.log({ data });
   };
   const onErrors = (errors: unknown) => {
     alert(JSON.stringify(errors));
@@ -39,7 +39,13 @@ export const CreateEventForm = () => {
       className="w-full space-y-5 md:flex md:flex-1 md:gap-5"
     >
       <div className="space-y-3 md:col-span-1 md:flex-1">
-        <ImageUpload />
+        <Controller
+          control={methods.control}
+          name="thumbnailUrl"
+          render={({ field }) => (
+            <ImageUpload value={field.value} onChange={field.onChange} />
+          )}
+        />
         <EventTheme />
       </div>
 
