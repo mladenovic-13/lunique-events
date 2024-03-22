@@ -1,8 +1,13 @@
 "use client";
 
-import { DownloadIcon, Share2Icon } from "lucide-react";
+import { DownloadIcon, ExternalLinkIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const GuestListActions = () => {
   return (
@@ -10,12 +15,32 @@ export const GuestListActions = () => {
       <div className="flex justify-between">
         <h1 className="text-2xl font-semibold">Guest List</h1>
         <div className="flex space-x-2 ">
-          <Button className="flex size-7 h-7 place-content-center items-center rounded   bg-secondary p-0 text-primary">
-            <DownloadIcon className="size-4 text-primary/60" />
-          </Button>
-          <Button className="flex size-7 h-7  place-content-center   items-center rounded bg-secondary p-0 text-primary">
-            <Share2Icon className="size-4 text-primary/60" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger
+                onClick={() => alert("download")}
+                className="flex size-7 h-7 place-content-center items-center rounded   bg-secondary p-0 text-primary hover:bg-muted/50"
+              >
+                <DownloadIcon className="size-4 text-primary/60" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Download</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger
+                onClick={() => alert("open full table")}
+                className="flex size-7 h-7  place-content-center   items-center rounded bg-secondary p-0 text-primary hover:bg-muted/50"
+              >
+                <ExternalLinkIcon className="size-4 text-primary/60" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Open Full Table</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>
