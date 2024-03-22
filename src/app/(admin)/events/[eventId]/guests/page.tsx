@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 
 import GuestsActionButtons from "./_components/guests-action-buttons";
 import { GuestsStatus } from "./_components/guests-status";
-import GuestsTable from "./guests-table";
+import GuestsTable from "./_components/guests-table";
 
 export type GuestStatus = "going" | "not going" | "invited";
 export type GuestsArray = Array<Guest>;
