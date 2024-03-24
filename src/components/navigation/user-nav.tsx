@@ -12,7 +12,7 @@ export const UserNav = () => {
       <Link href={paths.root}>
         <ThemedLogoIcon />
       </Link>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5">
         <Link
           href={paths.events.root}
           className={buttonVariants({ variant: "ghost", size: "sm" })}
