@@ -10,7 +10,13 @@ export type ModalType =
   | "delete-event-images"
   | "delete-event"
   | "cancel-subscription"
-  | "choose-event-thumbnail";
+  | "choose-event-thumbnail"
+  | "show-guest-list"
+  | "check-guests"
+  | "invite-guests"
+  | "confirm-registration"
+  | "group-registration"
+  | "event-capacity";
 
 export type ModalData = {
   eventId?: string;

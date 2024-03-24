@@ -6,15 +6,12 @@ import {
   InfoCircledIcon,
 } from "@radix-ui/react-icons";
 import {
-  ArrowUpToLineIcon,
   CircleEllipsisIcon,
   CircleIcon,
   HelpCircleIcon,
   MailIcon,
   PlusIcon,
   SmartphoneIcon,
-  Ticket,
-  TicketIcon,
   User2Icon,
 } from "lucide-react";
 import Image from "next/image";
@@ -33,7 +30,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -41,7 +37,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import lemonSqueezyIcon from "@/public/images/LemonSqueezy.jpeg";
 
-import { ActionButton } from "../overview/_components/action-buttons";
+import RegistrationActionButtons from "./_components/action-buttons";
 
 export default function RegistrationPage({
   params,
@@ -75,31 +71,15 @@ export default function RegistrationPage({
   return (
     <div className="flex flex-col space-y-4">
       <div>TODO: {params.eventId} registration</div>
-      <div className="flex gap-1.5 overflow-x-auto pb-1.5 md:grid md:grid-cols-3 md:overflow-hidden">
-        <ActionButton
-          title="Registration"
-          Icon={Ticket}
-          onClick={() => alert("Registration")}
-        />
-        <ActionButton
-          title="Event Capacity"
-          Icon={ArrowUpToLineIcon}
-          onClick={() => alert("Event Capacity")}
-        />
-        <ActionButton
-          title="Group Registration"
-          Icon={TicketIcon}
-          onClick={() => alert("Group Registration")}
-        />
-      </div>
+      <RegistrationActionButtons />
       <Card className="flex  items-center justify-between space-x-2 p-2 px-4">
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 ">
           <Image
             src={lemonSqueezyIcon.src}
             width={40}
             height={40}
             alt=""
-            className="rounded-full p-0"
+            className="rounded-full  p-0"
           />
           <div className="text-sm">
             <p className="font-bold">Start Selling Tickets.</p>
