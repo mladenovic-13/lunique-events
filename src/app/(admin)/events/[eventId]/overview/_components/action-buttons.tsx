@@ -55,7 +55,7 @@ export const ActionButton = (props: {
       <div className="flex flex-col items-start">
         <p className="text-base">{title}</p>
         {description && (
-          <p className="text-xs font-medium capitalize text-foreground/50">
+          <p className="text-xs font-medium text-foreground/50">
             {description}
           </p>
         )}
