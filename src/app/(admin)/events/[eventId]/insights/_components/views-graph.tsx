@@ -45,29 +45,41 @@ export default function ViewsGraph() {
   const data = generateDataObjects(startDate, endDate, increment);
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="95%" height={250}>
       <AreaChart data={data}>
         <defs>
           <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2451B7" stopOpacity={0.4} />
-            <stop offset="75%" stopColor="#2451B7" stopOpacity={0.05} />
+            <stop offset="0%" stopColor="#f54076" stopOpacity={0.4} />
+            <stop offset="75%" stopColor="#f54076" stopOpacity={0.05} />
           </linearGradient>
         </defs>
 
-        <Area dataKey="views" stroke="#2451B7" fill="url(#color)" />
+        <Area dataKey="views" stroke="#f54076" fill="url(#color)" />
 
         <XAxis
           dataKey="date"
           tickLine={false}
           tickFormatter={(date: Date) => {
             if (date.getDate() % 2 === 0) {
-              return format(date, "MMM, d");
+              return format(date, "eee, MMM, d");
             }
             return "";
           }}
+          style={{
+            fontSize: "12px",
+          }}
+          axisLine={false}
         />
 
-        <YAxis dataKey="views" format={"formatted name"} />
+        <YAxis
+          dataKey="views"
+          format={"formatted name"}
+          style={{
+            fontSize: "10px",
+          }}
+          axisLine={false}
+          tickLine={false}
+        />
 
         <Tooltip
           contentStyle={{
@@ -75,11 +87,12 @@ export default function ViewsGraph() {
             border: "none",
             width: "90px",
             overflow: "hidden",
+            color: "#f54076",
           }}
           itemStyle={{ color: "primary", fontWeight: "bolder" }}
         />
 
-        <CartesianGrid opacity={0.1} vertical={false} />
+        <CartesianGrid opacity={0.08} vertical={false} />
       </AreaChart>
     </ResponsiveContainer>
   );
