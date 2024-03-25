@@ -11,7 +11,7 @@ export const EventDetails = () => {
           Hosted by Nikola Mladenovic
         </p>
       </div>
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 md:flex md:items-center md:gap-5 md:space-y-0">
         <div className="flex items-center gap-3">
           <CalendarIcon date={new Date()} />
           <div className="flex flex-col">
