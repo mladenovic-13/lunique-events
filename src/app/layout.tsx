@@ -34,20 +34,23 @@ export default function RootLayout({
           "bg-background antialiased",
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TRPCReactProvider>
-            <NextAuthProvider>
-              <ModalProvider />
-              <Toaster />
-              {children}
-            </NextAuthProvider>
-          </TRPCReactProvider>
-        </ThemeProvider>
+        {/* Fix scrollbar layout shifts */}
+        <div className="pl-[calc(100vw-100%)]">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TRPCReactProvider>
+              <NextAuthProvider>
+                <ModalProvider />
+                <Toaster />
+                {children}
+              </NextAuthProvider>
+            </TRPCReactProvider>
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   );

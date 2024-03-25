@@ -1,14 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
-import { CalendarOff, CircleIcon, Plus, Users2Icon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  CalendarOff,
+  ChevronsRightIcon,
+  CircleIcon,
+  CopyIcon,
+  Plus,
+  Users2Icon,
+} from "lucide-react";
 import { ArrowRight, MapPinIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
+import { EventPageContent } from "@/app/(client)/[eventId]/(root)/_components/event-page-content";
 import { OpenModalButton } from "@/components/buttons/open-modal-button";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,6 +26,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
 import { paths } from "@/routes/paths";
@@ -29,6 +41,8 @@ type RenderTimeframeProps = {
 };
 
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
   const { data, isLoading, isError } = api.event.list.useQuery(
     { eventTimeFrame: timeframe },
     { enabled: !!timeframe },
@@ -69,10 +83,52 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
               <div className="flex items-center gap-3 px-3 md:hidden">
                 <EventDate date={event.date} />
               </div>
-              <EventCard event={event} />
+              <EventCard event={event} onClick={() => setIsSheetOpen(true)} />
             </div>
           </div>
         ))}
+
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetContent
+            side="right"
+            close={false}
+            className="overflow-hidden p-0 outline-none"
+          >
+            <div className="sticky -top-0.5 z-50 -mt-0.5 flex items-center justify-between rounded-t-md border-y bg-background px-1.5 py-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSheetOpen(false)}
+              >
+                <ChevronsRightIcon />
+              </Button>
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => alert("TODO: Copy link to clipboard")}
+                >
+                  <CopyIcon className="mr-1.5 size-4" />
+                  Copy Link
+                </Button>
+                <Link
+                  href={paths.event.root("eventId")}
+                  className={buttonVariants({
+                    variant: "secondary",
+                    size: "sm",
+                  })}
+                >
+                  Open Event Page
+                  <ArrowUpRightIcon className="ml-1.5 size-4" />
+                </Link>
+              </div>
+            </div>
+            <ScrollArea className="h-full">
+              <EventPageContent isMobile />
+              <ScrollBar orientation="vertical" />
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
       </div>
     );
 
@@ -96,17 +152,16 @@ const EventDate = ({ date }: { date: Date }) => (
 
 interface EventCardProps {
   event: RouterOutputs["event"]["list"][number];
+  onClick: () => void;
 }
 
-export const EventCard = ({ event }: EventCardProps) => {
+export const EventCard = ({ event, onClick }: EventCardProps) => {
   const { images, name, location } = event;
-
-  const router = useRouter();
 
   return (
     <Card
-      onClick={() => router.push(paths.event.root(event.id))}
-      className="flex flex-col-reverse rounded-lg md:flex-row "
+      onClick={onClick}
+      className="flex cursor-pointer flex-col-reverse rounded-lg transition duration-200 hover:border-muted-foreground/30 hover:bg-muted/70 md:flex-row"
     >
       <CardHeader className="flex flex-1 flex-col justify-around gap-3 py-3">
         <CardDescription className="hidden md:block">
