@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ImageType } from "@prisma/client";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 import {
   ArrowUpRightIcon,
@@ -29,6 +30,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
+import imagePlaceholder from "@/public/images/you-are-invited.jpeg";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/shared";
@@ -47,6 +49,219 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     { enabled: !!timeframe },
   );
 
+  const data2 = [
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "1",
+      images: [
+        {
+          id: "1",
+          key: "image1",
+          name: "Image 1",
+          url: "https://example.com/image1.jpg",
+          type: ImageType.JPG,
+          eventId: "event1",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Belgrade",
+      name: "Hackathon",
+      owner: {
+        email: "john.doe@example.com",
+        emailVerified: new Date(),
+        id: "user1",
+        image: "https://example.com/profile1.jpg",
+        limit: 10,
+        name: "John Doe",
+      },
+      ownerId: "user1",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Cuba",
+      name: "Masterclass",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "New York",
+      name: "Math class",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "London",
+      name: "Brainstorming",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Helsinki",
+      name: "Call meeting",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Barcelona",
+      name: "Barcelona trip",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Pague",
+      name: "Business Conference",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+  ];
+
   if (isLoading) return <Skeleton />;
 
   if (data && data.length === 0) return <NoEvents timeframe={timeframe} />;
@@ -54,11 +269,8 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   if (data && data.length !== 0)
     return (
       <div className="flex flex-col gap-6 md:gap-0">
-        {data.map((event, idx) => (
-          <div
-            key={event.id}
-            className="flex w-full gap-4 md:h-[250px] md:gap-0"
-          >
+        {data2.map((event, idx) => (
+          <div key={idx} className="flex w-full gap-4 md:h-[250px] md:gap-0">
             <div className="flex w-1/12 flex-col justify-between md:w-1/3 md:flex-row">
               <div className="hidden px-1.5 md:block">
                 <EventDate date={event.date} />
@@ -198,7 +410,8 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
             loader={awsImageLoader}
             width={500}
             height={281}
-            src={images[0].url ?? ""}
+            src={imagePlaceholder}
+            // src={images[0].url ?? ""}
             alt={name}
             className="rounded-lg object-cover md:size-[180px] "
           />
