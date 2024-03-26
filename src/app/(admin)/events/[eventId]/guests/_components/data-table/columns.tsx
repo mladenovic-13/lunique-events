@@ -84,7 +84,7 @@ export const columns: ColumnDef<Guest>[] = [
       return (
         <div className="">
           <Badge
-            className="rounded-full"
+            className="w-fit justify-center whitespace-nowrap rounded-full"
             style={{
               backgroundColor: color,
             }}

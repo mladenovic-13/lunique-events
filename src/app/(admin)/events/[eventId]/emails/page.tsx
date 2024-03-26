@@ -88,7 +88,7 @@ export default function EmailPage({
                   To: {_reminder.to.join(", ")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="w-fit rounded-xl border-none bg-orange-900/50">
+                  <div className="w-fit whitespace-nowrap rounded-xl border-none bg-orange-900/50">
                     <p className="px-2 py-0.5 text-orange-400">
                       Scheduled: {_reminder.scheduled}
                     </p>
