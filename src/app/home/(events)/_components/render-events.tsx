@@ -370,8 +370,6 @@ interface EventCardProps {
 export const EventCard = ({ event, onClick }: EventCardProps) => {
   const { images, name, location } = event;
 
-  console.log(event);
-
   return (
     <Card
       onClick={onClick}
