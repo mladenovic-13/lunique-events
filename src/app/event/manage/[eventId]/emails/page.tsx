@@ -27,9 +27,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { ActionButton } from "../overview/_components/action-buttons";
 
-export default function EmailPage({
-  params,
-}: {
+export default function EmailPage({}: {
   params: {
     eventId: string;
   };
@@ -57,8 +55,6 @@ export default function EmailPage({
 
   return (
     <div className="flex flex-col space-y-5 px-4">
-      <div>TODO: {params.eventId} - Emails</div>
-
       <div>
         <h1 className="text-xl font-semibold">Scheduled Emails</h1>
       </div>
