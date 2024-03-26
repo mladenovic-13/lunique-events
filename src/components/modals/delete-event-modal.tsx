@@ -41,7 +41,7 @@ export const DeleteEventModal = () => {
               title: `${event.name} deleted!`,
             });
 
-            router.push(paths.events.root);
+            router.push(paths.home.root);
             router.refresh();
           },
           onError: () => {

@@ -31,7 +31,7 @@ export const AuthErrorProvider = () => {
             "Please try again or reach out to our support team for assistance. Thank you!",
         });
       }
-      router.replace(paths.auth.signIn);
+      router.replace(paths.signin.root);
     }
   }, [error, router, toast]);
 

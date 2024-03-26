@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: paths.auth.signIn,
+    signIn: paths.signin.root,
   },
 };
 

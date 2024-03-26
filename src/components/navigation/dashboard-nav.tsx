@@ -13,7 +13,7 @@ export const DashboardNav = async () => {
 
   return (
     <nav className="container mx-auto flex h-12 items-center justify-between">
-      <Link href={paths.events.root}>
+      <Link href={paths.home.root}>
         <ThemedLogoIcon />
       </Link>
       <div className="flex items-center gap-5">

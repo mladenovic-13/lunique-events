@@ -7,7 +7,7 @@ import {
   Roboto,
 } from "next/font/google";
 
-import { type EventSchema } from "@/app/(admin)/events/create/_components/validation";
+import { type EventSchema } from "@/app/event/create/_components/validation";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
