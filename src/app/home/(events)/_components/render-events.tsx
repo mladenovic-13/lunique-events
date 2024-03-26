@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ImageType } from "@prisma/client";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 import {
   ArrowUpRightIcon,
@@ -47,6 +48,219 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     { enabled: !!timeframe },
   );
 
+  const data2 = [
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "1",
+      images: [
+        {
+          id: "1",
+          key: "image1",
+          name: "Image 1",
+          url: "https://example.com/image1.jpg",
+          type: ImageType.JPG,
+          eventId: "event1",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Belgrade",
+      name: "Hackathon",
+      owner: {
+        email: "john.doe@example.com",
+        emailVerified: new Date(),
+        id: "user1",
+        image: "https://example.com/profile1.jpg",
+        limit: 10,
+        name: "John Doe",
+      },
+      ownerId: "user1",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Cuba",
+      name: "Masterclass",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "New York",
+      name: "Math class",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "London",
+      name: "Brainstorming",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Helsinki",
+      name: "Call meeting",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Barcelona",
+      name: "Barcelona trip",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+    {
+      createdAt: new Date(),
+      date: new Date(),
+      guests: [],
+      id: "2",
+      images: [
+        {
+          id: "2",
+          key: "image2",
+          name: "Image 2",
+          url: "https://example.com/image2.jpg",
+          type: ImageType.JPG,
+          eventId: "event2",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      location: "Pague",
+      name: "Business Conference",
+      owner: {
+        email: "jane.smith@example.com",
+        emailVerified: new Date(),
+        id: "user2",
+        image: "https://example.com/profile2.jpg",
+        limit: 15,
+        name: "Jane Smith",
+      },
+      ownerId: "user2",
+      updatedAt: new Date(),
+    },
+  ];
+
   if (isLoading) return <Skeleton />;
 
   if (data && data.length === 0) return <NoEvents timeframe={timeframe} />;
@@ -54,7 +268,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   if (data && data.length !== 0)
     return (
       <div className="flex flex-col gap-6 md:gap-0">
-        {data.map((event, idx) => (
+        {data2.map((event, idx) => (
           <div
             key={event.id}
             className="flex w-full gap-4 md:h-[250px] md:gap-0"
@@ -154,6 +368,8 @@ interface EventCardProps {
 
 export const EventCard = ({ event, onClick }: EventCardProps) => {
   const { images, name, location } = event;
+
+  console.log(event);
 
   return (
     <Card
