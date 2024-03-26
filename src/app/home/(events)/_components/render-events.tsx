@@ -270,10 +270,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     return (
       <div className="flex flex-col gap-6 md:gap-0">
         {data2.map((event, idx) => (
-          <div
-            key={event.id}
-            className="flex w-full gap-4 md:h-[250px] md:gap-0"
-          >
+          <div key={idx} className="flex w-full gap-4 md:h-[250px] md:gap-0">
             <div className="flex w-1/12 flex-col justify-between md:w-1/3 md:flex-row">
               <div className="hidden px-1.5 md:block">
                 <EventDate date={event.date} />
