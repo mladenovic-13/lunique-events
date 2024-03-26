@@ -30,6 +30,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
+import imagePlaceholder from "@/public/images/you-are-invited.jpeg";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/shared";
@@ -414,7 +415,8 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
             loader={awsImageLoader}
             width={500}
             height={281}
-            src={images[0].url ?? ""}
+            src={imagePlaceholder}
+            // src={images[0].url ?? ""}
             alt={name}
             className="rounded-lg object-cover md:size-[180px] "
           />
