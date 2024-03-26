@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  CreditCardIcon,
-  LayoutDashboardIcon,
-  LogOutIcon,
-  RotateCwIcon,
-  UserIcon,
-} from "lucide-react";
+import { LogOutIcon, RotateCwIcon } from "lucide-react";
 import Link from "next/link";
 
 import { useSignOut } from "@/hooks/use-sign-out";
 import { paths } from "@/routes/paths";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,23 +38,23 @@ export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
           {email && <p className="text-sm text-zinc-500">{email}</p>}
         </div>
         <DropdownMenuSeparator />
-        <Link href={paths.events.root}>
+        <Link href={paths.home.root}>
           <DropdownMenuItem>
-            <LayoutDashboardIcon className="mr-1.5 size-4" />
+            {/* <LayoutDashboardIcon className="mr-1.5 size-4" /> */}
             Events
           </DropdownMenuItem>
         </Link>
-        <Link href={paths.account.settings}>
+        <Link href={paths.user.landing("ID")}>
           <DropdownMenuItem>
-            <UserIcon className="mr-1.5 size-4" />
-            Account
+            {/* <UserIcon className="mr-1.5 size-4" /> */}
+            View Profile
           </DropdownMenuItem>
         </Link>
-        <Link href={paths.account.billing}>
+        <Link href={paths.settings.root}>
           <DropdownMenuItem>
-            <CreditCardIcon className="mr-1.5 size-4" />
-            Billing
-            <Badge className="ml-auto">Free</Badge>
+            {/* <CreditCardIcon className="mr-1.5 size-4" /> */}
+            Settings
+            {/* <Badge className="ml-auto">Free</Badge> */}
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />

@@ -23,37 +23,37 @@ export const EventNav = ({ id }: { id: string }) => {
   const items = [
     {
       title: "Overview",
-      href: paths.events.overview(id),
+      href: paths.event.manage.overview(id),
       Icon: PanelLeftIcon,
     },
     {
       title: "Guests",
-      href: paths.events.guests(id),
+      href: paths.event.manage.guests(id),
       Icon: UsersIcon,
     },
     {
       title: "Registration",
-      href: paths.events.registration(id),
+      href: paths.event.manage.registration(id),
       Icon: ClipboardListIcon,
     },
     {
       title: "Emails",
-      href: paths.events.emails(id),
+      href: paths.event.manage.emails(id),
       Icon: MailsIcon,
     },
     {
       title: "Photos",
-      href: paths.events.photos(id),
+      href: paths.event.manage.photos(id),
       Icon: ImageIcon,
     },
     {
       title: "Insights",
-      href: paths.events.insights(id),
+      href: paths.event.manage.insights(id),
       Icon: BarChart3Icon,
     },
     {
       title: "Settings",
-      href: paths.events.settings(id),
+      href: paths.event.manage.settings(id),
       Icon: SettingsIcon,
     },
   ];
@@ -64,14 +64,17 @@ export const EventNav = ({ id }: { id: string }) => {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center md:gap-1.5">
-          <Link href={paths.events.root}>
+          <Link href={paths.home.root}>
             <div className="flex items-center gap-1.5 rounded-lg px-3 py-1 hover:bg-accent hover:text-accent-foreground">
               <ChevronLeft />
               <h1 className="text-xl font-semibold md:text-2xl">Events</h1>
             </div>
           </Link>
         </div>
-        <Link href={`/${id}`} className={buttonVariants({ variant: "ghost" })}>
+        <Link
+          href={paths.event.landing.root(id)}
+          className={buttonVariants({ variant: "ghost" })}
+        >
           Event Page <ChevronRightCircle className="ml-1.5 size-4" />
         </Link>
       </div>

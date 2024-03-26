@@ -18,17 +18,17 @@ export const AccountNav = () => {
   const items = [
     {
       title: "Settings",
-      href: paths.account.settings,
+      href: paths.settings.account + "/settings",
       Icon: UserIcon,
     },
     {
       title: "Usage",
-      href: paths.account.usage,
+      href: paths.settings.account + "/usage",
       Icon: BarChart3Icon,
     },
     {
       title: "Billing",
-      href: paths.account.billing,
+      href: paths.settings.account + "/billing",
       Icon: CreditCardIcon,
     },
   ];
@@ -42,7 +42,7 @@ export const AccountNav = () => {
           Account
         </h1>
         <Link
-          href={paths.events.root}
+          href={paths.home.root}
           className={buttonVariants({ variant: "ghost" })}
         >
           Events <ChevronRightCircle className="ml-1.5 size-4" />

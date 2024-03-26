@@ -53,7 +53,7 @@ export const CreateEventForm = () => {
 
         onClose();
 
-        router.push(paths.events.event(event.id));
+        router.push(paths.event.landing.root(event.id));
         router.refresh();
       },
       onError: () => {

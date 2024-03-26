@@ -9,18 +9,18 @@ import { buttonVariants } from "../ui/button";
 export const UserNav = () => {
   return (
     <nav className="container mx-auto flex h-12 items-center justify-between">
-      <Link href={paths.root}>
+      <Link href={paths.home.root}>
         <ThemedLogoIcon />
       </Link>
       <div className="flex items-center gap-1.5">
         <Link
-          href={paths.events.root}
+          href={paths.home.root}
           className={buttonVariants({ variant: "ghost", size: "sm" })}
         >
           Explore Events <ArrowUpRightIcon className="ml-1.5 size-3.5" />
         </Link>
         <Link
-          href={paths.auth.signIn}
+          href={paths.signin.root}
           className={buttonVariants({ variant: "secondary", size: "sm" })}
         >
           Sign In
