@@ -16,7 +16,7 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "Better Event",
+  title: "Lunique Events",
   description: "Make your event, event from the future.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };

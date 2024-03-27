@@ -2,7 +2,7 @@ import { EventSettingsSkeleton } from "./settings/_components/event-settings-ske
 
 export default function Loading() {
   return (
-    <div>
+    <div className="mx-auto max-w-4xl">
       <EventSettingsSkeleton />
     </div>
   );
