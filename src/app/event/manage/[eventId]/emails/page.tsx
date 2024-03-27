@@ -88,7 +88,7 @@ export default function EmailPage({
                   To: {_reminder.to.join(", ")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="w-fit whitespace-nowrap rounded-xl border-none bg-orange-900/50">
+                  <div className="w-fit whitespace-nowrap rounded-xl border-none bg-accent-foreground/10">
                     <p className="px-2 py-0.5 text-orange-400">
                       Scheduled: {_reminder.scheduled}
                     </p>
@@ -121,7 +121,7 @@ export default function EmailPage({
                 <CardTitle className="">
                   <div className="flex justify-between">
                     <div className="flex space-x-2">
-                      <div className="size-fit rounded-full border-2 border-primary p-1">
+                      <div className="size-fit rounded-full border-2 border-accent-foreground p-1">
                         <UserIcon size={20} />
                       </div>
                       <div className="flex flex-col space-y-1">

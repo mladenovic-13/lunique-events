@@ -12,13 +12,13 @@ export default function EventInsightsPage() {
       <div className="flex justify-between">
         <div className="flex flex-col space-y-2">
           <h1 className="text-2xl font-semibold capitalize">Page Views</h1>
-          <p className="text-base text-primary/50">
+          <p className="text-base text-accent-foreground">
             See recent page views of the event page.
           </p>
         </div>
         <SelectPeriod />
       </div>
-      <Card className="overflow-hidden pt-4">
+      <Card className="overflow-hidden pt-4 ">
         <ViewsGraph />
         <Separator />
         <CardFooter className="flex bg-muted/50 p-4">

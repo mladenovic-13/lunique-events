@@ -61,7 +61,7 @@ export const RegistrationQuestions = () => {
               <div className="h-fit items-center rounded-full bg-muted px-3 py-0.5">
                 {/* <h1 className="text-sm text-primary">Required</h1> */}
                 <Select>
-                  <SelectTrigger className="h-fit w-[80px] p-0">
+                  <SelectTrigger className="h-fit w-[80px] border-none p-0 ring-0 ">
                     <SelectValue placeholder="Optional" />
                   </SelectTrigger>
                   <SelectContent>
@@ -95,7 +95,7 @@ export const RegistrationQuestions = () => {
             You are not asking guests additional questions.
           </p>
         </div>
-        <Button className="w-fit space-x-2 bg-muted py-0 pl-2 text-primary/80">
+        <Button className="w-fit space-x-2 bg-muted py-0 pl-2 text-accent-foreground/80">
           <PlusIcon className="size-5 p-0 " />
           <p>Add Question</p>
         </Button>

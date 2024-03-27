@@ -20,15 +20,15 @@ export const CustomizeEmailsSection = ({
 }: CustomizeEmailsProps) => {
   const emailTemplate = [
     {
-      status: "Pending Approval / Waitlist",
+      status: "Pending Approval",
       icon: <CheckCircledIcon className="size-8 text-slate-300" />,
     },
     {
-      status: "Going",
+      status: "Going Guests",
       icon: <CheckCircledIcon className="size-8 text-green-500" />,
     },
     {
-      status: "Declined",
+      status: "Declined Guests",
       icon: <CrossCircledIcon className="size-8 text-red-500" />,
     },
   ];
@@ -57,8 +57,8 @@ export const CustomizeEmailsSection = ({
                   <Separator className="h-3 rounded-full" />
                   <Separator className="h-3 w-2/5 rounded-full" />
                 </CardContent>
-                <CardFooter className=" bg-background py-2">
-                  {email.status}
+                <CardFooter className="bg-background py-2">
+                  <p className="overflow-auto">{email.status}</p>
                 </CardFooter>
               </Card>
             ))}
