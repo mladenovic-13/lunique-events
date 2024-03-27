@@ -48,228 +48,329 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     { eventTimeFrame: timeframe },
     { enabled: !!timeframe },
   );
+  console.log(data?.length);
+  const upcomingAndPastEvents = {
+    upcoming: [
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        guests: [],
+        id: "1",
+        images: [
+          {
+            id: "1",
+            key: "image1",
+            name: "Image 1",
+            url: "https://example.com/image1.jpg",
+            type: ImageType.JPG,
+            eventId: "event1",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Belgrade, Serbia",
+        name: "Hackathon",
+        owner: {
+          email: "john.doe@example.com",
+          emailVerified: new Date(),
+          id: "user1",
+          image: "https://example.com/profile1.jpg",
+          limit: 10,
+          name: "John Doe",
+        },
+        ownerId: "user1",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 5)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Cuba",
+        name: "Masterclass",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 3)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "New York",
+        name: "Math class",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 35)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "London",
+        name: "Brainstorming",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Helsinki",
+        name: "Call meeting",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 2)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Barcelona",
+        name: "Barcelona trip",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() + 7)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Pague",
+        name: "Business Conference",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+    ],
+    past: [
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() - 5)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Vancouver, Canada",
+        name: "Masterclass",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() - 1)),
+        guests: [],
+        id: "1",
+        images: [
+          {
+            id: "1",
+            key: "image1",
+            name: "Image 1",
+            url: "https://example.com/image1.jpg",
+            type: ImageType.JPG,
+            eventId: "event1",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Belgrade, Serbia",
+        name: "Group Basketball Trening",
+        owner: {
+          email: "john.doe@example.com",
+          emailVerified: new Date(),
+          id: "user1",
+          image: "https://example.com/profile1.jpg",
+          limit: 10,
+          name: "John Doe",
+        },
+        ownerId: "user1",
+        updatedAt: new Date(),
+      },
+      {
+        createdAt: new Date(),
+        date: new Date(new Date().setDate(new Date().getDate() - 3)),
+        guests: [],
+        id: "2",
+        images: [
+          {
+            id: "2",
+            key: "image2",
+            name: "Image 2",
+            url: "https://example.com/image2.jpg",
+            type: ImageType.JPG,
+            eventId: "event2",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        location: "Washington, US",
+        name: "Math class",
+        owner: {
+          email: "jane.smith@example.com",
+          emailVerified: new Date(),
+          id: "user2",
+          image: "https://example.com/profile2.jpg",
+          limit: 15,
+          name: "Jane Smith",
+        },
+        ownerId: "user2",
+        updatedAt: new Date(),
+      },
+    ],
+  };
 
-  const data2 = [
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "1",
-      images: [
-        {
-          id: "1",
-          key: "image1",
-          name: "Image 1",
-          url: "https://example.com/image1.jpg",
-          type: ImageType.JPG,
-          eventId: "event1",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "Belgrade",
-      name: "Hackathon",
-      owner: {
-        email: "john.doe@example.com",
-        emailVerified: new Date(),
-        id: "user1",
-        image: "https://example.com/profile1.jpg",
-        limit: 10,
-        name: "John Doe",
-      },
-      ownerId: "user1",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "Cuba",
-      name: "Masterclass",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "New York",
-      name: "Math class",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "London",
-      name: "Brainstorming",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "Helsinki",
-      name: "Call meeting",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "Barcelona",
-      name: "Barcelona trip",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-    {
-      createdAt: new Date(),
-      date: new Date(),
-      guests: [],
-      id: "2",
-      images: [
-        {
-          id: "2",
-          key: "image2",
-          name: "Image 2",
-          url: "https://example.com/image2.jpg",
-          type: ImageType.JPG,
-          eventId: "event2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      location: "Pague",
-      name: "Business Conference",
-      owner: {
-        email: "jane.smith@example.com",
-        emailVerified: new Date(),
-        id: "user2",
-        image: "https://example.com/profile2.jpg",
-        limit: 15,
-        name: "Jane Smith",
-      },
-      ownerId: "user2",
-      updatedAt: new Date(),
-    },
-  ];
-
+  let demoData = null;
+  timeframe === "past"
+    ? (demoData = upcomingAndPastEvents.past)
+    : timeframe === "upcoming"
+      ? (demoData = upcomingAndPastEvents.upcoming)
+      : [];
   if (isLoading) return <Skeleton />;
 
-  if (data && data.length === 0) return <NoEvents timeframe={timeframe} />;
+  if (demoData && demoData.length === 0)
+    return <NoEvents timeframe={timeframe} />;
 
-  if (data && data.length !== 0)
+  if (demoData && demoData.length !== 0)
     return (
       <div className="flex flex-col gap-6 md:gap-0">
-        {data2.map((event, idx) => (
+        {demoData.map((event, idx) => (
           <div key={idx} className="flex w-full gap-4 md:h-[250px] md:gap-0">
             <div className="flex w-1/12 flex-col justify-between md:w-1/3 md:flex-row">
               <div className="hidden px-1.5 md:block">
@@ -282,7 +383,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
                     "relative -mb-6 h-[105%] w-[1px] border-l-2 border-dashed border-border/80 md:mb-0",
                   )}
                 >
-                  {idx === data.length - 1 && (
+                  {idx === demoData.length - 1 && (
                     <div className="absolute -right-2.5 top-0 h-full w-5 bg-gradient-to-b from-background/0 via-background/70 to-background"></div>
                   )}
                 </div>
@@ -367,6 +468,27 @@ interface EventCardProps {
 export const EventCard = ({ event, onClick }: EventCardProps) => {
   const { images, name, location } = event;
 
+  function generateRandomTime() {
+    // Generating random hour between 7 and 19
+    let hours = Math.floor(Math.random() * (19 - 7 + 1)) + 7;
+    // Generating random minutes either 0 or 30
+    const minutes = Math.random() < 0.5 ? 0 : 30;
+
+    // Determining AM/PM
+    const period = hours < 12 ? "AM" : "PM";
+
+    // If hours is greater than 12, convert it to 12-hour format
+    if (hours > 12) {
+      hours -= 12;
+    }
+
+    // Formatting hours and minutes
+    const formattedHours = (hours < 10 ? "0" : "") + hours;
+    const formattedMinutes = minutes === 0 ? "00" : "30";
+
+    // Returning formatted time with AM/PM
+    return formattedHours + ":" + formattedMinutes + " " + period;
+  }
   return (
     <Card
       onClick={onClick}
@@ -375,7 +497,8 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
       <CardHeader className="flex flex-1 flex-col justify-around gap-3 py-3">
         <CardDescription className="hidden md:block">
           {/* TODO: add real time */}
-          1:00 PM
+          {/* 1:00 PM */}
+          {generateRandomTime()}
         </CardDescription>
         <CardTitle className="cursor-pointer text-lg font-semibold">
           {name}
@@ -388,7 +511,8 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
           <p className="flex items-center gap-1.5 text-sm">
             <Users2Icon className="size-4" />
             {/* TODO: add real guests number */}
-            No Guests
+            {/* No Guests */}
+            {Math.floor(Math.random() * 100 + 2)} Guests
           </p>
         </div>
         <Link
