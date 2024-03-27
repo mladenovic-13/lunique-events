@@ -54,7 +54,7 @@ export const Ticket = ({ ticket }: TicketProps) => {
           <InfoCircledIcon className="size-4 text-foreground/30" />
         </div>
         <Switch
-          className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-primary/20"
+          className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-accent-foreground/20"
           onChange={handleChange}
         />
       </CardContent>

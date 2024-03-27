@@ -38,10 +38,12 @@ export const ActionButton = (props: {
   onClick: () => void;
 }) => {
   const { title, Icon, bgColor, iconColor, description, onClick } = props;
+  const hoverColor = `hover:bg-[${bgColor}]`;
+  console.log(hoverColor);
   return (
     <button
       onClick={onClick}
-      className="flex min-w-fit items-center gap-3 rounded-md bg-muted/50 p-1.5 pr-16 text-sm font-medium transition-all hover:bg-muted/30"
+      className="flex min-w-fit items-center gap-3 rounded-md bg-muted/50 p-1.5 pr-16 text-sm font-medium transition-all hover:bg-accent"
     >
       <div
         className="size-fit rounded-md bg-muted-foreground/10 p-1.5"
@@ -53,7 +55,7 @@ export const ActionButton = (props: {
         <Icon className="size-6" />
       </div>
       <div className="flex flex-col items-start">
-        <p className="text-base">{title}</p>
+        <p className="text-base text-accent-foreground">{title}</p>
         {description && (
           <p className="text-xs font-medium text-foreground/50">
             {description}
