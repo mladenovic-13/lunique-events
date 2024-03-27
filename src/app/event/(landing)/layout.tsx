@@ -1,4 +1,4 @@
-import { UserNav } from "@/components/navigation/user-nav";
+// import { UserNav } from "@/components/navigation/user-nav";
 
 export default function UserLayout({
   children,
@@ -7,7 +7,7 @@ export default function UserLayout({
 }) {
   return (
     <>
-      <UserNav />
+      {/* <UserNav /> */}
       <main>{children}</main>
     </>
   );
