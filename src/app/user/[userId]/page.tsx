@@ -1,3 +1,5 @@
+import { MainPage } from "@/components/layout/main-page";
+
 export default function Home({
   params: { userId },
 }: {
@@ -5,5 +7,5 @@ export default function Home({
     userId: string;
   };
 }) {
-  return <div>TODO: User {userId} landig page</div>;
+  return <MainPage>TODO: User {userId} landig page</MainPage>;
 }

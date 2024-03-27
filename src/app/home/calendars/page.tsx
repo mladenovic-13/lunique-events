@@ -1,3 +1,5 @@
+import { MainPage } from "@/components/layout/main-page";
+
 export default function CalendarsHomePage() {
-  return <div>TODO: Calendars home page</div>;
+  return <MainPage>TODO: Calendars home page</MainPage>;
 }

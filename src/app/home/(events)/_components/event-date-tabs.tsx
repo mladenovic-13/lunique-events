@@ -21,11 +21,17 @@ export const EventTimeframeTabs = ({
       onValueChange={(value) => onValueChange(value as Timeframe)}
     >
       <TabsList>
-        <TabsTrigger value="upcoming" className="w-24 md:w-32">
+        <TabsTrigger
+          value="upcoming"
+          className="w-24 hover:text-accent-foreground md:w-32"
+        >
           Upcoming
         </TabsTrigger>
 
-        <TabsTrigger value="past" className="w-24 md:w-32">
+        <TabsTrigger
+          value="past"
+          className="w-24 hover:text-accent-foreground md:w-32"
+        >
           Past
         </TabsTrigger>
       </TabsList>
