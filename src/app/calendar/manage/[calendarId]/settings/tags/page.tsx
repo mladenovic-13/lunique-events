@@ -1,3 +1,5 @@
+import { MainPage } from "@/components/layout/main-page";
+
 export default function CalendarAdminSettingsPage() {
-  return <div>TODO: Manage calendar settings tags </div>;
+  return <MainPage>TODO: Manage calendar settings tags </MainPage>;
 }

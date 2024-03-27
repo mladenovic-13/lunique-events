@@ -1,3 +1,5 @@
+import { MainPage } from "@/components/layout/main-page";
+
 export default function CalendarSettingsPage() {
-  return <div>TODO: Manage calendar settings</div>;
+  return <MainPage>TODO: Manage calendar settings</MainPage>;
 }

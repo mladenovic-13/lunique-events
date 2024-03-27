@@ -1,3 +1,3 @@
 export default function CheckInPage() {
-  return <div>TODO: Check in page</div>;
+  return <>TODO: Check in page</>;
 }

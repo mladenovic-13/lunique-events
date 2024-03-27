@@ -1,3 +1,5 @@
+import { MainPage } from "@/components/layout/main-page";
+
 export default function ExplorePage() {
-  return <div>TODO: Explore page</div>;
+  return <MainPage>TODO: Explore page</MainPage>;
 }

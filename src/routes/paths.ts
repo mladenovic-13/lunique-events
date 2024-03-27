@@ -6,6 +6,9 @@ const roots = {
   settings: "/settings",
   user: "/user",
   signin: "/sign-in",
+  explore: "/explore",
+  pricing: "/pricing",
+  help: "/help",
 };
 
 export const paths = {
@@ -72,4 +75,7 @@ export const paths = {
   },
   user: { root: roots.user, landing: (id: string) => roots.user + `/${id}` },
   signin: { root: roots.signin },
+  explore: roots.explore,
+  pricing: roots.pricing,
+  help: roots.help,
 };

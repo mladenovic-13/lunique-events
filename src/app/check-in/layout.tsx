@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navigation/navbar";
 import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
 
-export default async function RootLayout({
+export default async function CheckInLayout({
   children,
 }: {
   children: React.ReactNode;

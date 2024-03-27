@@ -27,9 +27,9 @@ export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
-        <Avatar className="size-9">
-          {image && <AvatarImage src={image} className="size-9" />}
-          <AvatarFallback className="size-9">A</AvatarFallback>
+        <Avatar>
+          {image && <AvatarImage src={image} />}
+          <AvatarFallback>A</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="absolute -right-5">
@@ -45,17 +45,10 @@ export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
           </DropdownMenuItem>
         </Link>
         <Link href={paths.user.landing("ID")}>
-          <DropdownMenuItem>
-            {/* <UserIcon className="mr-1.5 size-4" /> */}
-            View Profile
-          </DropdownMenuItem>
+          <DropdownMenuItem>View Profile</DropdownMenuItem>
         </Link>
         <Link href={paths.settings.root}>
-          <DropdownMenuItem>
-            {/* <CreditCardIcon className="mr-1.5 size-4" /> */}
-            Settings
-            {/* <Badge className="ml-auto">Free</Badge> */}
-          </DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
