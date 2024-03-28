@@ -25,7 +25,7 @@ export default async function RootLayout({
         <SettingsNav />
       </div>
       <Separator />
-      <main className="mx-auto max-w-4xl p-3 md:px-0 md:py-5">{children}</main>
+      <main className="mx-auto max-w-4xl p-3 md:px-0 md:py-6">{children}</main>
       <Footer />
     </>
   );
