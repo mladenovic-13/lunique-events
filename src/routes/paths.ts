@@ -68,7 +68,7 @@ export const paths = {
     },
   },
   settings: {
-    root: roots.settings,
+    root: roots.settings + "/account",
     account: roots.settings + "/account",
     payment: roots.settings + "/payment",
     preferences: roots.settings + "/preferences",
