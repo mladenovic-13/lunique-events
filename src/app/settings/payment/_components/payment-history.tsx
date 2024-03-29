@@ -1,15 +1,14 @@
 import React from "react";
 import { WalletCardsIcon } from "lucide-react";
 
+import Section from "../../_components/section";
+
 const PaymentHistory = () => {
   const payments = [];
 
   return (
     <section className="space-y-8">
-      <h1 className="text-xl font-semibold capitalize text-current">
-        Payment History
-      </h1>
-
+      <Section title="Payment History" />
       {payments.length === 0 && (
         <div className="flex flex-col items-center justify-center space-y-10">
           <WalletCardsIcon size={200} opacity={0.1} />

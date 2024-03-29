@@ -5,16 +5,16 @@ import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { paths } from "@/routes/paths";
 
+import Section from "../../_components/section";
+
 export const LuniquePlus = () => {
   return (
     <section className="flex flex-col space-y-5">
-      <div className="flex flex-col space-y-1">
-        <h1 className="text-xl font-semibold text-current">Lunique Plus</h1>
-        <p className="text-base font-normal text-accent-foreground/60">
-          Enjoy 0% platform fees, higher invite and admin limits, priority
-          support, and more.
-        </p>
-      </div>
+      <Section
+        title="Lunique Plus"
+        description="Enjoy 0% platform fees, higher invite and admin limits, priority
+          support, and more."
+      />
       <div className="flex flex-col space-y-3">
         <Link href={paths.calendar.manage.settings.plus("changeThisID!!!")}>
           <Card className="h-fit transition-all hover:cursor-pointer hover:bg-muted">
