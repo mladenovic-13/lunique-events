@@ -1,19 +1,17 @@
 "use client";
 
-import { LogOutIcon, RotateCwIcon } from "lucide-react";
 import Link from "next/link";
 
-import { useSignOut } from "@/hooks/use-sign-out";
-import { paths } from "@/routes/paths";
-
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { useSignOut } from "@/hooks/use-sign-out";
+import { paths } from "@/routes/paths";
 
 interface AccountMenuProps {
   image?: string | null;
@@ -21,7 +19,7 @@ interface AccountMenuProps {
   email?: string | null;
 }
 
-export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
+export const AccountMenu = ({ name, image }: AccountMenuProps) => {
   const { mutate, isLoading } = useSignOut();
 
   return (
@@ -32,36 +30,27 @@ export const AccountMenu = ({ name, email, image }: AccountMenuProps) => {
           <AvatarFallback>A</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="absolute -right-5">
-        <div className="p-2">
-          {name && <p className="font-medium">{name}</p>}
-          {email && <p className="text-sm text-zinc-500">{email}</p>}
-        </div>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent className="absolute -right-5 w-48">
         <Link href={paths.home.root}>
-          <DropdownMenuItem>
-            {/* <LayoutDashboardIcon className="mr-1.5 size-4" /> */}
-            Events
+          <DropdownMenuItem className="flex-col items-start">
+            {name && <p className=" font-medium">{name}</p>}
+            <p className="text-sm text-muted-foreground">Personal</p>
           </DropdownMenuItem>
         </Link>
+        <DropdownMenuSeparator />
         <Link href={paths.user.landing("ID")}>
           <DropdownMenuItem>View Profile</DropdownMenuItem>
         </Link>
         <Link href={paths.settings.root}>
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </Link>
-        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <button
             disabled={isLoading}
             onClick={() => mutate()}
             className="flex w-full items-center"
           >
-            {!isLoading && <LogOutIcon className="mr-1.5 size-4" />}
-            {isLoading && (
-              <RotateCwIcon className="mr-1.5 size-4 animate-spin" />
-            )}
-            Sign out
+            Sign Out
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
