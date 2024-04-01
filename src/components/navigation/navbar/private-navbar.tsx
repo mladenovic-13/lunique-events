@@ -77,36 +77,15 @@ export const PrivateNavbar = ({ session }: { session: Session }) => {
       </div>
       <div className="flex items-center gap-3 md:gap-5">
         <div className="flex items-center md:gap-1.5">
-          <TooltipProvider>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-muted-foreground duration-200"
-                  onClick={() => setIsSearchOpen(true)}
-                >
-                  <SearchIcon className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="bg-popover text-accent-foreground shadow">
-                <p className="flex w-full items-center gap-1.5 text-sm">
-                  Search
-                  <CommandShortcut>⌘K</CommandShortcut>
-                </p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <NotificationsPopover />
-              </TooltipTrigger>
-              <TooltipContent className="bg-popover text-accent-foreground shadow">
-                <p className="flex w-full items-center gap-1.5 text-sm">
-                  Notifications
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-muted-foreground duration-200"
+            onClick={() => setIsSearchOpen(true)}
+          >
+            <SearchIcon className="size-4" />
+          </Button>
+          <NotificationsPopover />
           <ThemeToggle />
         </div>
 

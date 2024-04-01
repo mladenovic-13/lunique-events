@@ -15,7 +15,7 @@ export const paths = {
   landing: {
     root: roots.landing,
   },
-  home: { root: "/home", calendars: roots.calendar + "/calendars" },
+  home: { root: "/home", calendars: roots.home + "/calendars" },
   event: {
     root: roots.event,
     landing: {
