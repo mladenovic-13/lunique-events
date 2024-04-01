@@ -10,14 +10,7 @@ import Link from "next/link";
 import { type Session } from "next-auth";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { CommandShortcut } from "@/components/ui/command";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import logoImg from "@/public/logo.png";
 import { paths } from "@/routes/paths";
 
