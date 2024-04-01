@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 
+import { GuestListActions } from "./_components/guest-list-actions";
 import GuestsActionButtons from "./_components/guests-action-buttons";
 import { GuestsStatus } from "./_components/guests-status";
 import GuestsTable from "./_components/guests-table";
@@ -51,7 +52,10 @@ export default function EventGuestsPage({}: {
       <GuestsStatus guestStatuses={guests.map((g) => g.status)} />
       <GuestsActionButtons />
       <Separator />
-      <GuestsTable />
+      <div>
+        <GuestListActions />
+        <GuestsTable />
+      </div>
     </div>
   );
 }

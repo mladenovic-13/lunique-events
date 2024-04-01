@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 export const PasswordAndSecurity = () => {
   return (

@@ -24,7 +24,7 @@ export const columns: ColumnDef<Guest>[] = [
       return (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex w-fit cursor-pointer transition-all hover:text-foreground"
+          className="flex w-fit cursor-pointer px-3 transition-all hover:text-foreground"
         >
           Name
           <ArrowUpDown className="ml-2 size-4" />
@@ -33,7 +33,7 @@ export const columns: ColumnDef<Guest>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-2 px-3">
           <UserIcon
             size={20}
             className="rounded-full border border-foreground"

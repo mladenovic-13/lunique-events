@@ -1,6 +1,5 @@
 import { columns, type Guest } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
-import { GuestListActions } from "./guest-list-actions";
 
 async function getData(): Promise<Guest[]> {
   // Fetch data from your API here.
@@ -43,7 +42,6 @@ export default async function GuestsTable() {
 
   return (
     <div className="container mx-auto px-0 ">
-      <GuestListActions />
       <DataTable columns={columns} data={data} />
     </div>
   );

@@ -3,7 +3,7 @@ import { AlertTriangleIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 export const DeleteAccount = () => {
   return (
