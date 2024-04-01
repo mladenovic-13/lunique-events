@@ -1,7 +1,7 @@
 import { BellIcon } from "lucide-react";
 import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,14 +13,14 @@ import placeholderImage from "@/public/images/you-are-invited.jpeg";
 export const NotificationsPopover = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="text-muted-foreground  duration-200"
-        >
-          <BellIcon className="size-4" />
-        </Button>
+      <DropdownMenuTrigger
+        className={buttonVariants({
+          variant: "ghost",
+          size: "icon",
+          className: "text-muted-foreground  duration-200",
+        })}
+      >
+        <BellIcon className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="space-y-1.5">
         <DropdownMenuItem>
