@@ -24,10 +24,10 @@ const Section = ({ title, description, button }: TitleProps) => {
       </div>
       {button && (
         <Button
-          className="flex h-fit space-x-2 py-1.5 pl-3 pr-4"
+          className="flex h-7 space-x-2 py-1.5 pl-3 pr-4 md:h-fit"
           variant={"secondary"}
         >
-          <PlusIcon size={18} />
+          <PlusIcon className="size-3.5 md:size-4" />
           <p className="capitalize">{button}</p>
         </Button>
       )}

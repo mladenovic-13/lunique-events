@@ -40,7 +40,7 @@ export const Statistics = () => {
   return (
     <section className="flex flex-col space-y-8">
       <div className="flex flex-col space-y-4">
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {insightItems.map((item, idx) => (
             <div className="flex flex-col " key={idx}>
               <div className="flex items-center justify-start space-x-1 text-accent-foreground/50">
