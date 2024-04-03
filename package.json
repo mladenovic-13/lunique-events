@@ -19,6 +19,7 @@
     "@aws-sdk/client-rekognition": "^3.454.0",
     "@aws-sdk/client-s3": "^3.445.0",
     "@aws-sdk/s3-request-presigner": "^3.445.0",
+    "@headlessui/react": "^1.7.18",
     "@hookform/resolvers": "^3.3.2",
     "@lemonsqueezy/lemonsqueezy.js": "^2.2.0",
     "@next-auth/prisma-adapter": "^1.0.7",
