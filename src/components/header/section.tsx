@@ -12,10 +12,12 @@ interface TitleProps {
 const Section = ({ title, description, button }: TitleProps) => {
   return (
     <div className="flex justify-between">
-      <div className="flex flex-col space-y-1.5">
-        <h1 className="text-xl font-semibold text-current">{title}</h1>
+      <div className="flex flex-col space-y-0.5 md:space-y-1.5">
+        <h1 className="text-lg font-semibold text-current md:text-xl">
+          {title}
+        </h1>
         {description && (
-          <p className="text-base font-normal text-accent-foreground/60">
+          <p className="text-sm font-normal text-accent-foreground/60 md:text-base">
             {description}
           </p>
         )}
