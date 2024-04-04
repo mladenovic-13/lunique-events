@@ -31,10 +31,22 @@ export const CreateCalendarForm = () => {
   return (
     <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-5">
       <Card>
-        <CoverInput />
+        <Controller
+          control={methods.control}
+          name="coverImageUrl"
+          render={({ field }) => (
+            <CoverInput value={field.value} onChange={field.onChange} />
+          )}
+        />
 
         <div className="space-y-3 p-3 pt-16">
-          <ThumbnailInput />
+          <Controller
+            control={methods.control}
+            name="thumbnailImageUrl"
+            render={({ field }) => (
+              <ThumbnailInput value={field.value} onChange={field.onChange} />
+            )}
+          />
 
           <Input
             type="text"

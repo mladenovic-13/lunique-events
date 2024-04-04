@@ -1,3 +1,5 @@
+"use client";
+
 import { useTheme } from "next-themes";
 
 import { ColorButton } from "@/components/buttons/color-button";
@@ -27,7 +29,7 @@ export const ThemeInput = ({ value, onChange }: ThemeInputProps) => {
                 onChange(theme.name);
               }}
               colorHslValue={
-                theme?.activeColor[mode === "dark" ? "dark" : "light"]
+                theme.activeColor[mode === "dark" ? "dark" : "light"]
               }
               isActive={isActive}
             />

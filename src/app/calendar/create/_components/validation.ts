@@ -9,7 +9,7 @@ export const calendarSchema = z.object({
   slug: z.string(),
   // null -> Global Location
   location: locationSchema.nullable(),
-  imageUrl: z.string().nullable(),
+  thumbnailImageUrl: z.string().nullable(),
   coverImageUrl: z.string().nullable(),
 });
 
@@ -21,6 +21,6 @@ export const defaultValues: CalendarSchema = {
   slug: "",
   theme: "rose",
   location: null,
-  imageUrl: null,
+  thumbnailImageUrl: null,
   coverImageUrl: null,
 };
