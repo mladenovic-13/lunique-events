@@ -20,6 +20,7 @@ export const ColorButton = ({
 }: ColorButtonProps) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
         "trasition flex h-full items-center justify-center rounded-full py-1.5 text-[--card-foreground] duration-200 hover:bg-[--card] hover:opacity-90",

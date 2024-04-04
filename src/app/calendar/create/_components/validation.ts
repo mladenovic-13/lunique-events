@@ -1,3 +1,4 @@
+import { Theme } from "@prisma/client";
 import * as z from "zod";
 
 import { locationSchema, themeNameSchema } from "@/lib/validation";
@@ -19,7 +20,7 @@ export const defaultValues: CalendarSchema = {
   name: "",
   description: "",
   slug: "",
-  theme: "rose",
+  theme: Theme.SLATE,
   location: null,
   thumbnailImageUrl: null,
   coverImageUrl: null,

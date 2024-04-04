@@ -1,3 +1,4 @@
+import { Theme } from "@prisma/client";
 import * as z from "zod";
 
 import { timezones } from "@/lib/timezones";
@@ -63,7 +64,7 @@ export const defaultValues: EventSchema = {
   description: "",
   theme: {
     font: "Roboto",
-    theme: "rose",
+    theme: Theme.ROSE,
     mode: "system",
   },
   startDateTime: {

@@ -1,3 +1,4 @@
+import { Theme } from "@prisma/client";
 import * as z from "zod";
 
 export const validatePhotoId = (photoId: string | null, length: number) => {
@@ -12,20 +13,7 @@ export const validatePhotoId = (photoId: string | null, length: number) => {
   return parse.success;
 };
 
-export const themeNameSchema = z.enum([
-  "zinc",
-  "slate",
-  "stone",
-  "gray",
-  "neutral",
-  "red",
-  "rose",
-  "orange",
-  "green",
-  "blue",
-  "yellow",
-  "violet",
-]);
+export const themeNameSchema = z.nativeEnum(Theme);
 
 export const locationSchema = z.object({
   placeId: z.string(),

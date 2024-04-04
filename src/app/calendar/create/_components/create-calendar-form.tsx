@@ -2,10 +2,14 @@
 
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
 
 import { CoverInput } from "./cover-input";
 import { LocationInput } from "./location-input";
@@ -24,12 +28,30 @@ export const CreateCalendarForm = () => {
     defaultValues: defaultValues,
   });
 
+  const { mutate: createCalendar } = api.calendar.create.useMutation();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const onSubmit = (data: CalendarSchema) => {
-    console.log(data);
+    createCalendar(data, {
+      onSuccess: (calendar) => {
+        toast({ title: "Calendar created" });
+        router.push(paths.calendar.manage.events(calendar.id));
+      },
+      onError: () =>
+        toast({ variant: "destructive", title: "Failed to create calendar" }),
+    });
+  };
+
+  const onErrors = (errors: unknown) => {
+    console.log({ errors });
   };
 
   return (
-    <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-5">
+    <form
+      onSubmit={methods.handleSubmit(onSubmit, onErrors)}
+      className="space-y-5"
+    >
       <Card>
         <Controller
           control={methods.control}
@@ -91,7 +113,9 @@ export const CreateCalendarForm = () => {
           </div>
         </div>
       </Card>
-      <Button className="w-full md:w-fit">Create Calendar</Button>
+      <Button className="w-full md:w-fit" type="submit">
+        Create Calendar
+      </Button>
     </form>
   );
 };

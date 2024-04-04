@@ -204,7 +204,7 @@ model Calendar {
   slug        String
 
   location   Location? @relation(fields: [locationId], references: [id])
-  locationId String
+  locationId String?
 
   thumbnailUrl String?
   coverUrl     String?

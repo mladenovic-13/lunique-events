@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import { Combobox } from "@headlessui/react";
-import { type Libraries, useLoadScript } from "@react-google-maps/api";
+import { type Libraries, LoadScript } from "@react-google-maps/api";
 import { MapPinIcon } from "lucide-react";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -31,11 +31,6 @@ interface EventLocationProps {
 export const LocationInput = ({ value, onChange }: EventLocationProps) => {
   const [isInputVisible, setIsInputVisible] = useState(true);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
   const onValueChange = (value: string) => {
     if (value === "city") {
       setIsInputVisible(true);
@@ -47,30 +42,37 @@ export const LocationInput = ({ value, onChange }: EventLocationProps) => {
   };
 
   return (
-    <div className="space-y-1.5">
-      <Label>Location</Label>
+    <LoadScript
+      id="google-map-script-loader"
+      googleMapsApiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    >
+      <div className="space-y-1.5">
+        <Label>Location</Label>
 
-      <div className="relative">
-        <Tabs
-          value={isInputVisible ? "city" : ""}
-          onValueChange={onValueChange}
-          className="absolute left-1.5 top-1.5 z-50"
-        >
-          <TabsList>
-            <TabsTrigger value="city">City</TabsTrigger>
-            <TabsTrigger value="">Global</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <LocationMap position={value?.position ?? DEFAULT_LAT_LNG} zoom={10} />
-        {isInputVisible && (
-          <div className="absolute inset-x-1.5 bottom-1.5 z-10">
-            {isLoaded && (
+        <div className="relative">
+          <Tabs
+            value={isInputVisible ? "city" : ""}
+            onValueChange={onValueChange}
+            className="absolute left-1.5 top-1.5 z-50"
+          >
+            <TabsList>
+              <TabsTrigger value="city">City</TabsTrigger>
+              <TabsTrigger value="">Global</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <LocationMap
+            position={value?.position ?? DEFAULT_LAT_LNG}
+            zoom={10}
+          />
+          {isInputVisible && (
+            <div className="absolute inset-x-1.5 bottom-1.5 z-10">
               <PlacesAutocomplete value={value} onChange={onChange} />
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </LoadScript>
   );
 };
 
