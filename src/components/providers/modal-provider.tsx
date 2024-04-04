@@ -6,8 +6,6 @@ import { CancelSubscriptionModal } from "../modals/cancel-subscription-modal";
 import { CheckGuestsModal } from "../modals/check-guests-modal";
 import { ChooseThumbnailModal } from "../modals/choose-event-thumbnail";
 import { ConfirmRegistrationModal } from "../modals/confirm-registration-modal";
-import { CreateEventModal } from "../modals/create-event-modal";
-import { DeleteEventModal } from "../modals/delete-event-modal";
 import { DeleteEventImagesModal } from "../modals/delete-images-modal";
 import { EventCapacityModal } from "../modals/event-capacity-modal";
 import { GalleryModal } from "../modals/gallery-modal";
@@ -30,10 +28,8 @@ export const ModalProvider = () => {
 
   return (
     <>
-      <CreateEventModal />
       <ShareEventModal />
       <UploadImagesModal />
-      <DeleteEventModal />
       <DeleteEventImagesModal />
       <GalleryModal />
       <CancelSubscriptionModal />

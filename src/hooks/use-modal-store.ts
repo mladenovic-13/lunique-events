@@ -4,11 +4,9 @@ import { create } from "zustand";
 import { type RouterOutputs } from "@/trpc/shared";
 
 export type ModalType =
-  | "create-event"
   | "share-event"
   | "upload-event-images"
   | "delete-event-images"
-  | "delete-event"
   | "cancel-subscription"
   | "choose-event-thumbnail"
   | "show-guest-list"

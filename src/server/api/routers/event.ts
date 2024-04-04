@@ -12,14 +12,11 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import {
-  createCollection,
   deleteCollection,
   findImages,
   indexImage,
 } from "@/server/aws/rekognition-utils";
 import { deleteS3EventFolder } from "@/server/aws/s3-utils";
-import { createEventSchema } from "@/validation/create-event";
-import { eventSettingsSchema } from "@/validation/event-settings";
 
 const searchRatelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -55,7 +52,7 @@ export const eventRouter = createTRPCRouter({
       return await ctx.db.event.findMany({
         where: {
           ownerId: ctx.session?.user.id,
-          date: {
+          startDate: {
             gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
             lte: input.eventTimeFrame === "past" ? new Date() : undefined,
           },
@@ -80,95 +77,95 @@ export const eventRouter = createTRPCRouter({
         include: { images: { take: 1 }, owner: true, guests: true },
       });
     }),
-  settings: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  // settings: protectedProcedure
+  //   .input(z.object({ id: z.string() }))
+  //   .query(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.eventSettings.findUnique({
-        where: { eventId: input.id },
-        include: { event: true },
-      });
-    }),
-  updateSettings: protectedProcedure
-    .input(
-      eventSettingsSchema.partial().extend({
-        id: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return await ctx.db.eventSettings.findUnique({
+  //       where: { eventId: input.id },
+  //       include: { event: true },
+  //     });
+  //   }),
+  // updateSettings: protectedProcedure
+  //   .input(
+  //     eventSettingsSchema.partial().extend({
+  //       id: z.string(),
+  //     }),
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.event.update({
-        where: {
-          id: input.id,
-          ownerId: ctx.session.user.id,
-        },
-        data: {
-          eventSettings: {
-            update: {
-              isPublic: input.isPublic,
-              isWatermarkHidden: input.isWatermarkHidden,
-            },
-          },
-        },
-      });
-    }),
-  create: protectedProcedure
-    .input(createEventSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return await ctx.db.event.update({
+  //       where: {
+  //         id: input.id,
+  //         ownerId: ctx.session.user.id,
+  //       },
+  //       data: {
+  //         eventSettings: {
+  //           update: {
+  //             isPublic: input.isPublic,
+  //             isWatermarkHidden: input.isWatermarkHidden,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }),
+  // create: protectedProcedure
+  //   .input(createEventSchema)
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      const event = await ctx.db.event.create({
-        data: {
-          ...input,
-          ownerId: ctx.session.user.id,
-          eventSettings: {
-            create: {
-              isPublic: true,
-              isWatermarkHidden: false,
-            },
-          },
-        },
-      });
+  //     const event = await ctx.db.event.create({
+  //       data: {
+  //         ...input,
+  //         ownerId: ctx.session.user.id,
+  //         eventSettings: {
+  //           create: {
+  //             isPublic: true,
+  //             isWatermarkHidden: false,
+  //           },
+  //         },
+  //       },
+  //     });
 
-      await createCollection(ctx.rekognition, event.id);
+  //     await createCollection(ctx.rekognition, event.id);
 
-      return event;
-    }),
-  update: protectedProcedure
-    .input(
-      createEventSchema.partial().extend({
-        id: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return event;
+  //   }),
+  // update: protectedProcedure
+  //   .input(
+  //     createEventSchema.partial().extend({
+  //       id: z.string(),
+  //     }),
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.event.update({
-        where: {
-          id: input.id,
-          ownerId: ctx.session.user.id,
-        },
-        data: {
-          name: input.name,
-          date: input.date,
-          location: input.location,
-        },
-      });
-    }),
+  //     return await ctx.db.event.update({
+  //       where: {
+  //         id: input.id,
+  //         ownerId: ctx.session.user.id,
+  //       },
+  //       data: {
+  //         name: input.name,
+  //         date: input.date,
+  //         location: input.location,
+  //       },
+  //     });
+  //   }),
   getImages: publicProcedure
     .input(
       z.object({

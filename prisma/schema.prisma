@@ -1,190 +1,311 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    limit         Int       @default(0)
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  limit         Int       @default(0)
 
-    Event        Event[]
-    Subscription Subscription?
+  // Event        Event[]
+  Subscription Subscription?
+  Event        Event[]
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
 
 model BillingWebhookEvent {
-    id              String   @id @default(cuid())
-    name            String
-    processed       Boolean  @default(false)
-    body            String
-    processingError String?
-    createdAt       DateTime @default(now())
+  id              String   @id @default(cuid())
+  name            String
+  processed       Boolean  @default(false)
+  body            String
+  processingError String?
+  createdAt       DateTime @default(now())
 }
 
 model Plan {
-    id                 String  @id @default(cuid())
-    productId          Int
-    productName        String?
-    variantId          Int     @unique
-    name               String
-    description        String?
-    price              String
-    isUsageBased       Boolean @default(false)
-    interval           String?
-    intervalCount      Int?
-    trialInterval      String?
-    trialIntervalCount Int?
-    sort               Int?
+  id                 String  @id @default(cuid())
+  productId          Int
+  productName        String?
+  variantId          Int     @unique
+  name               String
+  description        String?
+  price              String
+  isUsageBased       Boolean @default(false)
+  interval           String?
+  intervalCount      Int?
+  trialInterval      String?
+  trialIntervalCount Int?
+  sort               Int?
 
-    features       PlanFeatures?  @relation(fields: [planFeaturesId], references: [id])
-    planFeaturesId String?
-    Subscription   Subscription[]
+  features       PlanFeatures?  @relation(fields: [planFeaturesId], references: [id])
+  planFeaturesId String?
+  Subscription   Subscription[]
 }
 
 model PlanFeatures {
-    id       String  @id @default(cuid())
-    images   Int
-    branding Boolean
+  id       String  @id @default(cuid())
+  images   Int
+  branding Boolean
 
-    Plan Plan[]
+  Plan Plan[]
 }
 
 model Subscription {
-    id                 String  @id @default(cuid())
-    lemonSqueezyId     String  @unique
-    orderId            Int
-    name               String
-    email              String
-    status             String
-    statusFormatted    String
-    renewsAt           String?
-    endsAt             String?
-    trialEndsAt        String?
-    price              String
-    isUsageBased       Boolean @default(false)
-    isPaused           Boolean @default(false)
-    subscriptionItemId Int?
-    user               User    @relation(fields: [userId], references: [id])
-    plan               Plan    @relation(fields: [planId], references: [id])
-    userId             String  @unique
-    planId             String
+  id                 String  @id @default(cuid())
+  lemonSqueezyId     String  @unique
+  orderId            Int
+  name               String
+  email              String
+  status             String
+  statusFormatted    String
+  renewsAt           String?
+  endsAt             String?
+  trialEndsAt        String?
+  price              String
+  isUsageBased       Boolean @default(false)
+  isPaused           Boolean @default(false)
+  subscriptionItemId Int?
+  user               User    @relation(fields: [userId], references: [id])
+  plan               Plan    @relation(fields: [planId], references: [id])
+  userId             String  @unique
+  planId             String
 }
 
-model Event {
-    id       String   @id @default(cuid())
-    name     String
-    date     DateTime
-    location String
+// model Event {
+//   id       String   @id @default(cuid())
+//   name     String
+//   date     DateTime
+//   location String
 
-    owner   User   @relation(fields: [ownerId], references: [id])
-    ownerId String
+//   owner   User   @relation(fields: [ownerId], references: [id])
+//   ownerId String
 
-    eventSettings EventSettings?
-    images        Image[]
-    faces         Face[]
-    guests        Guest[]
+//   eventSettings EventSettings?
+//   images        Image[]
+//   faces         Face[]
+//   guests        Guest[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-    @@index([id, ownerId])
-}
+//   @@index([id, ownerId])
+// }
 
 model Guest {
-    id      String  @id @default(cuid())
-    name    String?
-    email   String? @unique
-    Event   Event?  @relation(fields: [eventId], references: [id])
-    eventId String?
+  id      String  @id @default(cuid())
+  name    String?
+  email   String? @unique
+  // Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
+  Event   Event?  @relation(fields: [eventId], references: [id])
 }
 
 model Face {
-    id             String @id @default(cuid())
-    indexedFaceId  String
-    indexedImageId String
-    imageKey       String
+  id             String @id @default(cuid())
+  indexedFaceId  String
+  indexedImageId String
+  imageKey       String
 
-    // TODO: create Face Image relation
-    Event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId String?
+  // TODO: create Face Image relation
+  // Event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String?
+  Event   Event?  @relation(fields: [eventId], references: [id])
 
-    @@index([eventId])
+  @@index([eventId])
 }
 
 enum ImageType {
-    PNG
-    JPG
+  PNG
+  JPG
 }
 
 model Image {
-    id   String    @id @default(cuid())
-    key  String
-    name String
-    url  String
-    type ImageType
+  id   String    @id @default(cuid())
+  key  String
+  name String
+  url  String
+  type ImageType
 
-    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId String
+  // event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Event     Event    @relation(fields: [eventId], references: [id])
 
-    @@index([eventId])
+  @@index([eventId])
 }
 
 model EventSettings {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    isPublic          Boolean @default(true)
-    isWatermarkHidden Boolean @default(false)
+  isPublic          Boolean @default(true)
+  isWatermarkHidden Boolean @default(false)
 
-    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId String @unique
+  // event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String @unique
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//----
+
+model Calendar {
+  id String @id @default(cuid())
+
+  name        String
+  description String
+  theme       Theme
+  slug        String
+
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId String
+
+  thumbnailUrl String?
+  coverUrl     String?
+}
+
+model Event {
+  id String @id @default(cuid())
+
+  isPublic     Boolean
+  name         String
+  thumbnailUrl String?
+  style        PageStyle @relation(fields: [pageStyleId], references: [id])
+
+  startDate DateTime
+  startTime String
+  endDate   DateTime
+  endTime   String
+  timezone  Timezone @relation(fields: [timezoneId], references: [id])
+
+  location Location @relation(fields: [locationId], references: [id])
+
+  description      String
+  capacityValue    Int?
+  capacityWaitlist Boolean @default(false)
+  requireApproval  Boolean
+  tickets          Boolean
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  images      Image[]
+  faces       Face[]
+  guests      Guest[]
+  pageStyleId String
+  timezoneId  Int
+  locationId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id, ownerId])
+}
+
+model Timezone {
+  id    Int    @id
+  label String
+  value String
+  city  String
+
+  Event Event[]
+}
+
+model PageStyle {
+  id String @id @default(cuid())
+
+  theme Theme
+  font  Font
+  mode  ThemeMode
+
+  Event Event[]
+}
+
+model Location {
+  id String @id @default(cuid())
+
+  placeId       String
+  description   String
+  mainText      String
+  secondaryText String
+  lat           Float
+  lng           Float
+  Calendar      Calendar[]
+  Event         Event[]
+}
+
+enum ThemeMode {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum Font {
+  ROBOTO
+  BOREL
+  LIMELIGHT
+  MALLANNA
+  BAUMANS
+  POTTA_ONE
+}
+
+enum Theme {
+  ZINC
+  SLATE
+  STONE
+  GRAY
+  NEUTRAL
+  RED
+  ROSE
+  ORANGE
+  GREEN
+  BLUE
+  YELLOW
+  VIOLET
 }
