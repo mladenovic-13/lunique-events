@@ -1,5 +1,11 @@
 import { MainPage } from "@/components/layout/main-page";
 
+import { SetUpYourCalendar } from "./_components/set-up-calendar";
+
 export default function CalendarAdminSettingsPage() {
-  return <MainPage>TODO: Manage calendar settings display </MainPage>;
+  return (
+    <MainPage>
+      <SetUpYourCalendar />
+    </MainPage>
+  );
 }
