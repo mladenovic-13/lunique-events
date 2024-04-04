@@ -15,7 +15,6 @@ import { getServerAuthSession } from "@/server/auth";
 import { rekognition } from "@/server/aws/rekognition";
 import { s3 } from "@/server/aws/s3";
 import { db } from "@/server/db";
-
 /**
  * 1. CONTEXT
  *

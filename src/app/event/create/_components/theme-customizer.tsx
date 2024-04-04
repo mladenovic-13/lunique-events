@@ -1,4 +1,5 @@
 import React from "react";
+import { type Font, type Theme, ThemeMode } from "@prisma/client";
 import {
   ChevronsUpDownIcon,
   MoonIcon,
@@ -29,7 +30,8 @@ interface CustomizerProps {
 export const Customizer = ({ value, onChange }: CustomizerProps) => {
   const { resolvedTheme: mode } = useTheme();
 
-  const theme = themes.find((item) => item.name === value.theme) ?? themes[0];
+  const theme =
+    themes.find((item) => item.name.toUpperCase() === value.theme) ?? themes[0];
   const font = fonts.find((item) => item.name === value.font) ?? fonts[0];
 
   return (
@@ -57,7 +59,7 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
             className="grid grid-cols-6 grid-rows-2 place-items-center p-1.5 md:w-fit md:grid-cols-12 md:grid-rows-1 md:gap-1.5"
           >
             {themes.map((theme) => {
-              const isActive = value.theme === theme.name;
+              const isActive = value.theme === theme.name.toUpperCase();
 
               return (
                 <ColorButton
@@ -65,7 +67,7 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
                   onClick={() => {
                     onChange({
                       ...value,
-                      theme: theme.name,
+                      theme: theme.name.toUpperCase() as Theme,
                     });
                   }}
                   colorHslValue={
@@ -118,7 +120,7 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
                   onClick={() =>
                     onChange({
                       ...value,
-                      font: font.name,
+                      font: font.name.toUpperCase() as Font,
                     })
                   }
                   className={cn(
@@ -137,9 +139,13 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
         <Popover>
           <PopoverTrigger className="flex w-full items-center justify-between rounded-md border border-border bg-muted/60 px-2  py-1">
             <span className="flex items-center gap-3  md:gap-5">
-              {value.mode === "light" && <SunIcon className="mx-0.5 size-5" />}
-              {value.mode === "dark" && <MoonIcon className="mx-0.5 size-5 " />}
-              {value.mode === "system" && (
+              {value.mode === ThemeMode.LIGHT && (
+                <SunIcon className="mx-0.5 size-5" />
+              )}
+              {value.mode === ThemeMode.DARK && (
+                <MoonIcon className="mx-0.5 size-5 " />
+              )}
+              {value.mode === ThemeMode.SYSTEM && (
                 <SunMoonIcon className="mx-0.5 size-5 " />
               )}
               <span className="flex flex-col items-start">
@@ -155,10 +161,10 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
           >
             <Button
               variant="outline"
-              onClick={() => onChange({ ...value, mode: "light" })}
+              onClick={() => onChange({ ...value, mode: ThemeMode.LIGHT })}
               className={cn(
                 "min-w-fit border-muted-foreground/20",
-                value.mode === "light" && "border-muted-foreground/60",
+                value.mode === ThemeMode.LIGHT && "border-muted-foreground/60",
               )}
             >
               <SunIcon className="mr-1.5 size-4" />
@@ -166,10 +172,10 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => onChange({ ...value, mode: "dark" })}
+              onClick={() => onChange({ ...value, mode: ThemeMode.DARK })}
               className={cn(
                 "min-w-fit border-muted-foreground/20",
-                value.mode === "dark" && "border-muted-foreground/60",
+                value.mode === ThemeMode.DARK && "border-muted-foreground/60",
               )}
             >
               <MoonIcon className="mr-1.5 size-4" />
@@ -177,10 +183,10 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => onChange({ ...value, mode: "system" })}
+              onClick={() => onChange({ ...value, mode: ThemeMode.SYSTEM })}
               className={cn(
                 "min-w-fit border-muted-foreground/20",
-                value.mode === "system" && "border-muted-foreground/60",
+                value.mode === ThemeMode.SYSTEM && "border-muted-foreground/60",
               )}
             >
               <SunMoonIcon className="mr-1.5 size-4" />

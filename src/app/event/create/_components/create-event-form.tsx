@@ -2,10 +2,14 @@
 
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
 
 import { EventApproval } from "./event-approval";
 import { CalendarSelect } from "./event-calendar-select";
@@ -26,11 +30,23 @@ export const CreateEventForm = () => {
     resolver: zodResolver(eventSchema),
   });
 
+  const { mutate: createEvent } = api.event.create.useMutation();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const onSubmit = (data: EventSchema) => {
-    console.log({ data });
+    createEvent(data, {
+      onSuccess: (event) => {
+        toast({ title: "Event created" });
+        router.push(paths.event.manage.overview(event.id));
+      },
+      onError: () =>
+        toast({ variant: "destructive", title: "Failed to create event" }),
+    });
   };
+
   const onErrors = (errors: unknown) => {
-    alert(JSON.stringify(errors));
+    console.log({ errors });
   };
 
   return (

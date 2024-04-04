@@ -1,4 +1,4 @@
-import { Theme } from "@prisma/client";
+import { Font, Theme, ThemeMode } from "@prisma/client";
 import * as z from "zod";
 
 import { timezones } from "@/lib/timezones";
@@ -11,15 +11,8 @@ const dateTimeSchema = z.object({
 
 const themeSchema = z.object({
   theme: themeNameSchema,
-  font: z.enum([
-    "Roboto",
-    "Borel",
-    "Limelight",
-    "Mallanna",
-    "Baumans",
-    "Potta One",
-  ]),
-  mode: z.enum(["light", "dark", "system"]),
+  font: z.nativeEnum(Font),
+  mode: z.nativeEnum(ThemeMode),
 });
 
 const timezoneSchema = z.object({
@@ -63,9 +56,9 @@ export const defaultValues: EventSchema = {
   name: "",
   description: "",
   theme: {
-    font: "Roboto",
+    font: Font.ROBOTO,
     theme: Theme.ROSE,
-    mode: "system",
+    mode: ThemeMode.SYSTEM,
   },
   startDateTime: {
     date: date,

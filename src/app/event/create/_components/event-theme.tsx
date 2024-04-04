@@ -26,7 +26,8 @@ export const EventTheme = ({ value, onChange }: EventThemeProps) => {
   const [open, setOpen] = useState(false);
 
   const { resolvedTheme: mode } = useTheme();
-  const theme = themes.find((item) => item.name === value.theme) ?? themes[0];
+  const theme =
+    themes.find((item) => item.name.toUpperCase() === value.theme) ?? themes[0];
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>

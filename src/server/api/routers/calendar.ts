@@ -1,6 +1,5 @@
 import { calendarSchema } from "@/app/calendar/create/_components/validation";
-
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const calendarRouter = createTRPCRouter({
   create: protectedProcedure
