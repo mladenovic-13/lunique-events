@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 import { timezones } from "@/lib/timezones";
+import { locationSchema, themeNameSchema } from "@/lib/validation";
 
 const dateTimeSchema = z.object({
   date: z.date(),
@@ -8,20 +9,7 @@ const dateTimeSchema = z.object({
 });
 
 const themeSchema = z.object({
-  theme: z.enum([
-    "zinc",
-    "slate",
-    "stone",
-    "gray",
-    "neutral",
-    "red",
-    "rose",
-    "orange",
-    "green",
-    "blue",
-    "yellow",
-    "violet",
-  ]),
+  theme: themeNameSchema,
   font: z.enum([
     "Roboto",
     "Borel",
@@ -38,17 +26,6 @@ const timezoneSchema = z.object({
   value: z.string(),
   label: z.string(),
   city: z.string(),
-});
-
-const locationSchema = z.object({
-  placeId: z.string(),
-  descripton: z.string(),
-  mainText: z.string(),
-  secondaryText: z.string(),
-  position: z.object({
-    lat: z.number(),
-    lng: z.number(),
-  }),
 });
 
 const capacitySchema = z.object({

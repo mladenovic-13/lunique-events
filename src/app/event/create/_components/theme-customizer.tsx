@@ -1,6 +1,5 @@
-import React, { type HTMLAttributes } from "react";
+import React from "react";
 import {
-  CheckIcon,
   ChevronsUpDownIcon,
   MoonIcon,
   SunIcon,
@@ -8,6 +7,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { ColorButton } from "@/components/buttons/color-button";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -190,42 +190,6 @@ export const Customizer = ({ value, onChange }: CustomizerProps) => {
         </Popover>
       </div>
     </div>
-  );
-};
-
-interface ColorButtonProps extends HTMLAttributes<HTMLButtonElement> {
-  isActive: boolean;
-  colorHslValue: string;
-}
-
-const ColorButton = ({
-  onClick,
-  isActive,
-  className,
-  colorHslValue,
-}: ColorButtonProps) => {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "trasition flex h-full w-full items-center justify-center rounded-full py-1.5 text-[--card-foreground] duration-200 hover:bg-[--card] hover:opacity-90",
-        className,
-      )}
-      style={
-        {
-          "--theme-primary": `hsl(${colorHslValue})`,
-        } as React.CSSProperties
-      }
-    >
-      <span
-        className={cn(
-          "flex size-7 shrink-0 items-center justify-center rounded-full bg-[--theme-primary] transition duration-200",
-          isActive && "scale-110",
-        )}
-      >
-        {isActive && <CheckIcon className="size-4 text-white" />}
-      </span>
-    </button>
   );
 };
 

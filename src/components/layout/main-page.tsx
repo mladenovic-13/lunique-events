@@ -7,7 +7,7 @@ export const MainPage = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(
     <main
       ref={ref}
       className={cn(
-        "mx-auto min-h-96 max-w-4xl space-y-8 p-3 md:space-y-16 md:px-0",
+        "mx-auto min-h-96 max-w-4xl space-y-5 p-3 md:space-y-8 md:px-0",
         className,
       )}
       {...props}
