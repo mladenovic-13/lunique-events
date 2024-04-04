@@ -1,7 +1,7 @@
 import React from "react";
 import { WalletCardsIcon } from "lucide-react";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 const PaymentHistory = () => {
   const payments = [];

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 import { NameAndBio } from "./name-and-bio";
 import { ProfilePicture } from "./profile-picture";

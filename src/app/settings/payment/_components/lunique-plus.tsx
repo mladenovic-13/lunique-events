@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { paths } from "@/routes/paths";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 export const LuniquePlus = () => {
   return (

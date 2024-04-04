@@ -4,7 +4,7 @@ import { SettingsIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 
-import Section from "../../_components/section";
+import Section from "../../../../components/header/section";
 
 const Emails = () => {
   return (
