@@ -12,7 +12,7 @@ import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
 import { EventApproval } from "./event-approval";
-import { CalendarSelect } from "./event-calendar-select";
+import { OrganizationInput } from "./event-calendar-select";
 import { EventCapacity } from "./event-capacity";
 import { EventDateTime } from "./event-date-time";
 import { EventDescription } from "./event-description";
@@ -37,6 +37,7 @@ export const CreateEventForm = () => {
   const onSubmit = (data: EventSchema) => {
     createEvent(data, {
       onSuccess: (event) => {
+        console.log({ event });
         toast({ title: "Event created" });
         router.push(paths.event.manage.overview(event.id));
       },
@@ -73,7 +74,16 @@ export const CreateEventForm = () => {
 
       <div className="space-y-3 md:w-3/5">
         <div className="flex justify-between">
-          <CalendarSelect />
+          <Controller
+            control={methods.control}
+            name="organization"
+            render={({ field }) => (
+              <OrganizationInput
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
           <Controller
             control={methods.control}

@@ -103,7 +103,9 @@ export const eventRouter = createTRPCRouter({
           },
           timezone: {
             create: {
-              ...input.timezone,
+              city: input.timezone.city,
+              label: input.timezone.label,
+              value: input.timezone.value,
             },
           },
         },

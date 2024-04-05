@@ -40,6 +40,7 @@ export const eventSchema = z.object({
   capacity: capacitySchema,
   requireApproval: z.boolean(),
   tickets: z.boolean(),
+  organization: z.string().nullable(),
 });
 
 const date = new Date();
@@ -51,6 +52,7 @@ const timezone =
   timezones[0]!;
 
 export const defaultValues: EventSchema = {
+  organization: null,
   public: true,
   thumbnailUrl: null,
   name: "",

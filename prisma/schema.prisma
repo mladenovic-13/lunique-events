@@ -164,7 +164,7 @@ model Organization {
   thumbnailUrl String?
   coverUrl     String?
 
-  owner   User   @relation(fields: [ownerId], references: [id], name: "ownership")
+  owner   User   @relation(fields: [ownerId], references: [id], name: "ownership", onDelete: Cascade)
   ownerId String
 
   members User[]
@@ -189,14 +189,14 @@ model Event {
   requireApproval  Boolean
   tickets          Boolean
 
-  creator      User         @relation(fields: [userId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id])
+  creator      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   location     Location?    @relation(fields: [locationId], references: [id])
   pageStyle    PageStyle?   @relation(fields: [pageStyleId], references: [id])
   timezone     Timezone?    @relation(fields: [timezoneId], references: [id])
 
   pageStyleId    String?
-  timezoneId     Int?
+  timezoneId     String?
   locationId     String?
   organizationId String
   userId         String
@@ -210,7 +210,7 @@ model Event {
 }
 
 model Timezone {
-  id    Int     @id
+  id    String  @id @default(cuid())
   label String
   value String
   city  String
