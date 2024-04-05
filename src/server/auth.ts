@@ -39,6 +39,9 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
+
+const PrismaDBAdapter = PrismaAdapter(db);
+
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, user }) => ({
@@ -49,7 +52,20 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
-  adapter: PrismaAdapter(db),
+  adapter: {
+    ...PrismaDBAdapter,
+    createUser: async (user) => {
+      const createdUser = await PrismaDBAdapter.createUser!(user);
+
+      await db.personalCalendar.create({
+        data: {
+          userId: createdUser.id,
+        },
+      });
+
+      return createdUser;
+    },
+  },
   providers: [
     EmailProvider({
       server: {
