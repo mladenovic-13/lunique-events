@@ -34,17 +34,18 @@ model Session {
 }
 
 model User {
-  id               String            @id @default(cuid())
-  name             String?
-  email            String?           @unique
-  emailVerified    DateTime?
-  image            String?
-  limit            Int               @default(0)
-  accounts         Account[]
-  sessions         Session[]
-  Subscription     Subscription?
-  calendar         Calendar[]
-  personalCalendar PersonalCalendar?
+  id                    String         @id @default(cuid())
+  name                  String?
+  email                 String?        @unique
+  emailVerified         DateTime?
+  image                 String?
+  limit                 Int            @default(0)
+  accounts              Account[]
+  sessions              Session[]
+  Subscription          Subscription?
+  events                Event[]
+  ownerOfOrganizations  Organization[] @relation(name: "ownership")
+  memberOfOrganizations Organization[]
 }
 
 model VerificationToken {
@@ -153,33 +154,21 @@ model EventSettings {
   updatedAt         DateTime @updatedAt
 }
 
-model PersonalCalendar {
-  id String @id @default(cuid())
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
-
-  Event Event[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Calendar {
+model Organization {
   id           String  @id @default(cuid())
+  isPersonal   Boolean
   name         String
-  description  String
-  theme        Theme
-  slug         String
+  description  String?
+  theme        Theme?
+  slug         String?
   thumbnailUrl String?
   coverUrl     String?
 
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
-  location   Location? @relation(fields: [locationId], references: [id])
-  locationId String?
+  owner   User   @relation(fields: [ownerId], references: [id], name: "ownership")
+  ownerId String
 
-  Event Event[]
+  members User[]
+  events  Event[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -200,27 +189,24 @@ model Event {
   requireApproval  Boolean
   tickets          Boolean
 
-  calendar  Calendar   @relation(fields: [calendarId], references: [id])
-  location  Location?  @relation(fields: [locationId], references: [id])
-  pageStyle PageStyle? @relation(fields: [pageStyleId], references: [id])
-  timezone  Timezone?  @relation(fields: [timezoneId], references: [id])
+  creator      User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  location     Location?    @relation(fields: [locationId], references: [id])
+  pageStyle    PageStyle?   @relation(fields: [pageStyleId], references: [id])
+  timezone     Timezone?    @relation(fields: [timezoneId], references: [id])
 
-  ownerId     String?
-  pageStyleId String?
-  timezoneId  Int?
-  locationId  String?
-  calendarId  String
+  pageStyleId    String?
+  timezoneId     Int?
+  locationId     String?
+  organizationId String
+  userId         String
 
   faces  Face[]
   guests Guest[]
   images Image[]
 
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  PersonalCalendar   PersonalCalendar? @relation(fields: [personalCalendarId], references: [id])
-  personalCalendarId String?
-
-  @@index([id, ownerId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Timezone {
@@ -240,14 +226,13 @@ model PageStyle {
 }
 
 model Location {
-  id            String     @id @default(cuid())
+  id            String  @id @default(cuid())
   placeId       String
   description   String
   mainText      String
   secondaryText String
   lat           Float
   lng           Float
-  Calendar      Calendar[]
   Event         Event[]
 }
 

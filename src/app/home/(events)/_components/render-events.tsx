@@ -43,11 +43,10 @@ type RenderTimeframeProps = {
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const { data, isLoading } = api.event.list.useQuery(
-    { eventTimeFrame: timeframe },
-    { enabled: !!timeframe },
-  );
-  console.log(data?.length);
+  // const { data, isLoading } = api.event.list.useQuery(
+  //   { eventTimeFrame: timeframe },
+  //   { enabled: !!timeframe },
+  // );
 
   let demoData = null;
   timeframe === "past"
@@ -55,7 +54,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     : timeframe === "upcoming"
       ? (demoData = upcomingAndPastEvents.upcoming)
       : [];
-  if (isLoading) return <Skeleton />;
+  // if (isLoading) return <Skeleton />;
 
   if (demoData && demoData.length === 0)
     return <NoEvents timeframe={timeframe} />;

@@ -57,9 +57,15 @@ export const authOptions: NextAuthOptions = {
     createUser: async (user) => {
       const createdUser = await PrismaDBAdapter.createUser!(user);
 
-      await db.personalCalendar.create({
+      await db.organization.create({
         data: {
-          userId: createdUser.id,
+          isPersonal: true,
+          name: "Personal",
+          owner: {
+            connect: {
+              id: createdUser.id,
+            },
+          },
         },
       });
 

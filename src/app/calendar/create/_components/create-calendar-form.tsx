@@ -12,7 +12,6 @@ import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
 import { CoverInput } from "./cover-input";
-import { LocationInput } from "./location-input";
 import { SlugInput } from "./slug-input";
 import { ThemeInput } from "./theme-input";
 import { ThumbnailInput } from "./thumbnail-input";
@@ -28,12 +27,12 @@ export const CreateCalendarForm = () => {
     defaultValues: defaultValues,
   });
 
-  const { mutate: createCalendar } = api.calendar.create.useMutation();
+  const { mutate: organizationCreate } = api.organization.create.useMutation();
   const { toast } = useToast();
   const router = useRouter();
 
   const onSubmit = (data: CalendarSchema) => {
-    createCalendar(data, {
+    organizationCreate(data, {
       onSuccess: (calendar) => {
         toast({ title: "Calendar created" });
         router.push(paths.calendar.manage.events(calendar.id));
@@ -99,15 +98,6 @@ export const CreateCalendarForm = () => {
               name="slug"
               render={({ field }) => (
                 <SlugInput value={field.value} onChange={field.onChange} />
-              )}
-            />
-          </div>
-          <div className="flex-1">
-            <Controller
-              control={methods.control}
-              name="location"
-              render={({ field }) => (
-                <LocationInput value={field.value} onChange={field.onChange} />
               )}
             />
           </div>

@@ -44,11 +44,34 @@ export const eventRouter = createTRPCRouter({
       // TODO: implement rekognition
       // await createCollection(ctx.rekognition, event.id);
 
+      const personalOrganization = await ctx.db.organization.findFirst({
+        where: {
+          AND: {
+            ownerId: ctx.session.user.id,
+            isPersonal: true,
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!personalOrganization)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Personal organization not found",
+        });
+
       return await ctx.db.event.create({
         data: {
-          owner: {
+          creator: {
             connect: {
               id: ctx.session.user.id,
+            },
+          },
+          organization: {
+            connect: {
+              id: personalOrganization.id,
             },
           },
           name: input.name,
@@ -86,29 +109,45 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  list: protectedProcedure
-    .input(
-      z.object({
-        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  // list: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+  //     }),
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.event.findMany({
-        where: {
-          ownerId: ctx.session?.user.id,
-          startDate: {
-            gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
-            lte: input.eventTimeFrame === "past" ? new Date() : undefined,
-          },
+  //     return [];
+  //     // return await ctx.db.event.findMany({
+  //     //   where: {
+  //     //     ownerId: ctx.session?.user.id,
+  //     //     startDate: {
+  //     //       gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
+  //     //       lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+  //     //     },
+  //     //   },
+  //     //   include: { images: { take: 1 }, owner: true, guests: true },
+  //     // });
+  //   }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const organization = await ctx.db.organization.findFirst({
+      where: {
+        AND: {
+          isPersonal: true,
+          ownerId: ctx.session.user.id,
         },
-        include: { images: { take: 1 }, owner: true, guests: true },
-      });
-    }),
+      },
+      include: {
+        events: true,
+      },
+    });
+
+    return organization?.events;
+  }),
   get: publicProcedure
     .input(
       z.object({
@@ -121,10 +160,11 @@ export const eventRouter = createTRPCRouter({
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
 
-      return await ctx.db.event.findFirst({
-        where: { id: input.id },
-        include: { images: { take: 1 }, owner: true, guests: true },
-      });
+      return null;
+      // return await ctx.db.event.findFirst({
+      //   where: { id: input.id },
+      //   include: { images: { take: 1 }, owner: true, guests: true },
+      // });
     }),
   // settings: protectedProcedure
   //   .input(z.object({ id: z.string() }))
@@ -409,11 +449,12 @@ export const eventRouter = createTRPCRouter({
       await deleteCollection(ctx.rekognition, id);
       await deleteS3EventFolder(ctx.s3, ctx.session.user.id, id);
 
-      return await ctx.db.event.delete({
-        where: {
-          ownerId: ctx.session.user.id,
-          id: input.id,
-        },
-      });
+      return null;
+      // return await ctx.db.event.delete({
+      //   where: {
+      //     ownerId: ctx.session.user.id,
+      //     id: input.id,
+      //   },
+      // });
     }),
 });
