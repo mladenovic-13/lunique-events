@@ -13,7 +13,7 @@ import {
 export const EventsFilter = () => {
   return (
     <section>
-      <div className="flex w-36 items-center justify-center space-x-1.5 rounded-lg bg-muted p-1 text-sm">
+      <div className="flex h-7 w-36 items-center justify-center space-x-1.5 rounded-lg bg-muted p-1 text-sm">
         <Select>
           <SelectTrigger className="h-6 w-[180px] border-none p-2 focus:ring-0 ">
             <SelectValue placeholder="Filter Events" />

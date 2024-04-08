@@ -6,12 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const ViewTabs = () => {
   return (
     <Tabs defaultValue="account" className="">
-      <TabsList className="h-8">
-        <TabsTrigger value="account">
-          <TableIcon size={14} />
+      <TabsList className="h-8 ">
+        <TabsTrigger value="account" className="p-2">
+          <TableIcon size={12} />
         </TabsTrigger>
-        <TabsTrigger value="password">
-          <ListIcon size={14} />
+        <TabsTrigger value="password" className="p-2">
+          <ListIcon size={12} />
         </TabsTrigger>
       </TabsList>
       <TabsContent value="account"></TabsContent>
