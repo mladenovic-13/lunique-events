@@ -18,7 +18,7 @@ type EventWithOwnerAndImages = Event & {
 };
 
 type EventWithOwner = Event & {
-  owner: User;
+  creator: User;
 };
 
 type Place = {
