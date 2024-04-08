@@ -53,8 +53,8 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle className="text-2xl font-bold">{event.name}</CardTitle>
-      {event.owner && (
-        <CardDescription>Hosted by {event.owner.name}</CardDescription>
+      {event.creator && (
+        <CardDescription>Hosted by {event.creator.name}</CardDescription>
       )}
     </CardHeader>
     <CardContent className="space-y-5">

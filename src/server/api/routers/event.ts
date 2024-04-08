@@ -162,6 +162,9 @@ export const eventRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+        include: {
+          creator: true,
+        },
       });
     }),
   // settings: protectedProcedure
