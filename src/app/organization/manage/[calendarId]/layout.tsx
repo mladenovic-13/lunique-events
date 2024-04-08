@@ -18,23 +18,23 @@ export default async function ManageCalendarLayout({
   const items = [
     {
       title: "Events",
-      href: paths.calendar.manage.events(calendarId),
+      href: paths.organization.manage.events(calendarId),
     },
     {
       title: "People",
-      href: paths.calendar.manage.people(calendarId),
+      href: paths.organization.manage.people(calendarId),
     },
     {
       title: "Newsletter",
-      href: paths.calendar.manage.newsletter(calendarId),
+      href: paths.organization.manage.newsletter(calendarId),
     },
     {
       title: "Insights",
-      href: paths.calendar.manage.insights(calendarId),
+      href: paths.organization.manage.insights(calendarId),
     },
     {
       title: "Settings",
-      href: paths.calendar.manage.settings.display(calendarId),
+      href: paths.organization.manage.settings.display(calendarId),
     },
   ];
 
@@ -44,10 +44,13 @@ export default async function ManageCalendarLayout({
         <div className="mx-auto max-w-4xl md:pt-3">
           <ManageNav
             items={items}
-            navigateBack={{ label: "Calendars", href: paths.home.calendars }}
+            navigateBack={{
+              label: "Organizations",
+              href: paths.home.organizations,
+            }}
             navigateForward={{
-              label: "Calendar Page",
-              href: paths.calendar.landing.root("ID"),
+              label: "Organization Page",
+              href: paths.organization.landing.root("ID"),
             }}
           />
         </div>

@@ -1,9 +1,9 @@
-import { calendarSchema } from "@/app/calendar/create/_components/validation";
+import { organizationSchema } from "@/app/organization/create/_components/validation";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const organizationRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(calendarSchema)
+    .input(organizationSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.organization.create({
         data: {

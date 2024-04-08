@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  CalendarIcon,
+  Building2Icon,
   CompassIcon,
   SearchIcon,
   TicketIcon,
@@ -25,9 +25,9 @@ const links = [
     Icon: TicketIcon,
   },
   {
-    label: "Calendars",
-    href: paths.home.calendars,
-    Icon: CalendarIcon,
+    label: "Organizations",
+    href: paths.home.organizations,
+    Icon: Building2Icon,
   },
   {
     label: "Explore",

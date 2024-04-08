@@ -3,7 +3,7 @@ import * as z from "zod";
 
 import { themeNameSchema } from "@/lib/validation";
 
-export const calendarSchema = z.object({
+export const organizationSchema = z.object({
   name: z.string(),
   description: z.string(),
   theme: themeNameSchema,
@@ -12,9 +12,9 @@ export const calendarSchema = z.object({
   coverImageUrl: z.string().nullable(),
 });
 
-export type CalendarSchema = z.infer<typeof calendarSchema>;
+export type OrganizationSchema = z.infer<typeof organizationSchema>;
 
-export const defaultValues: CalendarSchema = {
+export const defaultValues: OrganizationSchema = {
   name: "",
   description: "",
   slug: "",

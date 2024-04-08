@@ -16,14 +16,14 @@ import { SlugInput } from "./slug-input";
 import { ThemeInput } from "./theme-input";
 import { ThumbnailInput } from "./thumbnail-input";
 import {
-  type CalendarSchema,
-  calendarSchema,
   defaultValues,
+  type OrganizationSchema,
+  organizationSchema,
 } from "./validation";
 
-export const CreateCalendarForm = () => {
+export const CreateOrganizationForm = () => {
   const methods = useForm({
-    resolver: zodResolver(calendarSchema),
+    resolver: zodResolver(organizationSchema),
     defaultValues: defaultValues,
   });
 
@@ -31,14 +31,17 @@ export const CreateCalendarForm = () => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const onSubmit = (data: CalendarSchema) => {
+  const onSubmit = (data: OrganizationSchema) => {
     organizationCreate(data, {
-      onSuccess: (calendar) => {
-        toast({ title: "Calendar created" });
-        router.push(paths.calendar.manage.events(calendar.id));
+      onSuccess: (organization) => {
+        toast({ title: "Organization created" });
+        router.push(paths.organization.manage.events(organization.id));
       },
       onError: () =>
-        toast({ variant: "destructive", title: "Failed to create calendar" }),
+        toast({
+          variant: "destructive",
+          title: "Failed to create organization",
+        }),
     });
   };
 
@@ -71,7 +74,7 @@ export const CreateCalendarForm = () => {
 
           <Input
             type="text"
-            placeholder="Calendar Name"
+            placeholder="Organization Name"
             className="rounded-none border-x-0 border-b border-t-0 bg-transparent text-xl shadow-none transition duration-300 hover:border-accent-foreground/80 focus-visible:ring-0 md:text-2xl"
             {...methods.register("name")}
           />
@@ -104,7 +107,7 @@ export const CreateCalendarForm = () => {
         </div>
       </Card>
       <Button className="w-full md:w-fit" type="submit">
-        Create Calendar
+        Create Organization
       </Button>
     </form>
   );
