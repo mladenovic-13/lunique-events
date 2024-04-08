@@ -5,6 +5,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
+import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
 import {
   createTRPCRouter,
@@ -12,14 +13,11 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import {
-  createCollection,
   deleteCollection,
   findImages,
   indexImage,
 } from "@/server/aws/rekognition-utils";
 import { deleteS3EventFolder } from "@/server/aws/s3-utils";
-import { createEventSchema } from "@/validation/create-event";
-import { eventSettingsSchema } from "@/validation/event-settings";
 
 const searchRatelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -40,29 +38,118 @@ const ratelimit = new Ratelimit({
 });
 
 export const eventRouter = createTRPCRouter({
-  list: protectedProcedure
-    .input(
-      z.object({
-        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  create: protectedProcedure
+    .input(eventSchema)
+    .mutation(async ({ ctx, input }) => {
+      // TODO: implement rekognition
+      // await createCollection(ctx.rekognition, event.id);
 
-      return await ctx.db.event.findMany({
+      const personalOrganization = await ctx.db.organization.findFirst({
         where: {
-          ownerId: ctx.session?.user.id,
-          date: {
-            gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
-            lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+          AND: {
+            ownerId: ctx.session.user.id,
+            isPersonal: true,
           },
         },
-        include: { images: { take: 1 }, owner: true, guests: true },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!personalOrganization)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Personal organization not found",
+        });
+
+      return await ctx.db.event.create({
+        data: {
+          creator: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+          organization: {
+            connect: {
+              id: personalOrganization.id,
+            },
+          },
+          name: input.name,
+          description: input.description,
+          startDate: input.startDateTime.date,
+          startTime: input.startDateTime.time,
+          endDate: input.endDateTime.date,
+          endTime: input.endDateTime.time,
+          isPublic: input.public,
+          requireApproval: input.requireApproval,
+          tickets: input.tickets,
+          capacityValue: input.capacity.value,
+          capacityWaitlist: input.capacity.waitlist,
+          thumbnailUrl: input.thumbnailUrl,
+          location: input.location
+            ? {
+                create: {
+                  placeId: input.location.placeId,
+                  description: input.location.descripton,
+                  mainText: input.location.mainText,
+                  secondaryText: input.location.secondaryText,
+                  lat: input.location.position.lat,
+                  lng: input.location.position.lng,
+                },
+              }
+            : undefined,
+          pageStyle: {
+            create: { ...input.theme },
+          },
+          timezone: {
+            create: {
+              city: input.timezone.city,
+              label: input.timezone.label,
+              value: input.timezone.value,
+            },
+          },
+        },
       });
     }),
+  // list: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+  //     }),
+  //   )
+  //   .query(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
+
+  //     return [];
+  //     // return await ctx.db.event.findMany({
+  //     //   where: {
+  //     //     ownerId: ctx.session?.user.id,
+  //     //     startDate: {
+  //     //       gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
+  //     //       lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+  //     //     },
+  //     //   },
+  //     //   include: { images: { take: 1 }, owner: true, guests: true },
+  //     // });
+  //   }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const organization = await ctx.db.organization.findFirst({
+      where: {
+        AND: {
+          isPersonal: true,
+          ownerId: ctx.session.user.id,
+        },
+      },
+      include: {
+        events: true,
+      },
+    });
+
+    return organization?.events;
+  }),
   get: publicProcedure
     .input(
       z.object({
@@ -75,100 +162,101 @@ export const eventRouter = createTRPCRouter({
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
 
-      return await ctx.db.event.findFirst({
-        where: { id: input.id },
-        include: { images: { take: 1 }, owner: true, guests: true },
-      });
+      return null;
+      // return await ctx.db.event.findFirst({
+      //   where: { id: input.id },
+      //   include: { images: { take: 1 }, owner: true, guests: true },
+      // });
     }),
-  settings: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  // settings: protectedProcedure
+  //   .input(z.object({ id: z.string() }))
+  //   .query(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.eventSettings.findUnique({
-        where: { eventId: input.id },
-        include: { event: true },
-      });
-    }),
-  updateSettings: protectedProcedure
-    .input(
-      eventSettingsSchema.partial().extend({
-        id: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return await ctx.db.eventSettings.findUnique({
+  //       where: { eventId: input.id },
+  //       include: { event: true },
+  //     });
+  //   }),
+  // updateSettings: protectedProcedure
+  //   .input(
+  //     eventSettingsSchema.partial().extend({
+  //       id: z.string(),
+  //     }),
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.event.update({
-        where: {
-          id: input.id,
-          ownerId: ctx.session.user.id,
-        },
-        data: {
-          eventSettings: {
-            update: {
-              isPublic: input.isPublic,
-              isWatermarkHidden: input.isWatermarkHidden,
-            },
-          },
-        },
-      });
-    }),
-  create: protectedProcedure
-    .input(createEventSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return await ctx.db.event.update({
+  //       where: {
+  //         id: input.id,
+  //         ownerId: ctx.session.user.id,
+  //       },
+  //       data: {
+  //         eventSettings: {
+  //           update: {
+  //             isPublic: input.isPublic,
+  //             isWatermarkHidden: input.isWatermarkHidden,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }),
+  // create: protectedProcedure
+  //   .input(createEventSchema)
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      const event = await ctx.db.event.create({
-        data: {
-          ...input,
-          ownerId: ctx.session.user.id,
-          eventSettings: {
-            create: {
-              isPublic: true,
-              isWatermarkHidden: false,
-            },
-          },
-        },
-      });
+  //     const event = await ctx.db.event.create({
+  //       data: {
+  //         ...input,
+  //         ownerId: ctx.session.user.id,
+  //         eventSettings: {
+  //           create: {
+  //             isPublic: true,
+  //             isWatermarkHidden: false,
+  //           },
+  //         },
+  //       },
+  //     });
 
-      await createCollection(ctx.rekognition, event.id);
+  //     await createCollection(ctx.rekognition, event.id);
 
-      return event;
-    }),
-  update: protectedProcedure
-    .input(
-      createEventSchema.partial().extend({
-        id: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+  //     return event;
+  //   }),
+  // update: protectedProcedure
+  //   .input(
+  //     createEventSchema.partial().extend({
+  //       id: z.string(),
+  //     }),
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const { success } = await ratelimit.limit(ctx.session.user.id);
+  //     if (!success) {
+  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     }
 
-      return await ctx.db.event.update({
-        where: {
-          id: input.id,
-          ownerId: ctx.session.user.id,
-        },
-        data: {
-          name: input.name,
-          date: input.date,
-          location: input.location,
-        },
-      });
-    }),
+  //     return await ctx.db.event.update({
+  //       where: {
+  //         id: input.id,
+  //         ownerId: ctx.session.user.id,
+  //       },
+  //       data: {
+  //         name: input.name,
+  //         date: input.date,
+  //         location: input.location,
+  //       },
+  //     });
+  //   }),
   getImages: publicProcedure
     .input(
       z.object({
@@ -363,11 +451,12 @@ export const eventRouter = createTRPCRouter({
       await deleteCollection(ctx.rekognition, id);
       await deleteS3EventFolder(ctx.s3, ctx.session.user.id, id);
 
-      return await ctx.db.event.delete({
-        where: {
-          ownerId: ctx.session.user.id,
-          id: input.id,
-        },
-      });
+      return null;
+      // return await ctx.db.event.delete({
+      //   where: {
+      //     ownerId: ctx.session.user.id,
+      //     id: input.id,
+      //   },
+      // });
     }),
 });

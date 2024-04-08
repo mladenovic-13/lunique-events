@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeMode } from "@prisma/client";
 import { useTheme } from "next-themes";
 
 import { fonts } from "@/lib/fonts";
@@ -21,7 +22,7 @@ const createCSSVariables = (theme: Theme, mode: Mode) => {
   // eslint-disable-next-line
   // @ts-ignore
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  Object.entries(theme.cssVars[mode]).forEach(([key, value]) => {
+  Object.entries(theme.cssVars[mode.toLowerCase()]).forEach(([key, value]) => {
     const name = `--${key}`;
 
     // eslint-disable-next-line
@@ -40,7 +41,9 @@ export function ThemeWrapper({
   config,
   className,
 }: ThemeWrapperProps) {
-  const theme = themes.find((item) => item.name === config.theme) ?? themes[0];
+  const theme =
+    themes.find((item) => item.name.toUpperCase() === config.theme) ??
+    themes[0];
 
   const font =
     fonts.find(
@@ -54,7 +57,7 @@ export function ThemeWrapper({
       style={
         createCSSVariables(
           theme,
-          config.mode === "system"
+          config.mode === ThemeMode.SYSTEM
             ? (resolvedTheme as Mode)
             : (config.mode as Mode),
         ) as React.CSSProperties

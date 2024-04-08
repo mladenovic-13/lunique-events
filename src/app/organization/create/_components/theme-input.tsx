@@ -19,14 +19,14 @@ export const ThemeInput = ({ value, onChange }: ThemeInputProps) => {
       <Label>Theme Color</Label>
       <div className="flex gap-1.5">
         {themes.map((theme) => {
-          const isActive = value === theme.name;
+          const isActive = value.toLowerCase() === theme.name;
 
           return (
             <ColorButton
               size="sm"
               key={theme.name}
               onClick={() => {
-                onChange(theme.name);
+                onChange(theme.name.toUpperCase());
               }}
               colorHslValue={
                 theme.activeColor[mode === "dark" ? "dark" : "light"]

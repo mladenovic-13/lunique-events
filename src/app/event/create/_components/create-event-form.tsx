@@ -2,13 +2,17 @@
 
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
 
 import { EventApproval } from "./event-approval";
-import { CalendarSelect } from "./event-calendar-select";
+import { OrganizationInput } from "./event-calendar-select";
 import { EventCapacity } from "./event-capacity";
 import { EventDateTime } from "./event-date-time";
 import { EventDescription } from "./event-description";
@@ -26,11 +30,24 @@ export const CreateEventForm = () => {
     resolver: zodResolver(eventSchema),
   });
 
+  const { mutate: createEvent } = api.event.create.useMutation();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const onSubmit = (data: EventSchema) => {
-    console.log({ data });
+    createEvent(data, {
+      onSuccess: (event) => {
+        console.log({ event });
+        toast({ title: "Event created" });
+        router.push(paths.event.manage.overview(event.id));
+      },
+      onError: () =>
+        toast({ variant: "destructive", title: "Failed to create event" }),
+    });
   };
+
   const onErrors = (errors: unknown) => {
-    alert(JSON.stringify(errors));
+    console.log({ errors });
   };
 
   return (
@@ -57,7 +74,16 @@ export const CreateEventForm = () => {
 
       <div className="space-y-3 md:w-3/5">
         <div className="flex justify-between">
-          <CalendarSelect />
+          <Controller
+            control={methods.control}
+            name="organization"
+            render={({ field }) => (
+              <OrganizationInput
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
           <Controller
             control={methods.control}

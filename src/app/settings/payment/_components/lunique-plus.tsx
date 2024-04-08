@@ -16,7 +16,7 @@ export const LuniquePlus = () => {
           support, and more."
       />
       <div className="flex flex-col space-y-3">
-        <Link href={paths.calendar.manage.settings.plus("changeThisID!!!")}>
+        <Link href={paths.organization.manage.settings.plus("changeThisID!!!")}>
           <Card className="h-fit transition-all hover:cursor-pointer hover:bg-muted">
             <CardHeader className="flex px-4 py-3">
               <div className="flex items-center justify-between">

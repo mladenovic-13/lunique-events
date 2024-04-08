@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { type Event } from "@prisma/client";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 import {
   ArrowUpRightIcon,
@@ -8,7 +9,6 @@ import {
   ChevronsRightIcon,
   CircleIcon,
   CopyIcon,
-  Plus,
   Users2Icon,
 } from "lucide-react";
 import { ArrowRight, MapPinIcon } from "lucide-react";
@@ -16,7 +16,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
-import { OpenModalButton } from "@/components/buttons/open-modal-button";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -27,13 +26,13 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { images } from "@/lib/data";
 import { awsImageLoader } from "@/lib/image-loader";
 import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { cn } from "@/lib/utils";
 import imagePlaceholder from "@/public/images/you-are-invited.jpeg";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
 
 import { type Timeframe } from "./events";
 
@@ -44,11 +43,10 @@ type RenderTimeframeProps = {
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const { data, isLoading } = api.event.list.useQuery(
-    { eventTimeFrame: timeframe },
-    { enabled: !!timeframe },
-  );
-  console.log(data?.length);
+  // const { data, isLoading } = api.event.list.useQuery(
+  //   { eventTimeFrame: timeframe },
+  //   { enabled: !!timeframe },
+  // );
 
   let demoData = null;
   timeframe === "past"
@@ -56,7 +54,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     : timeframe === "upcoming"
       ? (demoData = upcomingAndPastEvents.upcoming)
       : [];
-  if (isLoading) return <Skeleton />;
+  // if (isLoading) return <Skeleton />;
 
   if (demoData && demoData.length === 0)
     return <NoEvents timeframe={timeframe} />;
@@ -87,7 +85,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
               <div className="flex items-center gap-3 px-3 md:hidden">
                 <EventDate date={event.date} />
               </div>
-              <EventCard event={event} onClick={() => setIsSheetOpen(true)} />
+              {/* <EventCard event={event} onClick={() => setIsSheetOpen(true)} /> */}
             </div>
           </div>
         ))}
@@ -155,12 +153,12 @@ const EventDate = ({ date }: { date: Date }) => (
 );
 
 interface EventCardProps {
-  event: RouterOutputs["event"]["list"][number];
+  event: Event;
   onClick: () => void;
 }
 
 export const EventCard = ({ event, onClick }: EventCardProps) => {
-  const { images, name, location } = event;
+  const { name, locationId: location } = event;
 
   function generateRandomTime() {
     // Generating random hour between 7 and 19
@@ -261,11 +259,7 @@ const NoEvents = ({ timeframe: timeFrame }: { timeframe: Timeframe }) => {
           </p>
         </div>
       )}
-      {timeFrame === "upcoming" && (
-        <OpenModalButton modalType="create-event" variant="outline">
-          <Plus className="mr-1.5 size-5" /> Create Event
-        </OpenModalButton>
-      )}
+      {timeFrame === "upcoming" && <Button>Create Event</Button>}
     </div>
   );
 };

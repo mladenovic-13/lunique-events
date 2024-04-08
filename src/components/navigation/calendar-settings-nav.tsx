@@ -21,37 +21,37 @@ export const CalendarSettingsNav = ({ id }: { id: string }) => {
   const items = [
     {
       label: "Display",
-      href: paths.calendar.manage.settings.display(id),
+      href: paths.organization.manage.settings.display(id),
       Icon: WandIcon,
     },
     {
       label: "Payment",
-      href: paths.calendar.manage.settings.payment(id),
+      href: paths.organization.manage.settings.payment(id),
       Icon: DollarSignIcon,
     },
     {
       label: "Options",
-      href: paths.calendar.manage.settings.options(id),
+      href: paths.organization.manage.settings.options(id),
       Icon: Settings2Icon,
     },
     {
       label: "Admins",
-      href: paths.calendar.manage.settings.admins(id),
+      href: paths.organization.manage.settings.admins(id),
       Icon: UserCheckIcon,
     },
     {
       label: "Tags",
-      href: paths.calendar.manage.settings.tags(id),
+      href: paths.organization.manage.settings.tags(id),
       Icon: TagIcon,
     },
     {
       label: "Embed",
-      href: paths.calendar.manage.settings.embed(id),
+      href: paths.organization.manage.settings.embed(id),
       Icon: FileTextIcon,
     },
     {
       label: "Events Plus",
-      href: paths.calendar.manage.settings.plus(id),
+      href: paths.organization.manage.settings.plus(id),
       Icon: SparklesIcon,
     },
   ];

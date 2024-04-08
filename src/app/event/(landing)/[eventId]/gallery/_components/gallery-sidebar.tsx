@@ -59,11 +59,11 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
     </CardHeader>
     <CardContent className="space-y-5">
       <div className="flex items-center gap-3">
-        <CalendarIcon date={event.date} />
+        <CalendarIcon date={event.startDate} />
         <div className="flex flex-col text-xl font-medium">
-          <span>{format(event.date, "eeee, d MMMM")}</span>
+          <span>{format(event.startDate, "eeee, d MMMM")}</span>
           <span className="text-sm text-muted-foreground">
-            {event.date.getFullYear()}
+            {event.startDate.getFullYear()}
           </span>
         </div>
       </div>
@@ -72,9 +72,9 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
           <MapPinIcon />
         </div>
         <div>
-          <p className="text-xl font-medium">{event.location}</p>
+          <p className="text-xl font-medium">{event.locationId}</p>
           <span className="text-sm text-muted-foreground">
-            {event.location}
+            {event.locationId}
           </span>
         </div>
       </div>

@@ -2,34 +2,58 @@
 
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
 
 import { CoverInput } from "./cover-input";
-import { LocationInput } from "./location-input";
 import { SlugInput } from "./slug-input";
 import { ThemeInput } from "./theme-input";
 import { ThumbnailInput } from "./thumbnail-input";
 import {
-  type CalendarSchema,
-  calendarSchema,
   defaultValues,
+  type OrganizationSchema,
+  organizationSchema,
 } from "./validation";
 
-export const CreateCalendarForm = () => {
+export const CreateOrganizationForm = () => {
   const methods = useForm({
-    resolver: zodResolver(calendarSchema),
+    resolver: zodResolver(organizationSchema),
     defaultValues: defaultValues,
   });
 
-  const onSubmit = (data: CalendarSchema) => {
-    console.log(data);
+  const { mutate: organizationCreate } = api.organization.create.useMutation();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const onSubmit = (data: OrganizationSchema) => {
+    organizationCreate(data, {
+      onSuccess: (organization) => {
+        toast({ title: "Organization created" });
+        router.push(paths.organization.manage.events(organization.id));
+      },
+      onError: () =>
+        toast({
+          variant: "destructive",
+          title: "Failed to create organization",
+        }),
+    });
+  };
+
+  const onErrors = (errors: unknown) => {
+    console.log({ errors });
   };
 
   return (
-    <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-5">
+    <form
+      onSubmit={methods.handleSubmit(onSubmit, onErrors)}
+      className="space-y-5"
+    >
       <Card>
         <Controller
           control={methods.control}
@@ -50,7 +74,7 @@ export const CreateCalendarForm = () => {
 
           <Input
             type="text"
-            placeholder="Calendar Name"
+            placeholder="Organization Name"
             className="rounded-none border-x-0 border-b border-t-0 bg-transparent text-xl shadow-none transition duration-300 hover:border-accent-foreground/80 focus-visible:ring-0 md:text-2xl"
             {...methods.register("name")}
           />
@@ -80,18 +104,11 @@ export const CreateCalendarForm = () => {
               )}
             />
           </div>
-          <div className="flex-1">
-            <Controller
-              control={methods.control}
-              name="location"
-              render={({ field }) => (
-                <LocationInput value={field.value} onChange={field.onChange} />
-              )}
-            />
-          </div>
         </div>
       </Card>
-      <Button className="w-full md:w-fit">Create Calendar</Button>
+      <Button className="w-full md:w-fit" type="submit">
+        Create Organization
+      </Button>
     </form>
   );
 };

@@ -40,10 +40,10 @@ type Font = {
 };
 
 export const fonts: Font[] = [
-  { name: "Roboto", className: roboto.className },
-  { name: "Borel", className: averiaLibre.className },
-  { name: "Limelight", className: limelight.className },
-  { name: "Mallanna", className: mallanna.className },
-  { name: "Baumans", className: baumans.className },
-  { name: "Potta One", className: pottaOne.className },
+  { name: "ROBOTO", className: roboto.className },
+  { name: "BOREL", className: averiaLibre.className },
+  { name: "LIMELIGHT", className: limelight.className },
+  { name: "MALLANNA", className: mallanna.className },
+  { name: "BAUMANS", className: baumans.className },
+  { name: "POTTA_ONE", className: pottaOne.className },
 ];

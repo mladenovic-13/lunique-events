@@ -2,6 +2,7 @@ import { eventRouter } from "@/server/api/routers/event";
 import { createTRPCRouter } from "@/server/api/trpc";
 
 import { billingRouter } from "./routers/billing";
+import { organizationRouter } from "./routers/organization";
 import { s3Router } from "./routers/s3";
 
 /**
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   event: eventRouter,
   s3: s3Router,
   billing: billingRouter,
+  organization: organizationRouter,
 });
 
 // export type definition of API

@@ -2,7 +2,7 @@ const roots = {
   landing: "/",
   home: "/home",
   event: "/event",
-  calendar: "/calendar",
+  organization: "/organization",
   settings: "/settings",
   user: "/user",
   signin: "/sign-in",
@@ -15,7 +15,7 @@ export const paths = {
   landing: {
     root: roots.landing,
   },
-  home: { root: "/home", calendars: roots.home + "/calendars" },
+  home: { root: "/home", organizations: roots.home + "/organizations" },
   event: {
     root: roots.event,
     landing: {
@@ -37,33 +37,35 @@ export const paths = {
         roots.event + "/manage" + `/${id}` + "/settings",
     },
   },
-  calendar: {
-    root: roots.calendar,
+  organization: {
+    root: roots.organization,
     landing: {
-      root: (id: string) => roots.calendar + `/${id}`,
+      root: (id: string) => roots.organization + `/${id}`,
     },
     manage: {
-      events: (id: string) => roots.calendar + "/manage" + `/${id}` + "/events",
+      events: (id: string) =>
+        roots.organization + "/manage" + `/${id}` + "/events",
       insights: (id: string) =>
-        roots.calendar + "/manage" + `/${id}` + "/insights",
+        roots.organization + "/manage" + `/${id}` + "/insights",
       newsletter: (id: string) =>
-        roots.calendar + "/manage" + `/${id}` + "/newsletter",
-      people: (id: string) => roots.calendar + "/manage" + `/${id}` + "/people",
+        roots.organization + "/manage" + `/${id}` + "/newsletter",
+      people: (id: string) =>
+        roots.organization + "/manage" + `/${id}` + "/people",
       settings: {
         admins: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/admins",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/admins",
         display: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/display",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/display",
         embed: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/embed",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/embed",
         options: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/options",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/options",
         payment: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/payment",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/payment",
         plus: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/plus",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/plus",
         tags: (id: string) =>
-          roots.calendar + "/manage" + `/${id}` + "/settings" + "/tags",
+          roots.organization + "/manage" + `/${id}` + "/settings" + "/tags",
       },
     },
   },
