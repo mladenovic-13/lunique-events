@@ -44,22 +44,33 @@ export const eventRouter = createTRPCRouter({
       // TODO: implement rekognition
       // await createCollection(ctx.rekognition, event.id);
 
-      const personalOrganization = await ctx.db.organization.findFirst({
-        where: {
-          AND: {
-            ownerId: ctx.session.user.id,
-            isPersonal: true,
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
+      let organization = null;
 
-      if (!personalOrganization)
+      if (input.organization) {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            ownerId: ctx.session.user.id,
+            id: input.organization,
+          },
+        });
+      } else {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            AND: {
+              ownerId: ctx.session.user.id,
+              isPersonal: true,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+
+      if (!organization)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Personal organization not found",
+          message: "Organization not found",
         });
 
       return await ctx.db.event.create({
@@ -71,7 +82,7 @@ export const eventRouter = createTRPCRouter({
           },
           organization: {
             connect: {
-              id: personalOrganization.id,
+              id: organization.id,
             },
           },
           name: input.name,
@@ -111,45 +122,30 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  // list: protectedProcedure
-  //   .input(
-  //     z.object({
-  //       eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
-  //     }),
-  //   )
-  //   .query(async ({ ctx, input }) => {
-  //     const { success } = await ratelimit.limit(ctx.session.user.id);
-  //     if (!success) {
-  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-  //     }
+  list: protectedProcedure
+    .input(
+      z.object({
+        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { success } = await ratelimit.limit(ctx.session.user.id);
+      if (!success) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      }
 
-  //     return [];
-  //     // return await ctx.db.event.findMany({
-  //     //   where: {
-  //     //     ownerId: ctx.session?.user.id,
-  //     //     startDate: {
-  //     //       gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
-  //     //       lte: input.eventTimeFrame === "past" ? new Date() : undefined,
-  //     //     },
-  //     //   },
-  //     //   include: { images: { take: 1 }, owner: true, guests: true },
-  //     // });
-  //   }),
-  list: protectedProcedure.query(async ({ ctx }) => {
-    const organization = await ctx.db.organization.findFirst({
-      where: {
-        AND: {
-          isPersonal: true,
-          ownerId: ctx.session.user.id,
+      return await ctx.db.event.findMany({
+        where: {
+          organization: {
+            ownerId: ctx.session.user.id,
+          },
+          startDate: {
+            gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
+            lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+          },
         },
-      },
-      include: {
-        events: true,
-      },
-    });
-
-    return organization?.events;
-  }),
+      });
+    }),
   get: publicProcedure
     .input(
       z.object({
@@ -162,11 +158,11 @@ export const eventRouter = createTRPCRouter({
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
 
-      return null;
-      // return await ctx.db.event.findFirst({
-      //   where: { id: input.id },
-      //   include: { images: { take: 1 }, owner: true, guests: true },
-      // });
+      return await ctx.db.event.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
     }),
   // settings: protectedProcedure
   //   .input(z.object({ id: z.string() }))
@@ -208,55 +204,7 @@ export const eventRouter = createTRPCRouter({
   //       },
   //     });
   //   }),
-  // create: protectedProcedure
-  //   .input(createEventSchema)
-  //   .mutation(async ({ ctx, input }) => {
-  //     const { success } = await ratelimit.limit(ctx.session.user.id);
-  //     if (!success) {
-  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-  //     }
 
-  //     const event = await ctx.db.event.create({
-  //       data: {
-  //         ...input,
-  //         ownerId: ctx.session.user.id,
-  //         eventSettings: {
-  //           create: {
-  //             isPublic: true,
-  //             isWatermarkHidden: false,
-  //           },
-  //         },
-  //       },
-  //     });
-
-  //     await createCollection(ctx.rekognition, event.id);
-
-  //     return event;
-  //   }),
-  // update: protectedProcedure
-  //   .input(
-  //     createEventSchema.partial().extend({
-  //       id: z.string(),
-  //     }),
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     const { success } = await ratelimit.limit(ctx.session.user.id);
-  //     if (!success) {
-  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-  //     }
-
-  //     return await ctx.db.event.update({
-  //       where: {
-  //         id: input.id,
-  //         ownerId: ctx.session.user.id,
-  //       },
-  //       data: {
-  //         name: input.name,
-  //         date: input.date,
-  //         location: input.location,
-  //       },
-  //     });
-  //   }),
   getImages: publicProcedure
     .input(
       z.object({
@@ -451,12 +399,13 @@ export const eventRouter = createTRPCRouter({
       await deleteCollection(ctx.rekognition, id);
       await deleteS3EventFolder(ctx.s3, ctx.session.user.id, id);
 
-      return null;
-      // return await ctx.db.event.delete({
-      //   where: {
-      //     ownerId: ctx.session.user.id,
-      //     id: input.id,
-      //   },
-      // });
+      return await ctx.db.event.delete({
+        where: {
+          organization: {
+            ownerId: ctx.session.user.id,
+          },
+          id: input.id,
+        },
+      });
     }),
 });

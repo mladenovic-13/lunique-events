@@ -28,7 +28,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { images } from "@/lib/data";
 import { awsImageLoader } from "@/lib/image-loader";
-import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { cn } from "@/lib/utils";
 import imagePlaceholder from "@/public/images/you-are-invited.jpeg";
 import { paths } from "@/routes/paths";
@@ -43,30 +42,23 @@ type RenderTimeframeProps = {
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  // const { data, isLoading } = api.event.list.useQuery(
-  //   { eventTimeFrame: timeframe },
-  //   { enabled: !!timeframe },
-  // );
+  const { data, isLoading } = api.event.list.useQuery(
+    { eventTimeFrame: timeframe },
+    { enabled: !!timeframe },
+  );
 
-  let demoData = null;
-  timeframe === "past"
-    ? (demoData = upcomingAndPastEvents.past)
-    : timeframe === "upcoming"
-      ? (demoData = upcomingAndPastEvents.upcoming)
-      : [];
-  // if (isLoading) return <Skeleton />;
+  if (isLoading) return <Skeleton />;
 
-  if (demoData && demoData.length === 0)
-    return <NoEvents timeframe={timeframe} />;
+  if (data?.length === 0) return <NoEvents timeframe={timeframe} />;
 
-  if (demoData && demoData.length !== 0)
+  if (data && data?.length !== 0)
     return (
       <div className="flex flex-col gap-6 md:gap-0">
-        {demoData.map((event, idx) => (
+        {data.map((event, idx) => (
           <div key={idx} className="flex w-full gap-4 md:h-[250px] md:gap-0">
             <div className="flex w-1/12 flex-col justify-between md:w-1/3 md:flex-row">
               <div className="hidden px-1.5 md:block">
-                <EventDate date={event.date} />
+                <EventDate date={event.startDate} />
               </div>
               <div className="flex h-full flex-col items-center md:px-10  ">
                 <CircleIcon className="size-4 text-border" />
@@ -75,7 +67,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
                     "relative -mb-6 h-[105%] w-[1px] border-l-2 border-dashed border-border/80 md:mb-0",
                   )}
                 >
-                  {idx === demoData.length - 1 && (
+                  {idx === data.length - 1 && (
                     <div className="absolute -right-2.5 top-0 h-full w-5 bg-gradient-to-b from-background/0 via-background/70 to-background"></div>
                   )}
                 </div>
@@ -83,9 +75,9 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
             </div>
             <div className="-mt-2 flex-1 space-y-3">
               <div className="flex items-center gap-3 px-3 md:hidden">
-                <EventDate date={event.date} />
+                <EventDate date={event.startDate} />
               </div>
-              {/* <EventCard event={event} onClick={() => setIsSheetOpen(true)} /> */}
+              <EventCard event={event} onClick={() => setIsSheetOpen(true)} />
             </div>
           </div>
         ))}
@@ -160,27 +152,6 @@ interface EventCardProps {
 export const EventCard = ({ event, onClick }: EventCardProps) => {
   const { name, locationId: location } = event;
 
-  function generateRandomTime() {
-    // Generating random hour between 7 and 19
-    let hours = Math.floor(Math.random() * (19 - 7 + 1)) + 7;
-    // Generating random minutes either 0 or 30
-    const minutes = Math.random() < 0.5 ? 0 : 30;
-
-    // Determining AM/PM
-    const period = hours < 12 ? "AM" : "PM";
-
-    // If hours is greater than 12, convert it to 12-hour format
-    if (hours > 12) {
-      hours -= 12;
-    }
-
-    // Formatting hours and minutes
-    const formattedHours = (hours < 10 ? "0" : "") + hours;
-    const formattedMinutes = minutes === 0 ? "00" : "30";
-
-    // Returning formatted time with AM/PM
-    return formattedHours + ":" + formattedMinutes + " " + period;
-  }
   return (
     <Card
       onClick={onClick}
@@ -188,9 +159,7 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
     >
       <CardHeader className="flex flex-1 flex-col justify-around gap-3 py-3">
         <CardDescription className="hidden md:block">
-          {/* TODO: add real time */}
-          {/* 1:00 PM */}
-          {generateRandomTime()}
+          {event.startTime}
         </CardDescription>
         <CardTitle className="cursor-pointer text-lg font-semibold">
           {name}
@@ -204,7 +173,7 @@ export const EventCard = ({ event, onClick }: EventCardProps) => {
             <Users2Icon className="size-4" />
             {/* TODO: add real guests number */}
             {/* No Guests */}
-            {Math.floor(Math.random() * 100 + 2)} Guests
+            15 Guests
           </p>
         </div>
         <Link
