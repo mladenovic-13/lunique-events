@@ -42,6 +42,7 @@ export const paths = {
     landing: {
       root: (id: string) => roots.organization + `/${id}`,
     },
+    create: roots.organization + "/create",
     manage: {
       events: (id: string) =>
         roots.organization + "/manage" + `/${id}` + "/events",
