@@ -2,14 +2,14 @@
 
 import { cn } from "@/lib/utils";
 
-import { EventContact } from "./event-contact";
-import { EventDetails } from "./event-details";
-import { EventGallery } from "./event-gallery";
-import { EventGuests } from "./event-guests";
-import { EventHostedBy } from "./event-hosted-by";
-import { EventLocation } from "./event-location";
-import { EventThumbnail } from "./event-thumbnail";
-import { RegisterGuest } from "./register-guest";
+// import { EventContact } from "./event-contact";
+// import { EventDetails } from "./event-details";
+// import { EventGallery } from "./event-gallery";
+// import { EventGuests } from "./event-guests";
+// import { EventHostedBy } from "./event-hosted-by";
+// import { EventLocation } from "./event-location";
+// import { EventThumbnail } from "./event-thumbnail";
+// import { RegisterGuest } from "./register-guest";
 
 export const EventPageContent = ({
   isMobile = false,
@@ -24,29 +24,29 @@ export const EventPageContent = ({
       )}
     >
       <div className={cn("space-y-5 md:w-2/5", isMobile && "w-full md:w-full")}>
-        <EventThumbnail />
+        {/* <EventThumbnail /> */}
         <div
           className={cn(
             "hidden space-y-5 md:block",
             isMobile && "hidden md:hidden",
           )}
         >
-          <EventHostedBy />
-          <EventGuests />
-          <EventContact />
+          {/* <EventHostedBy /> */}
+          {/* <EventGuests /> */}
+          {/* <EventContact /> */}
         </div>
       </div>
       <div className={cn("space-y-5 md:w-3/5", isMobile && "w-full md:w-full")}>
-        <EventDetails />
-        <RegisterGuest />
-        <EventGallery />
-        <EventLocation />
+        {/* <EventDetails /> */}
+        {/* <RegisterGuest /> */}
+        {/* <EventGallery /> */}
+        {/* <EventLocation /> */}
         <div
           className={cn("space-y-5 md:hidden", isMobile && "block md:block")}
         >
-          <EventHostedBy />
-          <EventGuests />
-          <EventContact />
+          {/* <EventHostedBy /> */}
+          {/* <EventGuests /> */}
+          {/* <EventContact /> */}
         </div>
       </div>
     </div>

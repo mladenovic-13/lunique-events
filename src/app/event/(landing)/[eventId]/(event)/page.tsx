@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { MainPage } from "@/components/layout/main-page";
 import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
@@ -23,36 +24,38 @@ export default async function EventPage({
   if (!event) notFound();
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5 p-3 pb-10 md:flex md:gap-5 md:space-y-0">
-      <div className="space-y-5 md:w-2/5">
-        <EventThumbnail src={event.thumbnailUrl} />
-        <div className="hidden space-y-5 md:block">
-          <EventHostedBy name={event.creator.name ?? "Unknown"} />
-          <EventGuests guests={event.guests} />
-          <EventContact />
+    <MainPage>
+      <div className="space-y-5 p-3 pb-10 md:flex md:gap-5 md:space-y-0">
+        <div className="space-y-5 md:w-2/5">
+          <EventThumbnail src={event.thumbnailUrl} />
+          <div className="hidden space-y-5 md:block">
+            <EventHostedBy name={event.creator.name ?? "Unknown"} />
+            <EventGuests guests={event.guests} />
+            <EventContact />
+          </div>
+        </div>
+        <div className="space-y-5 md:w-3/5">
+          <EventDetails
+            name={event.name}
+            host={event.creator.name ?? "Unknown"}
+            startDate={event.startDate}
+            location={event.location?.secondaryText ?? "Unknown"}
+          />
+          <RegisterGuest />
+          <EventGallery />
+          <EventLocation
+            lat={event.location?.lat}
+            lng={event.location?.lng}
+            mainText={event.location?.mainText}
+            secondaryText={event.location?.secondaryText}
+          />
+          <div className="space-y-5 md:hidden">
+            <EventHostedBy name={event.creator.name ?? "Unknown"} />
+            <EventGuests guests={event.guests} />
+            <EventContact />
+          </div>
         </div>
       </div>
-      <div className="space-y-5 md:w-3/5">
-        <EventDetails
-          name={event.name}
-          host={event.creator.name ?? "Unknown"}
-          startDate={event.startDate}
-          location={event.location?.secondaryText ?? "Unknown"}
-        />
-        <RegisterGuest />
-        <EventGallery />
-        <EventLocation
-          lat={event.location?.lat}
-          lng={event.location?.lng}
-          mainText={event.location?.mainText}
-          secondaryText={event.location?.secondaryText}
-        />
-        <div className="space-y-5 md:hidden">
-          <EventHostedBy name={event.creator.name ?? "Unknown"} />
-          <EventGuests guests={event.guests} />
-          <EventContact />
-        </div>
-      </div>
-    </div>
+    </MainPage>
   );
 }
