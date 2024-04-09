@@ -144,6 +144,17 @@ export const eventRouter = createTRPCRouter({
             lte: input.eventTimeFrame === "past" ? new Date() : undefined,
           },
         },
+        include: {
+          organization: {
+            select: {
+              owner: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
     }),
   get: publicProcedure
