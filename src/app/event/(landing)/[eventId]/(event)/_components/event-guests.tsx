@@ -1,11 +1,20 @@
+import { type Guest } from "@prisma/client";
+
 import { EventSection } from "./event-section";
 
-const GOING = 2 as const;
-
-export const EventGuests = () => {
+export const EventGuests = ({ guests }: { guests: Guest[] }) => {
   return (
-    <EventSection heading={`${GOING} Going`}>
-      <div className="text-sm">Nikola Mladenovic and Luka Stojadinovic</div>
+    <EventSection heading={`${guests.length} Going`}>
+      {guests.length !== 0 && (
+        <ul className="text-sm">
+          {guests.map((guest) => (
+            <li key={guest.id}>{guest.name}</li>
+          ))}
+        </ul>
+      )}
+      {guests.length === 0 && (
+        <p className="text-xs text-muted-foreground">No guests yet.</p>
+      )}
     </EventSection>
   );
 };

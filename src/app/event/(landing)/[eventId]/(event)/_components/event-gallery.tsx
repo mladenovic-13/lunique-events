@@ -42,10 +42,11 @@ export const EventGallery = () => {
         {images.slice(0, 6).map((image, idx) => (
           <AspectRatio key={idx} ratio={1 / 1} className="rounded-md">
             <Image
-              fill
+              width={100}
+              height={100}
               src={image}
               alt=""
-              className="rounded-md object-cover"
+              className="aspect-square rounded-md object-cover"
             />
           </AspectRatio>
         ))}
