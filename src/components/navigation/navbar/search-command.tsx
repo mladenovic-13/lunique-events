@@ -1,3 +1,5 @@
+"use client";
+
 import { type Dispatch, type SetStateAction, useEffect } from "react";
 import { PlusCircleIcon, SettingsIcon, User2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,8 +14,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { paths } from "@/routes/paths";
+import { api } from "@/trpc/react";
 
 interface SearchCommandProps {
   isOpen: boolean;
@@ -21,6 +23,13 @@ interface SearchCommandProps {
 }
 
 export const SearchCommand = ({ isOpen, setIsOpen }: SearchCommandProps) => {
+  const { data: upcomingEvents } = api.event.list.useQuery({
+    eventTimeFrame: "upcoming",
+  });
+  const { data: pastEvents } = api.event.list.useQuery({
+    eventTimeFrame: "past",
+  });
+
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -56,23 +65,35 @@ export const SearchCommand = ({ isOpen, setIsOpen }: SearchCommandProps) => {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Upcoming Events">
-          {upcomingAndPastEvents.upcoming.map((event) => (
-            <CommandItem key={event.id} className="flex items-center gap-3">
-              <CustomCalendarIcon size="sm" date={event.date} />
+          {upcomingEvents?.map((event) => (
+            <CommandItem
+              key={event.id}
+              className="flex items-center gap-3"
+              onSelect={() =>
+                router.push(paths.event.manage.overview(event.id))
+              }
+            >
+              <CustomCalendarIcon size="sm" date={event.startDate} />
               <span className="font-medium">{event.name}</span>
               <span className="text-xs text-muted-foreground">
-                Hosted By {event.owner.name}
+                Hosted By {event.organization.owner.name}
               </span>
             </CommandItem>
           ))}
         </CommandGroup>
         <CommandGroup heading="Past Events">
-          {upcomingAndPastEvents.past.map((event) => (
-            <CommandItem key={event.id} className="flex items-center gap-3">
-              <CustomCalendarIcon size="sm" date={event.date} />
+          {pastEvents?.map((event) => (
+            <CommandItem
+              key={event.id}
+              className="flex items-center gap-3"
+              onSelect={() =>
+                router.push(paths.event.manage.overview(event.id))
+              }
+            >
+              <CustomCalendarIcon size="sm" date={event.startDate} />
               <span className="font-medium">{event.name}</span>
               <span className="text-xs text-muted-foreground">
-                Hosted By {event.owner.name}
+                Hosted By {event.organization.owner.name}
               </span>
             </CommandItem>
           ))}

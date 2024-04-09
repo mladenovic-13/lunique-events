@@ -10,6 +10,7 @@ import Link from "next/link";
 import { type Session } from "next-auth";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { CommandShortcut } from "@/components/ui/command";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import logoImg from "@/public/logo.png";
 import { paths } from "@/routes/paths";
@@ -71,11 +72,11 @@ export const PrivateNavbar = ({ session }: { session: Session }) => {
       <div className="flex items-center gap-3 md:gap-5">
         <div className="flex items-center md:gap-1.5">
           <Button
-            size="icon"
             variant="ghost"
-            className="text-muted-foreground duration-200"
+            className="flex items-center px-3 text-muted-foreground duration-200"
             onClick={() => setIsSearchOpen(true)}
           >
+            <CommandShortcut className="mr-1.5">⌘K</CommandShortcut>
             <SearchIcon className="size-4" />
           </Button>
           <NotificationsPopover />
