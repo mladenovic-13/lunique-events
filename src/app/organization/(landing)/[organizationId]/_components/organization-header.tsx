@@ -29,7 +29,6 @@ export const OrganizationHeader = () => {
       <div>
         <h1 className="text-2xl font-semibold">Calendar theme test</h1>
       </div>
-      <Separator className="hidden md:block" />
     </section>
   );
 };
