@@ -8,6 +8,6 @@ export type Timeframe = "upcoming" | "past";
 
 export const Events = () => {
   const searchParams = useSearchParams();
-  const timeframe = searchParams.get("tab") ?? "upcoming";
+  const timeframe = searchParams.get("tab") ?? "";
   return <RenderTimeframe timeframe={timeframe as Timeframe} />;
 };
