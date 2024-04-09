@@ -1,5 +1,5 @@
 import { EventSection } from "./event-section";
 
-export const EventHostedBy = () => {
-  return <EventSection heading="Hosted By">Nikola Mladenovic</EventSection>;
+export const EventHostedBy = ({ name }: { name: string }) => {
+  return <EventSection heading="Hosted By">{name}</EventSection>;
 };

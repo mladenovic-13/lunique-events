@@ -53,7 +53,7 @@ export const CreateEventForm = () => {
   return (
     <form
       onSubmit={methods.handleSubmit(onSubmit, onErrors)}
-      className="w-full space-y-5 md:flex md:flex-1 md:gap-5"
+      className="w-full space-y-5 md:flex md:flex-1 md:gap-5 md:space-y-0"
     >
       <div className="space-y-3 md:col-span-1 md:flex-1">
         <Controller

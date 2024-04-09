@@ -164,6 +164,11 @@ export const eventRouter = createTRPCRouter({
         },
         include: {
           creator: true,
+          guests: true,
+          location: true,
+          organization: true,
+          timezone: true,
+          pageStyle: true,
         },
       });
     }),

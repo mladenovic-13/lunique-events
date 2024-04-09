@@ -41,11 +41,22 @@ type RenderTimeframeProps = {
 
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
 
   const { data, isLoading } = api.event.list.useQuery(
     { eventTimeFrame: timeframe },
     { enabled: !!timeframe },
   );
+
+  const handleSheetOpen = (event: Event) => {
+    setIsSheetOpen(true);
+    setCurrentEvent(event);
+  };
+
+  const handleSheetClose = () => {
+    setIsSheetOpen(false);
+    setCurrentEvent(null);
+  };
 
   if (isLoading) return <Skeleton />;
 
@@ -77,12 +88,12 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
               <div className="flex items-center gap-3 px-3 md:hidden">
                 <EventDate date={event.startDate} />
               </div>
-              <EventCard event={event} onClick={() => setIsSheetOpen(true)} />
+              <EventCard event={event} onClick={() => handleSheetOpen(event)} />
             </div>
           </div>
         ))}
 
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <Sheet open={isSheetOpen} onOpenChange={handleSheetClose}>
           <SheetContent
             side="right"
             close={false}
@@ -106,7 +117,7 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
                   Copy Link
                 </Button>
                 <Link
-                  href={paths.event.landing.root("ID")}
+                  href={paths.event.landing.root(currentEvent?.id ?? "")}
                   className={buttonVariants({
                     variant: "secondary",
                     size: "sm",
