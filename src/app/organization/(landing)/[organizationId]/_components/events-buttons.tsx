@@ -1,11 +1,32 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { PlusIcon } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import router from "next/router";
 
+import { type Mode } from "@/components/layout/timeline";
 import { Button } from "@/components/ui/button";
 
-import { ViewTabs } from "./view-tabs";
+import { type ViewMode, ViewTabs } from "./view-tabs";
 
-export const EventsButtons = () => {
+interface EventButtonsProps {
+  mode: ViewMode;
+  onValueChange: (value: ViewMode) => void;
+}
+const viewModes: ViewMode[] = ["card", "list"];
+
+export const EventsButtons = ({ mode, onValueChange }: EventButtonsProps) => {
+  const viewMode = useSearchParams().get("viewMode");
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (viewMode && viewModes.includes(viewMode as ViewMode)) return;
+
+    const query = new URLSearchParams();
+    query.set("viewMode", "card");
+    router.replace(`${pathname}?${query.toString()}`, { scroll: false });
+  }, [viewMode, pathname, router]);
+
   return (
     <section className="flex justify-between">
       <div>
@@ -17,7 +38,7 @@ export const EventsButtons = () => {
           <p className="text-sm font-normal">Add Event</p>
         </Button>
         <div className="">
-          <ViewTabs />
+          <ViewTabs value={mode as ViewMode} onValueChange={onValueChange} />
         </div>
       </div>
     </section>

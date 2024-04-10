@@ -5,7 +5,7 @@ import { CircleIcon } from "lucide-react";
 import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { cn } from "@/lib/utils";
 
-type Mode = "compact" | "regular";
+export type Mode = "compact" | "regular" | "list";
 
 interface TimelineProps {
   date: Date;

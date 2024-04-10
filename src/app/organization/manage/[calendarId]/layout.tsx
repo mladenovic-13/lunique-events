@@ -50,7 +50,7 @@ export default async function ManageCalendarLayout({
             }}
             navigateForward={{
               label: "Organization Page",
-              href: paths.organization.landing.root("ID"),
+              href: paths.organization.landing.root(calendarId),
             }}
           />
         </div>
