@@ -1,7 +1,9 @@
 "use client";
 
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,48 +29,88 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
 import {
   type RegistrationData,
   registrationDefaultValues,
   registrationSchema,
-} from "./validation";
+} from "@/validation/register-guest";
 
-export const RegisterGuest = () => {
+export const RegisterGuest = ({ eventId }: { eventId: string }) => {
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
+
   return (
     <Card>
       <CardHeader className="rounded-t-lg bg-card-foreground/5 px-3 py-2">
         <CardTitle className="text-sm">Registration</CardTitle>
       </CardHeader>
       <CardContent className="p-3">
-        Welcome! To join the event, please register below.
+        {!isRegistered && (
+          <p>Welcome! To join the event, please register below.</p>
+        )}
+        {isRegistered && <p>You have successfully registered for the event</p>}
       </CardContent>
-      <CardFooter className="p-3">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="w-full">Register</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-sm">
-            <DialogHeader>
-              <DialogTitle>Your info</DialogTitle>
-            </DialogHeader>
+      {!isRegistered && (
+        <CardFooter className="p-3">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-full">Register</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-sm">
+              <DialogHeader>
+                <DialogTitle>Your info</DialogTitle>
+              </DialogHeader>
 
-            <RegistrationForm />
-          </DialogContent>
-        </Dialog>
-      </CardFooter>
+              <RegistrationForm
+                eventId={eventId}
+                onSuccess={() => {
+                  setIsRegistered(true);
+                  setIsOpen(false);
+                  router.refresh();
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        </CardFooter>
+      )}
     </Card>
   );
 };
 
-const RegistrationForm = () => {
+interface RegistrationFormProps {
+  eventId: string;
+  onSuccess: (args: { name?: string | null; email?: string | null }) => void;
+}
+
+const RegistrationForm = ({ onSuccess, eventId }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: registrationDefaultValues,
   });
 
+  const { mutate: registerGuest } = api.guest.create.useMutation();
+
+  const { toast } = useToast();
+
   const onSubmit = (values: RegistrationData) => {
-    console.log({ values });
+    registerGuest(
+      { eventId, ...values },
+      {
+        onSuccess: (guest) => {
+          onSuccess({ name: guest?.name, email: guest?.email });
+          toast({ title: "You have successfully registered for the event" });
+        },
+        onError: () =>
+          toast({
+            variant: "destructive",
+            title: "Failed to register for event",
+          }),
+      },
+    );
   };
 
   return (
@@ -80,7 +122,7 @@ const RegistrationForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name*</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Your name" {...field} />
                 </FormControl>

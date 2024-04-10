@@ -41,7 +41,7 @@ export default async function EventPage({
             startDate={event.startDate}
             location={event.location?.secondaryText ?? "Unknown"}
           />
-          <RegisterGuest />
+          <RegisterGuest eventId={eventId} />
           <EventGallery />
           <EventLocation
             lat={event.location?.lat}
