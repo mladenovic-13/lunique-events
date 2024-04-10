@@ -3,20 +3,27 @@ import { ArrowUpRightIcon } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import thumbImg from "@/public/images/stripeLogo.png";
 
-export const OrganizationHeader = () => {
+interface OrganizationHeaderProps {
+  imageSrc?: string | null;
+  organizationName?: string | null;
+}
+
+export const OrganizationHeader = ({
+  imageSrc,
+  organizationName,
+}: OrganizationHeaderProps) => {
   return (
     <section className="space-y-2 px-4">
       <div className="flex justify-between ">
         <div className="-mt-9 rounded-xl bg-background p-1">
           <Image
             alt=""
-            src={thumbImg}
-            width={64}
-            height={64}
-            className="rounded-lg md:size-20"
+            src={imageSrc ? imageSrc : thumbImg}
+            width={200}
+            height={200}
+            className="rounded-lg object-cover md:size-20"
           />
         </div>
         <div>
@@ -27,7 +34,13 @@ export const OrganizationHeader = () => {
         </div>
       </div>
       <div>
-        <h1 className="text-2xl font-semibold">Calendar theme test</h1>
+        <h1 className="text-2xl font-semibold">
+          {organizationName ? (
+            <p>{organizationName}</p>
+          ) : (
+            <p>Organization name not fetched</p>
+          )}
+        </h1>
       </div>
     </section>
   );

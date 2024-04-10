@@ -1,21 +1,30 @@
 import React from "react";
 import { ListIcon, TableIcon } from "lucide-react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { type Mode } from "@/components/layout/timeline";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const ViewTabs = () => {
+export type ViewMode = "card" | "list";
+interface ViewTabsProps {
+  value: ViewMode;
+  onValueChange: (value: ViewMode) => void;
+}
+
+export const ViewTabs = ({ value, onValueChange }: ViewTabsProps) => {
+  const defaultValue: ViewMode = "card";
   return (
-    <Tabs defaultValue="account" className="">
+    <Tabs
+      defaultValue={defaultValue}
+      onValueChange={(value) => onValueChange(value as ViewMode)}
+    >
       <TabsList className="h-8 ">
-        <TabsTrigger value="account" className="p-2">
+        <TabsTrigger value="card" className="p-2">
           <TableIcon size={12} />
         </TabsTrigger>
-        <TabsTrigger value="password" className="p-2">
+        <TabsTrigger value="list" className="p-2">
           <ListIcon size={12} />
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="account"></TabsContent>
-      <TabsContent value="password"></TabsContent>
     </Tabs>
   );
 };
