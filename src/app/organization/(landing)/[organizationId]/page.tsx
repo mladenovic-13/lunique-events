@@ -1,18 +1,16 @@
 "use client";
-import { useEffect } from "react";
+
 import {
   useParams,
   usePathname,
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import { z } from "zod";
 
 import { EventTimeframeTabs } from "@/app/home/(events)/_components/event-date-tabs";
 import { Timeline } from "@/components/layout/timeline";
 import { Calendar } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
-import { event } from "@/lib/data";
 import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { api } from "@/trpc/react";
 
@@ -89,9 +87,7 @@ export default function CalendarPage() {
                           key={idx}
                           date={event.startDate}
                           event={event}
-                          location={event.location}
                           creator={event.creator.name}
-                          guests={4}
                         />
                       ),
                   )}
