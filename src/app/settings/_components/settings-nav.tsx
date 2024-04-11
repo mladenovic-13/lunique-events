@@ -26,7 +26,7 @@ export const SettingsNav = () => {
     },
   ];
   const pathname = usePathname();
-  console.log(pathname);
+
   return (
     <div className="flex pt-4">
       <ul className="flex justify-start gap-5 overflow-x-auto overflow-y-hidden rounded-none bg-transparent px-3 text-muted-foreground md:overflow-hidden md:px-0">

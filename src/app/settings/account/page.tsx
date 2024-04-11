@@ -1,28 +1,19 @@
 import React from "react";
 
-import { Separator } from "@/components/ui/separator";
+import Section from "@/components/header/section";
 
-import { DeleteAccount } from "./_components/delete-account";
-import Emails from "./_components/emails";
-import { PasswordAndSecurity } from "./_components/password-and-security";
-import { PhoneNumber } from "./_components/phone-number";
-import EditProfile from "./_components/profile-section";
-import { ThirdPartyAccounts } from "./_components/third-party-accounts";
+import { AccountInfoForm } from "./_components/account-info-form";
 
 function AccountSettingsPage() {
   return (
-    <div className="flex flex-col space-y-8 px-2">
-      <EditProfile />
-      <Separator />
-      <Emails />
-      <Separator />
-      <PhoneNumber />
-      <Separator />
-      <PasswordAndSecurity />
-      <Separator />
-      <ThirdPartyAccounts />
-      <Separator />
-      <DeleteAccount />
+    <div className="space-y-6">
+      <Section
+        title="Your Profile"
+        description=" Choose how you are displayed as a host or guest."
+      />
+      <div className="flex justify-start space-x-20">
+        <AccountInfoForm />
+      </div>
     </div>
   );
 }

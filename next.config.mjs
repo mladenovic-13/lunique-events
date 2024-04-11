@@ -7,7 +7,7 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["d3gfj4ev871o73.cloudfront.net"],
+    domains: ["d3gfj4ev871o73.cloudfront.net", "lh3.googleusercontent.com"],
   },
 };
 

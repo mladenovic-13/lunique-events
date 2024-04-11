@@ -4,6 +4,7 @@ import { ArrowUpIcon, LoaderIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { getThumbnailImagePath } from "@/lib/get-path";
 
 interface ThumbnailInputProps {
   value: string | null;
@@ -14,6 +15,7 @@ export const ThumbnailInput = ({ onChange }: ThumbnailInputProps) => {
   const { getRootProps, getInputProps, file, setFile } = useImageUpload({
     onSuccess: onChange,
     onError: () => onChange(null),
+    pathFormatter: getThumbnailImagePath,
   });
 
   return file ? (
