@@ -21,7 +21,9 @@ export default async function RootLayout({
     <>
       <Navbar />
       <div className="mx-auto max-w-4xl pt-1.5">
-        <p className="pt-12 text-3xl font-semibold">Settings</p>
+        <p className="px-3 text-2xl font-semibold md:px-0 md:text-3xl">
+          Settings
+        </p>
         <SettingsNav />
       </div>
       <Separator />

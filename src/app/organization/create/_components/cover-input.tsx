@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { getCoverImagePath } from "@/lib/get-path";
 
 interface CoverInputProps {
   value: string | null;
@@ -15,6 +16,7 @@ export const CoverInput = ({ onChange }: CoverInputProps) => {
   const { file, setFile, getRootProps, getInputProps } = useImageUpload({
     onSuccess: onChange,
     onError: () => onChange(null),
+    pathFormatter: getCoverImagePath,
   });
 
   return file ? (

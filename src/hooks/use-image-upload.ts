@@ -5,16 +5,20 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 
 import { useToast } from "@/components/ui/use-toast";
-import { getThumbnailImagePath } from "@/lib/get-path";
 import { getImageUrl } from "@/lib/get-url";
 import { api } from "@/trpc/react";
 
 interface UseImageUploadProps {
   onSuccess?: (url: string) => void;
   onError?: (err: unknown) => void;
+  pathFormatter: (filename: string) => string;
 }
 
-export const useImageUpload = ({ onSuccess, onError }: UseImageUploadProps) => {
+export const useImageUpload = ({
+  onSuccess,
+  onError,
+  pathFormatter,
+}: UseImageUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string | null>(null);
 
@@ -34,7 +38,8 @@ export const useImageUpload = ({ onSuccess, onError }: UseImageUploadProps) => {
 
       setFile(files[0]);
 
-      const key = getThumbnailImagePath(files[0].name);
+      const key = pathFormatter(files[0].name);
+
       fetchPresignedUrl(
         {
           key,

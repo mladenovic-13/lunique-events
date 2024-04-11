@@ -22,3 +22,17 @@ export const getThumbnailImagePath = (fileName: string) => {
 
   return `thumbnails/${datePrefix}-${fileName}`;
 };
+
+export const getCoverImagePath = (fileName: string) => {
+  const date = new Date();
+  const datePrefix = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+
+  return `covers/${datePrefix}-${fileName}`;
+};
+
+export const getProfileImagePath = (fileName: string) => {
+  const date = new Date();
+  const datePrefix = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+
+  return `profiles/${datePrefix}-${fileName}`;
+};

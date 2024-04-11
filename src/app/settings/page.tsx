@@ -1,3 +1,7 @@
+import { redirect } from "next/navigation";
+
+import { paths } from "@/routes/paths";
+
 export default function SettingsPage() {
-  return <div>@TODO</div>;
+  return redirect(paths.settings.account);
 }
