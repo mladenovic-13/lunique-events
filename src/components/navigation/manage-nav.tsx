@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ArrowUpRightIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,21 +10,14 @@ import { buttonVariants } from "../ui/button";
 
 interface ManageNavProps {
   items: { title: string; href: string }[];
-  navigateBack: {
-    label: string;
-    href: string;
-  };
-  navigateForward: {
+  title: string;
+  landingPage: {
     label: string;
     href: string;
   };
 }
 
-export const ManageNav = ({
-  items,
-  navigateBack,
-  navigateForward,
-}: ManageNavProps) => {
+export const ManageNav = ({ items, title, landingPage }: ManageNavProps) => {
   const pathname = usePathname();
 
   const isCalendarSettings =
@@ -32,18 +25,17 @@ export const ManageNav = ({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-3 md:px-0">
+        <h1 className="text-2xl font-semibold md:text-3xl">{title}</h1>
         <Link
-          href={navigateBack.href}
-          className={buttonVariants({ variant: "ghost", size: "sm" })}
+          href={landingPage.href}
+          className={buttonVariants({
+            variant: "secondary",
+            size: "sm",
+          })}
         >
-          <ChevronLeftIcon className="mr-1.5 size-4" /> {navigateBack.label}
-        </Link>
-        <Link
-          href={navigateForward.href}
-          className={buttonVariants({ variant: "ghost", size: "sm" })}
-        >
-          {navigateForward.label} <ChevronRightIcon className="ml-1.5 size-4" />
+          <span className="hidden md:block">{landingPage.label}</span>
+          <ArrowUpRightIcon className="size-4 md:ml-1.5" />
         </Link>
       </div>
       <div className="flex">
