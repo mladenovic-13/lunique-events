@@ -2,14 +2,14 @@ import { CalendarSettingsNav } from "@/components/navigation/calendar-settings-n
 
 export default function ManageCalendarSettingsLayout({
   children,
-  params: { calendarId },
+  params: { organizationId },
 }: {
   children: React.ReactNode;
-  params: { calendarId: string };
+  params: { organizationId: string };
 }) {
   return (
     <div className="flex flex-col md:flex-row">
-      <CalendarSettingsNav id={calendarId} />
+      <CalendarSettingsNav id={organizationId} />
       <div>{children}</div>
     </div>
   );

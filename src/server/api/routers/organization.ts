@@ -1,7 +1,11 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 import { organizationSchema } from "@/app/organization/create/_components/validation";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 
 export const organizationRouter = createTRPCRouter({
   create: protectedProcedure
@@ -55,6 +59,18 @@ export const organizationRouter = createTRPCRouter({
             },
           },
           members: true,
+        },
+      });
+    }),
+  getName: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.organization.findFirst({
+        where: {
+          id: input.id,
+        },
+        select: {
+          name: true,
         },
       });
     }),

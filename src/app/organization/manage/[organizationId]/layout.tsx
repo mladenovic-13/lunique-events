@@ -1,40 +1,47 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { ManageNav } from "@/components/navigation/manage-nav";
 import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
+import { api } from "@/trpc/server";
 
 export default async function ManageCalendarLayout({
   children,
-  params: { calendarId },
+  params: { organizationId },
 }: {
   children: React.ReactNode;
-  params: { calendarId: string };
+  params: { organizationId: string };
 }) {
   const session = await getServerAuthSession();
 
   if (!session) return redirect(paths.signin.root);
 
+  const organization = await api.organization.getName.query({
+    id: organizationId,
+  });
+
+  if (!organization) return notFound();
+
   const items = [
     {
       title: "Events",
-      href: paths.organization.manage.events(calendarId),
+      href: paths.organization.manage.events(organizationId),
     },
     {
       title: "People",
-      href: paths.organization.manage.people(calendarId),
+      href: paths.organization.manage.people(organizationId),
     },
     {
       title: "Newsletter",
-      href: paths.organization.manage.newsletter(calendarId),
+      href: paths.organization.manage.newsletter(organizationId),
     },
     {
       title: "Insights",
-      href: paths.organization.manage.insights(calendarId),
+      href: paths.organization.manage.insights(organizationId),
     },
     {
       title: "Settings",
-      href: paths.organization.manage.settings.display(calendarId),
+      href: paths.organization.manage.settings.display(organizationId),
     },
   ];
 
@@ -44,13 +51,10 @@ export default async function ManageCalendarLayout({
         <div className="mx-auto max-w-4xl md:pt-3">
           <ManageNav
             items={items}
-            navigateBack={{
-              label: "Organizations",
-              href: paths.home.organizations,
-            }}
-            navigateForward={{
+            title={organization.name}
+            landingPage={{
               label: "Organization Page",
-              href: paths.organization.landing.root(calendarId),
+              href: paths.organization.landing.root(organizationId),
             }}
           />
         </div>

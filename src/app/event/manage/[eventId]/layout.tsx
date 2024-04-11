@@ -1,8 +1,9 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { ManageNav } from "@/components/navigation/manage-nav";
 import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
+import { api } from "@/trpc/server";
 
 interface SettingsLayoutProps {
   params: { eventId: string };
@@ -16,6 +17,10 @@ export default async function EventIdLayout({
   const session = await getServerAuthSession();
 
   if (!session) return redirect(paths.signin.root);
+
+  const event = await api.event.getName.query({ id: eventId });
+
+  if (!event) return notFound();
 
   const items = [
     {
@@ -54,10 +59,10 @@ export default async function EventIdLayout({
         <div className="mx-auto max-w-4xl pt-3">
           <ManageNav
             items={items}
-            navigateBack={{ label: "Events", href: paths.home.root }}
-            navigateForward={{
+            title={event.name}
+            landingPage={{
               label: "Event Page",
-              href: paths.event.landing.root("ID"),
+              href: paths.event.landing.root(eventId),
             }}
           />
         </div>
