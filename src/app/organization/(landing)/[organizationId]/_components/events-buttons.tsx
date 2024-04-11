@@ -2,9 +2,7 @@
 import React, { useEffect } from "react";
 import { PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import router from "next/router";
 
-import { type Mode } from "@/components/layout/timeline";
 import { Button } from "@/components/ui/button";
 
 import { type ViewMode, ViewTabs } from "./view-tabs";
@@ -28,7 +26,7 @@ export const EventsButtons = ({ mode, onValueChange }: EventButtonsProps) => {
   }, [viewMode, pathname, router]);
 
   return (
-    <section className="flex justify-between">
+    <section className="flex justify-between pb-6">
       <div>
         <h1 className="text-2xl font-semibold">Events</h1>
       </div>
