@@ -13,13 +13,13 @@ import {
 
 import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
 import { EventTimeframeTabs } from "@/app/home/(events)/_components/event-date-tabs";
+import { type Timeframe } from "@/app/home/(events)/_components/events";
 import { Timeline } from "@/components/layout/timeline";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
@@ -44,11 +44,12 @@ export default function CalendarPage() {
     query.set("viewMode", value);
     router.push(`${pathname}?${query.toString()}`, { scroll: false });
   };
-  const demoEvents = upcomingAndPastEvents.upcoming;
+  const [timeframeValue, setTimeframeValue] = useState<Timeframe>("upcoming");
 
   const { organizationId } = useParams<{ organizationId: string }>();
   const { data: organization, isLoading } = api.organization.get.useQuery({
     id: organizationId,
+    eventTimeFrame: timeframeValue,
   });
 
   const selectedCalendarDays: Date[] = [];
@@ -186,8 +187,8 @@ export default function CalendarPage() {
                   modifiersStyles={{ selectedDays: selectedDaysStyle }}
                 />
                 <EventTimeframeTabs
-                  onValueChange={(value) => console.log(value)}
-                  value="upcoming"
+                  onValueChange={(value) => setTimeframeValue(value)}
+                  value={timeframeValue}
                 />
               </div>
             </div>

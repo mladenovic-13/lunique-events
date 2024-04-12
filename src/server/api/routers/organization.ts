@@ -39,6 +39,7 @@ export const organizationRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -56,6 +57,13 @@ export const organizationRouter = createTRPCRouter({
               location: true,
               guests: true,
               creator: true,
+            },
+            where: {
+              startDate: {
+                gt:
+                  input.eventTimeFrame === "upcoming" ? new Date() : undefined,
+                lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+              },
             },
           },
           members: true,
