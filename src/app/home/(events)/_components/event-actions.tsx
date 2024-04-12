@@ -8,8 +8,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { paths } from "@/routes/paths";
 
-import { EventTimeframeTabs } from "./event-date-tabs";
+import { EventTimeframeSelect } from "./event-timeframe-select";
 import { type Timeframe } from "./events";
+import { OrganizationSelect } from "./organization-select";
 
 const timeframes: Timeframe[] = ["upcoming", "past"];
 
@@ -35,15 +36,20 @@ export const EventActions = () => {
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <EventTimeframeTabs
-        value={timeframe as Timeframe}
-        onValueChange={onValueChange}
-      />
+      <div className="flex items-center gap-3">
+        <OrganizationSelect />
+
+        <EventTimeframeSelect
+          value={timeframe as Timeframe}
+          onValueChange={onValueChange}
+        />
+      </div>
       <Link
         href={paths.event.create}
         className={buttonVariants({ variant: "ghost" })}
       >
-        Create Event <PlusCircleIcon className="ml-1.5 size-4" />
+        Create <span className="hidden md:block">&nbsp;Event</span>
+        <PlusCircleIcon className="ml-1.5 size-4" />
       </Link>
     </div>
   );

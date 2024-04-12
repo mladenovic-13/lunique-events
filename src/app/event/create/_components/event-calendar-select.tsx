@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Building2 } from "lucide-react";
+import { Building2Icon, User2Icon } from "lucide-react";
 
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import { useConfig } from "@/hooks/use-config-store";
 import { api } from "@/trpc/react";
 
 interface OrganizationInputProps {
@@ -16,37 +17,45 @@ interface OrganizationInputProps {
   onChange: (value: string) => void;
 }
 
-export function OrganizationInput({ value, onChange }: OrganizationInputProps) {
+export function OrganizationInput({ onChange }: OrganizationInputProps) {
   const { data: organizations, isLoading } = api.organization.list.useQuery();
+  const { organization, updateOrganization } = useConfig();
 
   useEffect(() => {
-    if (!organizations && value) return;
-
-    const personalOrganizationId = organizations?.find(
-      (organization) => organization.isPersonal,
-    )?.id;
-
-    onChange(personalOrganizationId ?? "");
-    // eslint-disable-next-line
-  }, [organizations, onChange]);
+    if (!organization) return;
+    onChange(organization);
+  }, [organization, onChange]);
 
   if (isLoading)
     return <div className="h-8 w-48 animate-pulse rounded-md bg-muted" />;
 
+  const org = organizations?.find((item) => item.id === organization);
+
   return (
     <div>
-      <Select value={value ? value : undefined} onValueChange={onChange}>
-        <SelectTrigger className="h-8 min-w-40  truncate border-muted-foreground/10 bg-muted capitalize data-[state=open]:bg-muted-foreground/50">
-          <Building2 className="mr-1.5 size-4" />
-          {organizations?.find((organizations) => organizations.id === value)
-            ?.name ?? ""}
+      <Select value={organization} onValueChange={updateOrganization}>
+        <SelectTrigger className="h-8 max-w-32 justify-between border-muted-foreground/10 bg-muted data-[state=open]:bg-muted-foreground/50 md:min-w-40 md:max-w-fit">
+          <div className="flex items-center justify-start gap-3">
+            {org?.isPersonal && <User2Icon className="size-4" />}
+            {!org?.isPersonal && <Building2Icon className="size-4" />}
+
+            <span className="truncate">{org?.name}</span>
+          </div>
         </SelectTrigger>
         <SelectContent>
-          {organizations?.map((organization) => (
-            <SelectItem key={organization.id} value={organization.id}>
-              {organization.name}
-            </SelectItem>
-          ))}
+          {organizations
+            ?.sort((org) => (org.isPersonal ? -1 : 1))
+            .map((org) => (
+              <SelectItem key={org.id} value={org.id}>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center">
+                    {org.isPersonal && <User2Icon className="size-4" />}
+                    {!org.isPersonal && <Building2Icon className="size-4" />}
+                  </div>
+                  {org.name}
+                </div>
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
     </div>

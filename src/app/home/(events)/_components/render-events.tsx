@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { useConfig } from "@/hooks/use-config-store";
 import { images } from "@/lib/data";
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
@@ -43,9 +44,11 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
 
+  const { organization } = useConfig();
+
   const { data, isLoading } = api.event.list.useQuery(
-    { eventTimeFrame: timeframe },
-    { enabled: !!timeframe },
+    { eventTimeFrame: timeframe, organizationId: organization },
+    { enabled: !!timeframe && !!organization },
   );
 
   const handleSheetOpen = (event: Event) => {

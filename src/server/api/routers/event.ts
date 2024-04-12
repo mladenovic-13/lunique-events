@@ -126,6 +126,7 @@ export const eventRouter = createTRPCRouter({
     .input(
       z.object({
         eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+        organizationId: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -137,6 +138,7 @@ export const eventRouter = createTRPCRouter({
       return await ctx.db.event.findMany({
         where: {
           organization: {
+            id: input.organizationId ?? undefined,
             ownerId: ctx.session.user.id,
           },
           startDate: {
