@@ -78,6 +78,8 @@ export default function CalendarPage() {
     setCurrentEvent(null);
   };
 
+  if (isLoading) return <OrganizationSkeleton />;
+
   return (
     <section>
       {organization && <CoverImage src={organization?.coverUrl} />}
@@ -95,7 +97,6 @@ export default function CalendarPage() {
         <div className="mx-auto max-w-4xl">
           <div className="flex md:justify-between md:space-x-4">
             <div className="flex flex-1 flex-col space-y-4">
-              {isLoading && <OrganizationSkeleton />}
               <EventsButtons mode={"card"} onValueChange={onValueChange} />
               {organization &&
                 organization.events.map(
