@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { PlusCircleIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -36,7 +36,7 @@ export const EventActions = () => {
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5">
         <OrganizationSelect />
 
         <EventTimeframeSelect
@@ -46,10 +46,10 @@ export const EventActions = () => {
       </div>
       <Link
         href={paths.event.create}
-        className={buttonVariants({ variant: "ghost" })}
+        className={buttonVariants({ variant: "secondary", size: "sm" })}
       >
-        Create <span className="hidden md:block">&nbsp;Event</span>
-        <PlusCircleIcon className="ml-1.5 size-4" />
+        <PlusIcon className="mr-1.5 size-4" />
+        Create
       </Link>
     </div>
   );

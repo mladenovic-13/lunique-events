@@ -23,7 +23,7 @@ export const EventTimeframeSelect = ({
       value={value}
       onValueChange={(value) => onValueChange(value as Timeframe)}
     >
-      <SelectTrigger className="capitalize md:w-28">{value}</SelectTrigger>
+      <SelectTrigger className="h-8 capitalize md:w-28">{value}</SelectTrigger>
       <SelectContent>
         <SelectItem value="upcoming">Upcoming</SelectItem>
         <SelectItem value="past">Past</SelectItem>

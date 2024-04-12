@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronsUpDownIcon, CirclePlusIcon } from "lucide-react";
+import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -126,7 +126,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                 className="justify-center gap-1.5"
                 onSelect={() => router.push(paths.organization.create)}
               >
-                <CirclePlusIcon className="size-4" /> Create Organization
+                <PlusIcon className="size-4" /> New organization
               </DropdownMenuItem>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
