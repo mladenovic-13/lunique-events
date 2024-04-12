@@ -3,7 +3,6 @@ import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 import { CircleIcon } from "lucide-react";
 
 import { upcomingAndPastEvents } from "@/lib/mock-events";
-import { cn } from "@/lib/utils";
 
 export type Mode = "compact" | "regular" | "list";
 
@@ -27,7 +26,7 @@ export const Timeline = ({
     <div>
       {mode === "compact" && (
         <div className="flex h-full items-center gap-2">
-          <div className="flex h-[95%] flex-col items-center md:px-2  ">
+          <div className="flex h-[105%] flex-col items-center md:px-2  ">
             <CircleIcon className="size-4 text-border" />
 
             <div className="relative h-[95%] w-px border-l-2 border-dashed border-border/80 ">
@@ -37,7 +36,7 @@ export const Timeline = ({
             </div>
           </div>
           <div className="flex w-full  flex-col gap-4 md:h-[250px] md:gap-0 md:space-y-2">
-            <div className="flex items-center gap-3 px-3">
+            <div className="-mt-3 flex items-center gap-3 px-3">
               {demo && <DisplayDate date={date} />}
             </div>
             <div>{children}</div>

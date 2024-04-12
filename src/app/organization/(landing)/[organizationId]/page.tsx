@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { type Event } from "@prisma/client";
+import { ArrowUpRightIcon, ChevronsRightIcon, CopyIcon } from "lucide-react";
+import Link from "next/link";
 import {
   useParams,
   usePathname,
@@ -7,11 +11,16 @@ import {
   useSearchParams,
 } from "next/navigation";
 
+import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
 import { EventTimeframeTabs } from "@/app/home/(events)/_components/event-date-tabs";
+import { type Timeframe } from "@/app/home/(events)/_components/events";
 import { Timeline } from "@/components/layout/timeline";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { upcomingAndPastEvents } from "@/lib/mock-events";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
 import { CalendarSubscriptionButton } from "./_components/callendar-subscription-button";
@@ -21,6 +30,7 @@ import { EventCard } from "./_components/event-card";
 import { EventListItem } from "./_components/event-list-item";
 import { EventsButtons } from "./_components/events-buttons";
 import { OrganizationHeader } from "./_components/organization-header";
+import { OrganizationSkeleton } from "./_components/organization-skeleton";
 import { ScrollSectionButtons } from "./_components/scroll-section-buttons";
 import { type ViewMode } from "./_components/view-tabs";
 
@@ -34,13 +44,42 @@ export default function CalendarPage() {
     query.set("viewMode", value);
     router.push(`${pathname}?${query.toString()}`, { scroll: false });
   };
-  const demoEvents = upcomingAndPastEvents.upcoming;
+  const [timeframeValue, setTimeframeValue] = useState<Timeframe>("upcoming");
 
   const { organizationId } = useParams<{ organizationId: string }>();
-  const { data: organization } = api.organization.get.useQuery({
+  const { data: organization, isLoading } = api.organization.get.useQuery({
     id: organizationId,
+    eventTimeFrame: timeframeValue,
   });
-  console.log(organization);
+
+  const selectedCalendarDays: Date[] = [];
+  if (organization) {
+    organization.events.forEach((event) =>
+      selectedCalendarDays.push(event.startDate),
+    );
+  }
+
+  const selectedDaysStyle = {
+    border: "1px solid currentColor",
+    borderRadius: "20px",
+    fontWeight: "bolder",
+  };
+
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+
+  const handleSheetOpen = (event: Event) => {
+    setIsSheetOpen(true);
+    setCurrentEvent(event);
+  };
+
+  const handleSheetClose = () => {
+    setIsSheetOpen(false);
+    setCurrentEvent(null);
+  };
+
+  if (isLoading) return <OrganizationSkeleton />;
+
   return (
     <section>
       {organization && <CoverImage src={organization?.coverUrl} />}
@@ -66,7 +105,7 @@ export default function CalendarPage() {
                       <Timeline
                         mode={"compact"}
                         idx={idx}
-                        dataLength={demoEvents.length}
+                        dataLength={organization.events.length}
                         key={idx}
                         date={event.startDate}
                       >
@@ -74,6 +113,7 @@ export default function CalendarPage() {
                           event={event}
                           location={event.location}
                           guests={4}
+                          onClick={() => handleSheetOpen(event)}
                         />
                       </Timeline>
                     ),
@@ -88,10 +128,52 @@ export default function CalendarPage() {
                           date={event.startDate}
                           event={event}
                           creator={event.creator.name}
+                          onClick={() => handleSheetOpen(event)}
                         />
                       ),
                   )}
               </div>
+              <Sheet open={isSheetOpen} onOpenChange={handleSheetClose}>
+                <SheetContent
+                  side="right"
+                  close={false}
+                  className="overflow-hidden p-0 outline-none"
+                >
+                  <div className="sticky -top-0.5 z-50 -mt-0.5 flex items-center justify-between rounded-t-md border-y bg-background px-1.5 py-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsSheetOpen(false)}
+                    >
+                      <ChevronsRightIcon />
+                    </Button>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => alert("TODO: Copy link to clipboard")}
+                      >
+                        <CopyIcon className="mr-1.5 size-4" />
+                        Copy Link
+                      </Button>
+                      <Link
+                        href={paths.event.landing.root(currentEvent?.id ?? "")}
+                        className={buttonVariants({
+                          variant: "secondary",
+                          size: "sm",
+                        })}
+                      >
+                        Open Event Page
+                        <ArrowUpRightIcon className="ml-1.5 size-4" />
+                      </Link>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-full">
+                    <EventPageContent isMobile />
+                    <ScrollBar orientation="vertical" />
+                  </ScrollArea>
+                </SheetContent>
+              </Sheet>
             </div>
             <div className="hidden flex-col space-y-4 md:flex">
               <div className="flex justify-between space-x-2">
@@ -99,10 +181,15 @@ export default function CalendarPage() {
                 <CalendarSubscriptionButton />
               </div>
               <div className="flex flex-col space-y-2 rounded-lg border p-1 pb-2">
-                <Calendar mode="single" initialFocus />
+                <Calendar
+                  mode="single"
+                  initialFocus
+                  modifiers={{ selectedDays: selectedCalendarDays }}
+                  modifiersStyles={{ selectedDays: selectedDaysStyle }}
+                />
                 <EventTimeframeTabs
-                  onValueChange={(value) => console.log(value)}
-                  value="upcoming"
+                  onValueChange={(value) => setTimeframeValue(value)}
+                  value={timeframeValue}
                 />
               </div>
             </div>

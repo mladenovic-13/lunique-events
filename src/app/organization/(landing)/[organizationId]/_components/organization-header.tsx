@@ -3,7 +3,7 @@ import { ArrowUpRightIcon } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import thumbImg from "@/public/images/stripeLogo.png";
+import thumbImg from "@/public/images/placeholder.jpg";
 
 interface OrganizationHeaderProps {
   imageSrc?: string | null;
@@ -23,7 +23,7 @@ export const OrganizationHeader = ({
             src={imageSrc ? imageSrc : thumbImg}
             width={200}
             height={200}
-            className="rounded-lg object-cover md:size-20"
+            className=" size-16 rounded-lg object-cover md:size-20"
           />
         </div>
         <div>

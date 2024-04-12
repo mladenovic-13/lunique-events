@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect } from "react";
 import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import router from "next/router";
 
-import { type Mode } from "@/components/layout/timeline";
 import { Button } from "@/components/ui/button";
+import { paths } from "@/routes/paths";
 
 import { type ViewMode, ViewTabs } from "./view-tabs";
 
@@ -28,15 +28,17 @@ export const EventsButtons = ({ mode, onValueChange }: EventButtonsProps) => {
   }, [viewMode, pathname, router]);
 
   return (
-    <section className="flex justify-between">
+    <section className="flex justify-between pb-6">
       <div>
         <h1 className="text-2xl font-semibold">Events</h1>
       </div>
       <div className="flex  space-x-2">
-        <Button variant={"secondary"} className="h-8 space-x-2 pl-2">
-          <PlusIcon size={14} />
-          <p className="text-sm font-normal">Add Event</p>
-        </Button>
+        <Link href={paths.event.create}>
+          <Button variant={"secondary"} className="h-8 space-x-2 pl-2">
+            <PlusIcon size={14} />
+            <p className="text-sm font-normal">Add Event</p>
+          </Button>
+        </Link>
         <div className="">
           <ViewTabs value={mode as ViewMode} onValueChange={onValueChange} />
         </div>

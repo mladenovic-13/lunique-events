@@ -10,17 +10,21 @@ interface EventListItemProps {
   date: Date;
   event?: Event | null;
   creator?: string | null;
+  onClick: () => void;
 }
 
-export const EventListItem = ({ date, event, creator }: EventListItemProps) => {
+export const EventListItem = ({
+  date,
+  event,
+  creator,
+  onClick,
+}: EventListItemProps) => {
   return (
-    <section className="flex max-h-28 flex-col space-y-1 px-2">
+    <section className="flex max-h-28 flex-col space-y-1" onClick={onClick}>
       <EventDate date={date} />
-      <div className="pb-2">
-        <Separator className="" />
-      </div>
+      <Separator className="" />
       {event && (
-        <div className="flex space-x-12 rounded-lg transition-all hover:cursor-pointer hover:bg-accent-foreground/10 hover:p-2">
+        <div className="flex space-x-12 rounded-lg p-2 px-3 transition-all hover:cursor-pointer hover:bg-accent-foreground/10">
           <div className="flex ">
             <p className="pt-0.5 text-sm text-accent-foreground/50 md:text-base">
               14:00

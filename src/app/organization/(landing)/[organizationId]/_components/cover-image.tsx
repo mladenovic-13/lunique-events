@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import coverImg from "@/public/images/you-are-invited.jpeg";
+import coverImg from "@/public/images/placeholder.jpg";
 
 interface CoverImageProps {
   src?: string | null;

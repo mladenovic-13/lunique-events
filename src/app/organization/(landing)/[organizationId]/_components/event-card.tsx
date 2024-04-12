@@ -7,20 +7,31 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import eventImg from "@/public/images/you-are-invited.jpeg";
+import { paths } from "@/routes/paths";
 
 interface EventCardProps {
-  event?: Event | null;
+  event: Event;
   location?: Location | null;
   guests?: number | null;
+  onClick: () => void;
 }
 
-export const EventCard = ({ event, location, guests }: EventCardProps) => {
+export const EventCard = ({
+  event,
+  location,
+  guests,
+  onClick,
+}: EventCardProps) => {
   return (
-    <Card className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:p-2 hover:ring-1 hover:ring-accent-foreground/20">
+    <Card
+      onClick={onClick}
+      className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:p-0.5 hover:ring-1 hover:ring-accent-foreground/20"
+    >
       <div className="flex w-full flex-col space-y-3 p-4">
         {event && (
           <div className="flex justify-between">
@@ -61,13 +72,18 @@ export const EventCard = ({ event, location, guests }: EventCardProps) => {
           </div>
         )}
         <div>
-          <Button
-            variant={"secondary"}
-            className="h-8 space-x-2 text-accent-foreground/70"
+          <Link
+            href={paths.event.manage.overview(event.id)}
+            onClick={(e) => e.stopPropagation()}
           >
-            <p>Manage Event</p>
-            <ArrowRightIcon size={15} />
-          </Button>
+            <Button
+              variant={"secondary"}
+              className="h-8 space-x-2 text-accent-foreground/70"
+            >
+              <p>Manage Event</p>
+              <ArrowRightIcon size={15} />
+            </Button>
+          </Link>
         </div>
       </div>
     </Card>
