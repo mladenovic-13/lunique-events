@@ -89,6 +89,7 @@ export default function CalendarPage() {
             <OrganizationHeader
               imageSrc={organization?.thumbnailUrl}
               organizationName={organization?.name}
+              organizationId={organization.id}
             />
           )}
         </div>
@@ -189,7 +190,7 @@ export default function CalendarPage() {
                 />
                 <EventTimeframeTabs
                   onValueChange={(value) => setTimeframeValue(value)}
-                  value={timeframeValue}
+                  defaultValue={timeframeValue}
                 />
               </div>
             </div>
