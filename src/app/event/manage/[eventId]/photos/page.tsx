@@ -1,20 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-
-import { EditEventGallery } from "./_components/edit-event-gallery";
-import { EventActionButtons } from "./_components/event-action-buttons";
-import { NoEventImages } from "./_components/no-event-images";
 
 // TODO:
 // - replace root with redirect to overview
 // - move images to /{eventID}/images
 
-export default async function EventIdPage({
-  params,
-}: {
+export default async function EventIdPage({}: {
   params: {
     eventId: string;
   };

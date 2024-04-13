@@ -89,6 +89,7 @@ export default function CalendarPage() {
             <OrganizationHeader
               imageSrc={organization?.thumbnailUrl}
               organizationName={organization?.name}
+              organizationId={organization.id}
             />
           )}
         </div>

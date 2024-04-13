@@ -1,18 +1,22 @@
 import React from "react";
 import { ArrowUpRightIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import thumbImg from "@/public/images/placeholder.jpg";
+import { paths } from "@/routes/paths";
 
 interface OrganizationHeaderProps {
   imageSrc?: string | null;
   organizationName?: string | null;
+  organizationId: string;
 }
 
 export const OrganizationHeader = ({
   imageSrc,
   organizationName,
+  organizationId,
 }: OrganizationHeaderProps) => {
   return (
     <section className="space-y-2 px-4">
@@ -27,10 +31,12 @@ export const OrganizationHeader = ({
           />
         </div>
         <div>
-          <Button variant={"outline"} className="h-8 space-x-2">
-            <p>Manage</p>
-            <ArrowUpRightIcon size={18} />
-          </Button>
+          <Link href={paths.organization.manage.people(organizationId)}>
+            <Button variant={"outline"} className="h-8 space-x-2">
+              <p>Manage</p>
+              <ArrowUpRightIcon size={18} />
+            </Button>
+          </Link>
         </div>
       </div>
       <div>
