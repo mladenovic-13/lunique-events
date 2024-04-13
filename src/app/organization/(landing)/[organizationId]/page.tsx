@@ -190,7 +190,7 @@ export default function CalendarPage() {
                 />
                 <EventTimeframeTabs
                   onValueChange={(value) => setTimeframeValue(value)}
-                  defaultValue={timeframeValue}
+                  value={timeframeValue}
                 />
               </div>
             </div>

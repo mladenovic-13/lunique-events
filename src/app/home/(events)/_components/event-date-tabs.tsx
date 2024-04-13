@@ -7,17 +7,17 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type Timeframe } from "./events";
 
 interface EventDateTabsProps {
-  defaultValue: Timeframe;
+  value: Timeframe;
   onValueChange: (value: Timeframe) => void;
 }
 
 export const EventTimeframeTabs = ({
-  defaultValue,
+  value,
   onValueChange,
 }: EventDateTabsProps) => {
   return (
     <Tabs
-      value={defaultValue}
+      value={value}
       onValueChange={(value) => onValueChange(value as Timeframe)}
     >
       <TabsList>
