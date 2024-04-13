@@ -4,11 +4,9 @@ import { Tabs } from "@radix-ui/react-tabs";
 
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { type Timeframe } from "./events";
-
 interface EventDateTabsProps {
-  value: Timeframe;
-  onValueChange: (value: Timeframe) => void;
+  value: string;
+  onValueChange: (value: string) => void;
 }
 
 export const EventTimeframeTabs = ({
@@ -16,10 +14,7 @@ export const EventTimeframeTabs = ({
   onValueChange,
 }: EventDateTabsProps) => {
   return (
-    <Tabs
-      value={value}
-      onValueChange={(value) => onValueChange(value as Timeframe)}
-    >
+    <Tabs value={value} onValueChange={(value) => onValueChange(value)}>
       <TabsList className="rounded-md">
         <TabsTrigger
           value="upcoming"

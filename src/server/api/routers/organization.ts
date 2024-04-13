@@ -46,7 +46,7 @@ export const organizationRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+        timeframe: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -67,9 +67,8 @@ export const organizationRouter = createTRPCRouter({
             },
             where: {
               startDate: {
-                gt:
-                  input.eventTimeFrame === "upcoming" ? new Date() : undefined,
-                lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+                gt: input.timeframe === "upcoming" ? new Date() : undefined,
+                lte: input.timeframe === "past" ? new Date() : undefined,
               },
             },
           },

@@ -31,3 +31,6 @@ type Place = {
     lng: number;
   };
 };
+
+type Timeframe = "upcoming" | "past";
+type ViewMode = "card" | "list";

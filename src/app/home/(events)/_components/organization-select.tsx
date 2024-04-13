@@ -14,17 +14,21 @@ import { api } from "@/trpc/react";
 export const OrganizationSelect = () => {
   const { organization: id, updateOrganization: updateId } = useConfig();
 
-  const { data: organizations } = api.organization.list.useQuery();
+  const { data: organizations, isLoading } = api.organization.list.useQuery();
 
   const organization = organizations?.find((item) => item.id === id);
 
+  if (isLoading) return <div className="h-8 w-32 rounded-md bg-muted" />;
+
   return (
     <Select value={id} onValueChange={updateId}>
-      <SelectTrigger className="h-8 max-w-32  md:min-w-40 md:max-w-fit">
-        {organization?.isPersonal && <User2Icon className="size-4" />}
-        {!organization?.isPersonal && <Building2Icon className="size-4" />}
+      <SelectTrigger className="h-8 w-fit">
+        <div className="flex items-center gap-1.5">
+          {organization?.isPersonal && <User2Icon className="size-4" />}
+          {!organization?.isPersonal && <Building2Icon className="size-4" />}
 
-        <span className="truncate">{organization?.name}</span>
+          <span className="truncate">{organization?.name}</span>
+        </div>
       </SelectTrigger>
       <SelectContent>
         {organizations
