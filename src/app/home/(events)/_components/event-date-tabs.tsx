@@ -20,7 +20,7 @@ export const EventTimeframeTabs = ({
       value={value}
       onValueChange={(value) => onValueChange(value as Timeframe)}
     >
-      <TabsList>
+      <TabsList className="rounded-md">
         <TabsTrigger
           value="upcoming"
           className="w-24 hover:text-accent-foreground md:w-32"

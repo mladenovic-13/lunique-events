@@ -33,6 +33,13 @@ export const organizationRouter = createTRPCRouter({
       where: {
         ownerId: ctx.session.user.id,
       },
+      include: {
+        owner: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }),
   get: protectedProcedure
