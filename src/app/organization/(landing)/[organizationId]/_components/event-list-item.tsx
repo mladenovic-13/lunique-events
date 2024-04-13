@@ -51,6 +51,9 @@ export const EventListItem = ({
                   By: {creator}
                 </p>
               )}
+              {!creator && (
+                <p className="text-sm text-red-500">Creator is missing!</p>
+              )}
             </div>
           </div>
         </div>

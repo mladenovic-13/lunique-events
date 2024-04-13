@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { type Event } from "@prisma/client";
-import { format, isToday, isTomorrow, isYesterday } from "date-fns";
 import {
   ArrowUpRightIcon,
   CalendarOff,
@@ -14,8 +13,12 @@ import {
 import { ArrowRight, MapPinIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
+import { EventCard } from "@/app/organization/(landing)/[organizationId]/_components/event-card";
+import { EventListItem } from "@/app/organization/(landing)/[organizationId]/_components/event-list-item";
+import { Timeline } from "@/components/layout/timeline";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -43,7 +46,6 @@ type RenderTimeframeProps = {
 export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-
   const { organization } = useConfig();
 
   const { data, isLoading } = api.event.list.useQuery(
@@ -60,6 +62,8 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
     setIsSheetOpen(false);
     setCurrentEvent(null);
   };
+  const searchParams = useSearchParams();
+  const viewMode = searchParams.get("viewMode");
 
   if (isLoading) return <Skeleton />;
 
@@ -67,34 +71,40 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
 
   if (data && data?.length !== 0)
     return (
-      <div className="flex flex-col gap-6 md:gap-0">
-        {data.map((event, idx) => (
-          <div key={idx} className="flex w-full gap-4 md:h-[250px] md:gap-0">
-            <div className="flex w-1/12 flex-col justify-between md:w-1/3 md:flex-row">
-              <div className="hidden px-1.5 md:block">
-                <EventDate date={event.startDate} />
-              </div>
-              <div className="flex h-full flex-col items-center md:px-10  ">
-                <CircleIcon className="size-4 text-border" />
-                <div
-                  className={cn(
-                    "relative -mb-6 h-[105%] w-[1px] border-l-2 border-dashed border-border/80 md:mb-0",
-                  )}
-                >
-                  {idx === data.length - 1 && (
-                    <div className="absolute -right-2.5 top-0 h-full w-5 bg-gradient-to-b from-background/0 via-background/70 to-background"></div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="-mt-2 flex-1 space-y-3">
-              <div className="flex items-center gap-3 px-3 md:hidden">
-                <EventDate date={event.startDate} />
-              </div>
-              <EventCard event={event} onClick={() => handleSheetOpen(event)} />
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col gap-6 md:gap-6">
+        <div
+          className={cn(
+            "flex flex-1 flex-col",
+            viewMode === "list" && "space-y-14",
+            viewMode === "card" && "space-y-4",
+          )}
+        >
+          {data.map((event, idx) =>
+            viewMode === "card" ? (
+              <Timeline
+                idx={idx}
+                dataLength={data.length}
+                key={idx}
+                date={event.startDate}
+              >
+                <EventCard
+                  event={event}
+                  location={null}
+                  guests={4}
+                  onClick={() => handleSheetOpen(event)}
+                />
+              </Timeline>
+            ) : (
+              <EventListItem
+                key={idx}
+                date={event.startDate}
+                event={event}
+                creator={null}
+                onClick={() => handleSheetOpen(event)}
+              />
+            ),
+          )}
+        </div>
 
         <Sheet open={isSheetOpen} onOpenChange={handleSheetClose}>
           <SheetContent
@@ -143,27 +153,12 @@ export const RenderTimeframe = ({ timeframe }: RenderTimeframeProps) => {
   return null;
 };
 
-const EventDate = ({ date }: { date: Date }) => (
-  <>
-    {isYesterday(date) && <p className="text-lg">Yesterday</p>}
-    {isToday(date) && <p className="text-lg">Today</p>}
-    {isTomorrow(date) && <p className="text-lg">Tomorrow</p>}
-    {!isYesterday(date) && !isToday(date) && !isTomorrow(date) && (
-      <p className="md:text-lg">{format(date, "LLL d")}</p>
-    )}
-    <p className="text-sm text-muted-foreground md:text-base">
-      {format(date, "EEEE")}
-    </p>
-    <p className="text-sm text-muted-foreground md:hidden">15:00 PM</p>
-  </>
-);
-
 interface EventCardProps {
   event: Event;
   onClick: () => void;
 }
 
-export const EventCard = ({ event, onClick }: EventCardProps) => {
+export const EventCardOld = ({ event, onClick }: EventCardProps) => {
   const { name, locationId: location } = event;
 
   return (
