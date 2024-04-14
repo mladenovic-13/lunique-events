@@ -1,10 +1,16 @@
 "use client";
 
-import { type Dispatch, type SetStateAction, useEffect } from "react";
-import { PlusCircleIcon, SettingsIcon, User2Icon } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  PlusCircleIcon,
+  SearchIcon,
+  SettingsIcon,
+  User2Icon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { CalendarIcon as CustomCalendarIcon } from "@/components/icons/calendar-icon";
+import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -17,12 +23,9 @@ import {
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
-interface SearchCommandProps {
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-}
+export const SearchCommand = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-export const SearchCommand = ({ isOpen, setIsOpen }: SearchCommandProps) => {
   const { data: upcomingEvents } = api.event.list.useQuery({
     eventTimeFrame: "upcoming",
   });
@@ -45,60 +48,70 @@ export const SearchCommand = ({ isOpen, setIsOpen }: SearchCommandProps) => {
   const router = useRouter();
 
   return (
-    <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
-      <CommandInput placeholder="Type a command or search..." />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Actions">
-          <CommandItem onSelect={() => router.push(paths.event.create)}>
-            <PlusCircleIcon className="mr-2 size-4" />
-            <span>Create event</span>
-          </CommandItem>
-          <CommandItem onSelect={() => router.push(paths.settings.root)}>
-            <SettingsIcon className="mr-2 size-4" />
-            <span>Settings</span>
-          </CommandItem>
-          <CommandItem onSelect={() => router.push(paths.settings.account)}>
-            <User2Icon className="mr-2 size-4" />
-            <span>Account</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Upcoming Events">
-          {upcomingEvents?.map((event) => (
-            <CommandItem
-              key={event.id}
-              className="flex items-center gap-3"
-              onSelect={() =>
-                router.push(paths.event.manage.overview(event.id))
-              }
-            >
-              <CustomCalendarIcon size="sm" date={event.startDate} />
-              <span className="font-medium">{event.name}</span>
-              <span className="text-xs text-muted-foreground">
-                Hosted By {event.organization.owner.name}
-              </span>
+    <div>
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant="outline"
+        size="icon"
+        className="rounded-full text-muted-foreground duration-200 md:border-none md:shadow-none"
+      >
+        <SearchIcon className="size-4" />
+      </Button>
+      <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Actions">
+            <CommandItem onSelect={() => router.push(paths.event.create)}>
+              <PlusCircleIcon className="mr-2 size-4" />
+              <span>Create event</span>
             </CommandItem>
-          ))}
-        </CommandGroup>
-        <CommandGroup heading="Past Events">
-          {pastEvents?.map((event) => (
-            <CommandItem
-              key={event.id}
-              className="flex items-center gap-3"
-              onSelect={() =>
-                router.push(paths.event.manage.overview(event.id))
-              }
-            >
-              <CustomCalendarIcon size="sm" date={event.startDate} />
-              <span className="font-medium">{event.name}</span>
-              <span className="text-xs text-muted-foreground">
-                Hosted By {event.organization.owner.name}
-              </span>
+            <CommandItem onSelect={() => router.push(paths.settings.root)}>
+              <SettingsIcon className="mr-2 size-4" />
+              <span>Settings</span>
             </CommandItem>
-          ))}
-        </CommandGroup>
-      </CommandList>
-    </CommandDialog>
+            <CommandItem onSelect={() => router.push(paths.settings.account)}>
+              <User2Icon className="mr-2 size-4" />
+              <span>Account</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Upcoming Events">
+            {upcomingEvents?.map((event) => (
+              <CommandItem
+                key={event.id}
+                className="flex items-center gap-3"
+                onSelect={() =>
+                  router.push(paths.event.manage.overview(event.id))
+                }
+              >
+                <CustomCalendarIcon size="sm" date={event.startDate} />
+                <span className="font-medium">{event.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  Hosted By {event.organization.owner.name}
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandGroup heading="Past Events">
+            {pastEvents?.map((event) => (
+              <CommandItem
+                key={event.id}
+                className="flex items-center gap-3"
+                onSelect={() =>
+                  router.push(paths.event.manage.overview(event.id))
+                }
+              >
+                <CustomCalendarIcon size="sm" date={event.startDate} />
+                <span className="font-medium">{event.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  Hosted By {event.organization.owner.name}
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </div>
   );
 };
