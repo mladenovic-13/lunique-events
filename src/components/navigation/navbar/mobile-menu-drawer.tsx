@@ -32,7 +32,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
-import { useConfig } from "@/hooks/use-config-store";
+import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { useSignOut } from "@/hooks/use-sign-out";
 import { awsImageLoader } from "@/lib/image-loader";
 import placeholderImg from "@/public/images/placeholder.jpg";
@@ -95,22 +95,23 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
 
   const { mutate: signOut, isLoading: isSigningOut } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
-  const { organization: orgId, updateOrganization: updateOrgId } = useConfig();
+  const { updateOrganizationId } = useConfigActions();
+  const organizationId = useOrganizationId();
 
   useEffect(() => {
     if (!orgs) return;
 
     const personal = orgs.find((item) => item.isPersonal);
-    const current = orgs.find((item) => item.id === orgId);
+    const current = orgs.find((item) => item.id === organizationId);
 
     if (current) {
       setOrganization(current);
     }
 
     if (!current) {
-      updateOrgId(personal?.id);
+      updateOrganizationId(personal?.id);
     }
-  }, [orgId, orgs, updateOrgId]);
+  }, [organizationId, orgs, updateOrganizationId]);
 
   const avatarUrl = organization?.isPersonal
     ? image
@@ -211,8 +212,8 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
           <div className="min-h-60 space-y-2 px-2 pb-5">
             <Label className="text-muted-foreground">Your organizations</Label>
             <RadioGroup
-              value={orgId}
-              onValueChange={updateOrgId}
+              value={organizationId}
+              onValueChange={updateOrganizationId}
               className="max-h-80 space-y-1.5 overflow-y-auto px-1.5"
             >
               {orgs
