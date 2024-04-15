@@ -1,30 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { type Event } from "@prisma/client";
-import {
-  ArrowUpRightIcon,
-  CalendarOff,
-  ChevronsRightIcon,
-  CircleIcon,
-  CopyIcon,
-} from "lucide-react";
-import Link from "next/link";
+import { CalendarOff, CircleIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
-import { EventCard } from "@/app/organization/(landing)/[organizationId]/_components/event-card";
-import { EventListItem } from "@/app/organization/(landing)/[organizationId]/_components/event-list-item";
 import { Timeline } from "@/components/layout/timeline";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { EventCard } from "@/components/partials/event/event-card";
+import { EventListItem } from "@/components/partials/event/event-list-item";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useOrganizationId } from "@/hooks/use-config-store";
 import { cn } from "@/lib/utils";
 import { paths } from "@/routes/paths";
@@ -32,28 +21,18 @@ import { api } from "@/trpc/react";
 import { type Timeframe } from "@/types";
 
 export const Events = () => {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-  const organizationId = useOrganizationId();
-
   const searchParams = useSearchParams();
   const timeframe = searchParams.get("timeframe") ?? "upcoming";
   const view = searchParams.get("view") ?? "card";
+
+  const organizationId = useOrganizationId();
+
+  const router = useRouter();
 
   const { data, isLoading } = api.event.list.useQuery(
     { timeframe: timeframe, organizationId: organizationId },
     { enabled: !!timeframe && !!organizationId },
   );
-
-  const handleSheetOpen = (event: Event) => {
-    setIsSheetOpen(true);
-    setCurrentEvent(event);
-  };
-
-  const handleSheetClose = () => {
-    setIsSheetOpen(false);
-    setCurrentEvent(null);
-  };
 
   if (isLoading) return <Skeleton />;
 
@@ -62,83 +41,40 @@ export const Events = () => {
 
   if (data && data?.length !== 0)
     return (
-      <>
-        <div
-          className={cn(
-            "flex flex-1 flex-col",
-            view === "list" && "gap-10",
-            view === "card" && "gap-5",
-          )}
-        >
-          {data.map((event, idx) =>
-            view === "card" ? (
-              <Timeline
-                idx={idx}
-                dataLength={data.length}
-                key={idx}
-                date={event.startDate}
-              >
-                <EventCard
-                  event={event}
-                  location={null}
-                  guests={4}
-                  onClick={() => handleSheetOpen(event)}
-                />
-              </Timeline>
-            ) : (
-              <EventListItem
-                key={idx}
-                date={event.startDate}
+      <div
+        className={cn(
+          "flex flex-1 flex-col",
+          view === "list" && "gap-10",
+          view === "card" && "gap-5",
+        )}
+      >
+        {view === "card" &&
+          data.map((event, idx) => (
+            <Timeline
+              idx={idx}
+              dataLength={data.length}
+              key={idx}
+              date={event.startDate}
+            >
+              <EventCard
+                onClick={() => router.push(paths.event.landing.root(event.id))}
                 event={event}
-                creator={null}
-                onClick={() => handleSheetOpen(event)}
+                location={null}
+                guests={4}
               />
-            ),
-          )}
-        </div>
-
-        <Sheet open={isSheetOpen} onOpenChange={handleSheetClose}>
-          <SheetContent
-            side="right"
-            close={false}
-            className="overflow-hidden p-0 outline-none"
-          >
-            <div className="sticky -top-0.5 z-50 -mt-0.5 flex items-center justify-between rounded-t-md border-y bg-background px-1.5 py-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsSheetOpen(false)}
-              >
-                <ChevronsRightIcon />
-              </Button>
-              <div className="flex items-center gap-1.5">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => alert("TODO: Copy link to clipboard")}
-                >
-                  <CopyIcon className="mr-1.5 size-4" />
-                  Copy Link
-                </Button>
-                <Link
-                  href={paths.event.landing.root(currentEvent?.id ?? "")}
-                  className={buttonVariants({
-                    variant: "secondary",
-                    size: "sm",
-                  })}
-                >
-                  Open Event Page
-                  <ArrowUpRightIcon className="ml-1.5 size-4" />
-                </Link>
-              </div>
-            </div>
-            <ScrollArea className="h-full">
-              <EventPageContent isMobile />
-              <ScrollBar orientation="vertical" />
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-      </>
+            </Timeline>
+          ))}
+        {view === "list" &&
+          data.map((event, idx) => (
+            <EventListItem
+              key={idx}
+              date={event.startDate}
+              event={event}
+              creator={null}
+              onClick={() => router.push(paths.event.landing.root(event.id))}
+            />
+          ))}
+      </div>
     );
 
   return null;
