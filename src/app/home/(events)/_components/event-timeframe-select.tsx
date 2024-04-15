@@ -18,7 +18,9 @@ export const EventTimeframeSelect = ({
 }: EventDateSelectProps) => {
   return (
     <Select value={value} onValueChange={(value) => onValueChange(value)}>
-      <SelectTrigger className="h-8 w-fit capitalize">{value}</SelectTrigger>
+      <SelectTrigger className="h-8 w-full capitalize md:w-fit">
+        {value}
+      </SelectTrigger>
       <SelectContent>
         <SelectItem value="upcoming">Upcoming</SelectItem>
         <SelectItem value="past">Past</SelectItem>

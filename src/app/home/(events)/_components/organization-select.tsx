@@ -25,7 +25,7 @@ export const OrganizationSelect = () => {
 
   return (
     <Select value={organizationId} onValueChange={updateOrganizationId}>
-      <SelectTrigger className="h-8 w-fit">
+      <SelectTrigger className="h-8 w-full md:w-fit">
         <div className="flex items-center gap-1.5">
           {organization?.isPersonal && <User2Icon className="size-4" />}
           {!organization?.isPersonal && <Building2Icon className="size-4" />}

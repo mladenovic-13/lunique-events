@@ -43,7 +43,7 @@ export const EventActions = () => {
 
   return (
     <div className="space-y-1.5 md:flex md:items-center md:justify-between md:space-y-0">
-      <div className="flex gap-1.5 overflow-x-auto py-1 md:gap-3 md:overflow-hidden md:p-0.5">
+      <div className="flex gap-1.5 overflow-x-auto py-1 md:gap-2 md:overflow-hidden md:p-0.5">
         <OrganizationSelect />
 
         <EventTimeframeSelect
@@ -57,7 +57,7 @@ export const EventActions = () => {
         className={buttonVariants({
           variant: "secondary",
           size: "sm",
-          className: "w-full md:w-fit",
+          className: "hidden md:flex",
         })}
       >
         <PlusIcon className="mr-1.5 size-4" />

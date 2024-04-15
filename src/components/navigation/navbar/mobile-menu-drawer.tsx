@@ -15,6 +15,7 @@ import {
   InstagramIcon,
   LogOutIcon,
   MenuIcon,
+  PlusIcon,
   SettingsIcon,
   TicketIcon,
   TwitterIcon,
@@ -185,7 +186,7 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
               </Button>
             </div>
           )}
-          <div className="flex gap-3">
+          <div className="flex gap-1.5">
             <Link
               href={paths.settings.account}
               className={buttonVariants({
@@ -207,6 +208,17 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
             >
               <User2Icon className="mr-1.5 size-4" />
               View Profile
+            </Link>
+            <Link
+              href={paths.event.create}
+              className={buttonVariants({
+                variant: "secondary",
+                size: "sm",
+                className: "w-full",
+              })}
+            >
+              <PlusIcon className="mr-1.5 size-4" />
+              Create Event
             </Link>
           </div>
           <div className="min-h-60 space-y-2 px-2 pb-5">
