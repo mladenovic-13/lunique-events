@@ -1,8 +1,8 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { ImageType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+// import { Ratelimit } from "@upstash/ratelimit";
+// import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
 import { eventSchema } from "@/app/event/create/_components/validation";
@@ -19,23 +19,23 @@ import {
 } from "@/server/aws/rekognition-utils";
 import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 
-const searchRatelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(1, "2 m"),
-  analytics: true,
-});
+// const searchRatelimit = new Ratelimit({
+//   redis: Redis.fromEnv(),
+//   limiter: Ratelimit.slidingWindow(1, "2 m"),
+//   analytics: true,
+// });
 
-const uploadRatelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(1000, "1 m"),
-  analytics: true,
-});
+// const uploadRatelimit = new Ratelimit({
+//   redis: Redis.fromEnv(),
+//   limiter: Ratelimit.slidingWindow(1000, "1 m"),
+//   analytics: true,
+// });
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(50, "1 m"),
-  analytics: true,
-});
+// const ratelimit = new Ratelimit({
+//   redis: Redis.fromEnv(),
+//   limiter: Ratelimit.slidingWindow(50, "1 m"),
+//   analytics: true,
+// });
 
 export const eventRouter = createTRPCRouter({
   create: protectedProcedure
@@ -125,15 +125,15 @@ export const eventRouter = createTRPCRouter({
   list: protectedProcedure
     .input(
       z.object({
-        eventTimeFrame: z.enum(["past", "upcoming"]).nullish(),
+        timeframe: z.string().nullish(),
         organizationId: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(ctx.session.user.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       return await ctx.db.event.findMany({
         where: {
@@ -142,8 +142,8 @@ export const eventRouter = createTRPCRouter({
             ownerId: ctx.session.user.id,
           },
           startDate: {
-            gt: input.eventTimeFrame === "upcoming" ? new Date() : undefined,
-            lte: input.eventTimeFrame === "past" ? new Date() : undefined,
+            gt: input.timeframe === "upcoming" ? new Date() : undefined,
+            lte: input.timeframe === "past" ? new Date() : undefined,
           },
         },
         include: {
@@ -166,10 +166,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(input.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(input.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       return await ctx.db.event.findFirst({
         where: {
@@ -247,10 +247,10 @@ export const eventRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { eventId } = input;
 
-      const { success } = await ratelimit.limit(eventId);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(eventId);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const images = await ctx.db.image.findMany({
         where: {
@@ -277,10 +277,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(ctx.session.user.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const { images, eventId } = input;
 
@@ -308,10 +308,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(ctx.session.user.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const { images } = input;
 
@@ -366,10 +366,10 @@ export const eventRouter = createTRPCRouter({
   checkAndUpdateLimit: protectedProcedure
     .input(z.object({ count: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const { success } = await uploadRatelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await uploadRatelimit.limit(ctx.session.user.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const user = await ctx.db.user.findUnique({
         where: {
@@ -412,20 +412,20 @@ export const eventRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { imageKey, eventId } = input;
 
-      const { success } = await searchRatelimit.limit(eventId);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await searchRatelimit.limit(eventId);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       return await findImages(ctx.db, ctx.rekognition, eventId, imageKey);
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      const { success } = await ratelimit.limit(ctx.session.user.id);
-      if (!success) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      }
+      // const { success } = await ratelimit.limit(ctx.session.user.id);
+      // if (!success) {
+      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      // }
 
       const { id } = input;
 

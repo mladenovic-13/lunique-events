@@ -7,11 +7,9 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 
-import { type Timeframe } from "./events";
-
 interface EventDateSelectProps {
-  value: Timeframe;
-  onValueChange: (value: Timeframe) => void;
+  value: string;
+  onValueChange: (value: string) => void;
 }
 
 export const EventTimeframeSelect = ({
@@ -19,11 +17,8 @@ export const EventTimeframeSelect = ({
   onValueChange,
 }: EventDateSelectProps) => {
   return (
-    <Select
-      value={value}
-      onValueChange={(value) => onValueChange(value as Timeframe)}
-    >
-      <SelectTrigger className="h-8 capitalize md:w-28">{value}</SelectTrigger>
+    <Select value={value} onValueChange={(value) => onValueChange(value)}>
+      <SelectTrigger className="h-8 w-fit capitalize">{value}</SelectTrigger>
       <SelectContent>
         <SelectItem value="upcoming">Upcoming</SelectItem>
         <SelectItem value="past">Past</SelectItem>

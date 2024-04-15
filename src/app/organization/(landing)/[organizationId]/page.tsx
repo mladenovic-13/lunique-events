@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { type Event } from "@prisma/client";
-import { ArrowUpRightIcon, ChevronsRightIcon, CopyIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  ChevronsRightIcon,
+  CopyIcon,
+  PlusIcon,
+} from "lucide-react";
 import Link from "next/link";
 import {
   useParams,
@@ -11,9 +16,10 @@ import {
   useSearchParams,
 } from "next/navigation";
 
+// TODO: move to @/components or refactor
+// @Lukiano99
 import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
 import { EventTimeframeTabs } from "@/app/home/(events)/_components/event-date-tabs";
-import { type Timeframe } from "@/app/home/(events)/_components/events";
 import { Timeline } from "@/components/layout/timeline";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -28,28 +34,22 @@ import { Clock } from "./_components/clock";
 import { CoverImage } from "./_components/cover-image";
 import { EventCard } from "./_components/event-card";
 import { EventListItem } from "./_components/event-list-item";
-import { EventsButtons } from "./_components/events-buttons";
 import { OrganizationHeader } from "./_components/organization-header";
 import { OrganizationSkeleton } from "./_components/organization-skeleton";
 import { ScrollSectionButtons } from "./_components/scroll-section-buttons";
-import { type ViewMode } from "./_components/view-tabs";
+import { ViewTabs } from "./_components/view-tabs";
 
 export default function CalendarPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const viewMode = useSearchParams().get("viewMode");
-
-  const onValueChange = (value: ViewMode) => {
-    const query = new URLSearchParams();
-    query.set("viewMode", value);
-    router.push(`${pathname}?${query.toString()}`, { scroll: false });
-  };
-  const [timeframeValue, setTimeframeValue] = useState<Timeframe>("upcoming");
+  const searchParams = useSearchParams();
+  const timeframe = searchParams.get("timeframe") ?? "upcoming";
+  const view = searchParams.get("view") ?? "card";
 
   const { organizationId } = useParams<{ organizationId: string }>();
   const { data: organization, isLoading } = api.organization.get.useQuery({
     id: organizationId,
-    eventTimeFrame: timeframeValue,
+    timeframe: timeframe,
   });
 
   const selectedCalendarDays: Date[] = [];
@@ -78,6 +78,27 @@ export default function CalendarPage() {
     setCurrentEvent(null);
   };
 
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const query = new URLSearchParams(searchParams.toString());
+      query.set(name, value);
+
+      return query.toString();
+    },
+    [searchParams],
+  );
+
+  const onViewChange = (value: string) => {
+    router.push(pathname + "?" + createQueryString("view", value), {
+      scroll: false,
+    });
+  };
+  const onTimeframeChange = (value: string) => {
+    router.push(pathname + "?" + createQueryString("timeframe", value), {
+      scroll: false,
+    });
+  };
+
   if (isLoading) return <OrganizationSkeleton />;
 
   return (
@@ -98,11 +119,29 @@ export default function CalendarPage() {
         <div className="mx-auto max-w-4xl">
           <div className="flex md:justify-between md:space-x-4">
             <div className="flex flex-1 flex-col space-y-4">
-              <EventsButtons mode={"card"} onValueChange={onValueChange} />
+              <section className="flex justify-between pb-6">
+                <div>
+                  <h1 className="text-2xl font-semibold">Events</h1>
+                </div>
+                <div className="flex  space-x-2">
+                  <Link href={paths.event.create}>
+                    <Button
+                      variant={"secondary"}
+                      className="h-8 space-x-2 pl-2"
+                    >
+                      <PlusIcon size={14} />
+                      <p className="text-sm font-normal">Add Event</p>
+                    </Button>
+                  </Link>
+                  <div className="">
+                    <ViewTabs value={view} onValueChange={onViewChange} />
+                  </div>
+                </div>
+              </section>
               {organization &&
                 organization.events.map(
                   (event, idx) =>
-                    viewMode === "card" && (
+                    view === "card" && (
                       <Timeline
                         mode={"compact"}
                         idx={idx}
@@ -123,7 +162,7 @@ export default function CalendarPage() {
                 {organization &&
                   organization.events.map(
                     (event, idx) =>
-                      viewMode === "list" && (
+                      view === "list" && (
                         <EventListItem
                           key={idx}
                           date={event.startDate}
@@ -189,8 +228,8 @@ export default function CalendarPage() {
                   modifiersStyles={{ selectedDays: selectedDaysStyle }}
                 />
                 <EventTimeframeTabs
-                  onValueChange={(value) => setTimeframeValue(value)}
-                  value={timeframeValue}
+                  value={timeframe}
+                  onValueChange={onTimeframeChange}
                 />
               </div>
             </div>

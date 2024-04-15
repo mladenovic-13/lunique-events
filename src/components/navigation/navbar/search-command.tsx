@@ -24,10 +24,10 @@ interface SearchCommandProps {
 
 export const SearchCommand = ({ isOpen, setIsOpen }: SearchCommandProps) => {
   const { data: upcomingEvents } = api.event.list.useQuery({
-    eventTimeFrame: "upcoming",
+    timeframe: "upcoming",
   });
   const { data: pastEvents } = api.event.list.useQuery({
-    eventTimeFrame: "past",
+    timeframe: "past",
   });
 
   useEffect(() => {
