@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { useConfig } from "@/hooks/use-config-store";
+import { useOrganizationId } from "@/hooks/use-config-store";
 import { cn } from "@/lib/utils";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
@@ -34,15 +34,15 @@ import { type Timeframe } from "@/types";
 export const Events = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-  const { organization } = useConfig();
+  const organizationId = useOrganizationId();
 
   const searchParams = useSearchParams();
   const timeframe = searchParams.get("timeframe") ?? "upcoming";
   const view = searchParams.get("view") ?? "card";
 
   const { data, isLoading } = api.event.list.useQuery(
-    { timeframe: timeframe, organizationId: organization },
-    { enabled: !!timeframe && !!organization },
+    { timeframe: timeframe, organizationId: organizationId },
+    { enabled: !!timeframe && !!organizationId },
   );
 
   const handleSheetOpen = (event: Event) => {
