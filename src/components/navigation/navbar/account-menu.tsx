@@ -18,7 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useConfig } from "@/hooks/use-config-store";
+import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { useSignOut } from "@/hooks/use-sign-out";
 import placeholderImg from "@/public/images/placeholder.jpg";
 import { paths } from "@/routes/paths";
@@ -40,22 +40,23 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
 
   const { mutate, isLoading } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
-  const { organization: orgId, updateOrganization: updateOrgId } = useConfig();
+  const organizationId = useOrganizationId();
+  const { updateOrganizationId } = useConfigActions();
 
   useEffect(() => {
     if (!orgs) return;
 
     const personal = orgs.find((item) => item.isPersonal);
-    const current = orgs.find((item) => item.id === orgId);
+    const current = orgs.find((item) => item.id === organizationId);
 
     if (current) {
       setOrganization(current);
     }
 
     if (!current) {
-      updateOrgId(personal?.id);
+      updateOrganizationId(personal?.id);
     }
-  }, [orgId, orgs, updateOrgId]);
+  }, [organizationId, orgs, updateOrganizationId]);
 
   const avatarUrl = organization?.isPersonal
     ? image
@@ -97,7 +98,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                     key={item.id}
                     checked={item.id === organization.id}
                     onCheckedChange={(checked) =>
-                      checked && updateOrgId(item.id)
+                      checked && updateOrganizationId(item.id)
                     }
                     className="md:pr-8"
                   >

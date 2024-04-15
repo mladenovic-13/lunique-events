@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { useConfig } from "@/hooks/use-config-store";
+import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { api } from "@/trpc/react";
 
 interface OrganizationInputProps {
@@ -19,21 +19,22 @@ interface OrganizationInputProps {
 
 export function OrganizationInput({ onChange }: OrganizationInputProps) {
   const { data: organizations, isLoading } = api.organization.list.useQuery();
-  const { organization, updateOrganization } = useConfig();
+  const organizationId = useOrganizationId();
+  const { updateOrganizationId } = useConfigActions();
 
   useEffect(() => {
-    if (!organization) return;
-    onChange(organization);
-  }, [organization, onChange]);
+    if (!organizationId) return;
+    onChange(organizationId);
+  }, [organizationId, onChange]);
 
   if (isLoading)
     return <div className="h-8 w-48 animate-pulse rounded-md bg-muted" />;
 
-  const org = organizations?.find((item) => item.id === organization);
+  const org = organizations?.find((item) => item.id === organizationId);
 
   return (
     <div>
-      <Select value={organization} onValueChange={updateOrganization}>
+      <Select value={organizationId} onValueChange={updateOrganizationId}>
         <SelectTrigger className="h-8 max-w-32 justify-between border-muted-foreground/10 bg-muted data-[state=open]:bg-muted-foreground/50 md:min-w-40 md:max-w-fit">
           <div className="flex items-center justify-start gap-3">
             {org?.isPersonal && <User2Icon className="size-4" />}

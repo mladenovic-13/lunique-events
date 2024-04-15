@@ -8,20 +8,23 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { useConfig } from "@/hooks/use-config-store";
+import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { api } from "@/trpc/react";
 
 export const OrganizationSelect = () => {
-  const { organization: id, updateOrganization: updateId } = useConfig();
+  const organizationId = useOrganizationId();
+  const { updateOrganizationId } = useConfigActions();
 
   const { data: organizations, isLoading } = api.organization.list.useQuery();
 
-  const organization = organizations?.find((item) => item.id === id);
+  const organization = organizations?.find(
+    (item) => item.id === organizationId,
+  );
 
   if (isLoading) return <div className="h-8 w-32 rounded-md bg-muted" />;
 
   return (
-    <Select value={id} onValueChange={updateId}>
+    <Select value={organizationId} onValueChange={updateOrganizationId}>
       <SelectTrigger className="h-8 w-fit">
         <div className="flex items-center gap-1.5">
           {organization?.isPersonal && <User2Icon className="size-4" />}
