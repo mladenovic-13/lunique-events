@@ -21,7 +21,8 @@ export const OrganizationSelect = () => {
     (item) => item.id === organizationId,
   );
 
-  if (isLoading) return <div className="h-8 w-32 rounded-md bg-muted" />;
+  if (isLoading)
+    return <div className="h-8 w-full rounded-md bg-muted md:w-32" />;
 
   return (
     <Select value={organizationId} onValueChange={updateOrganizationId}>
