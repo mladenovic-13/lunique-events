@@ -27,7 +27,9 @@ export default async function EventPage({
     <MainPage>
       <div className="space-y-5 p-3 pb-10 md:flex md:gap-5 md:space-y-0">
         <div className="space-y-5 md:w-2/5">
-          <EventThumbnail src={event.thumbnailUrl} />
+          <div className="mx-auto w-fit md:w-full">
+            <EventThumbnail src={event.thumbnailUrl} />
+          </div>
           <div className="hidden space-y-5 md:block">
             <EventHostedBy name={event.creator.name ?? "Unknown"} />
             <EventGuests guests={event.guests} />

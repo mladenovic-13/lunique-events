@@ -1,13 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { type Event } from "@prisma/client";
-import {
-  ArrowUpRightIcon,
-  ChevronsRightIcon,
-  CopyIcon,
-  PlusIcon,
-} from "lucide-react";
+import { useCallback } from "react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import {
   useParams,
@@ -16,24 +10,19 @@ import {
   useSearchParams,
 } from "next/navigation";
 
-// TODO: move to @/components or refactor
-// @Lukiano99
-import { EventPageContent } from "@/app/event/(landing)/[eventId]/(event)/_components/event-page-content";
-import { EventTimeframeTabs } from "@/app/home/(events)/_components/event-date-tabs";
 import { Timeline } from "@/components/layout/timeline";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { EventCard } from "@/components/partials/event/event-card";
+import { EventTimeframeTabs } from "@/components/partials/event/event-date-tabs";
+import { EventListItem } from "@/components/partials/event/event-list-item";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
 import { CalendarSubscriptionButton } from "./_components/callendar-subscription-button";
 import { Clock } from "./_components/clock";
 import { CoverImage } from "./_components/cover-image";
-import { EventCard } from "./_components/event-card";
-import { EventListItem } from "./_components/event-list-item";
 import { OrganizationHeader } from "./_components/organization-header";
 import { OrganizationSkeleton } from "./_components/organization-skeleton";
 import { ScrollSectionButtons } from "./_components/scroll-section-buttons";
@@ -63,19 +52,6 @@ export default function CalendarPage() {
     border: "1px solid currentColor",
     borderRadius: "20px",
     fontWeight: "bolder",
-  };
-
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-
-  const handleSheetOpen = (event: Event) => {
-    setIsSheetOpen(true);
-    setCurrentEvent(event);
-  };
-
-  const handleSheetClose = () => {
-    setIsSheetOpen(false);
-    setCurrentEvent(null);
   };
 
   const createQueryString = useCallback(
@@ -138,82 +114,43 @@ export default function CalendarPage() {
                   </div>
                 </div>
               </section>
-              {organization &&
-                organization.events.map(
-                  (event, idx) =>
-                    view === "card" && (
-                      <Timeline
-                        mode={"compact"}
-                        idx={idx}
-                        dataLength={organization.events.length}
-                        key={idx}
-                        date={event.startDate}
-                      >
-                        <EventCard
-                          event={event}
-                          location={event.location}
-                          guests={4}
-                          onClick={() => handleSheetOpen(event)}
-                        />
-                      </Timeline>
-                    ),
-                )}
-              <div className="flex flex-col gap-12">
-                {organization &&
-                  organization.events.map(
-                    (event, idx) =>
-                      view === "list" && (
-                        <EventListItem
-                          key={idx}
-                          date={event.startDate}
-                          event={event}
-                          creator={event.creator.name}
-                          onClick={() => handleSheetOpen(event)}
-                        />
-                      ),
-                  )}
-              </div>
-              <Sheet open={isSheetOpen} onOpenChange={handleSheetClose}>
-                <SheetContent
-                  side="right"
-                  close={false}
-                  className="overflow-hidden p-0 outline-none"
-                >
-                  <div className="sticky -top-0.5 z-50 -mt-0.5 flex items-center justify-between rounded-t-md border-y bg-background px-1.5 py-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsSheetOpen(false)}
+              {view === "card" && (
+                <div className="flex flex-col gap-10">
+                  {organization?.events.map((event, idx) => (
+                    <Timeline
+                      mode={"compact"}
+                      idx={idx}
+                      dataLength={organization.events.length}
+                      key={idx}
+                      date={event.startDate}
                     >
-                      <ChevronsRightIcon />
-                    </Button>
-                    <div className="flex items-center gap-1.5">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => alert("TODO: Copy link to clipboard")}
-                      >
-                        <CopyIcon className="mr-1.5 size-4" />
-                        Copy Link
-                      </Button>
-                      <Link
-                        href={paths.event.landing.root(currentEvent?.id ?? "")}
-                        className={buttonVariants({
-                          variant: "secondary",
-                          size: "sm",
-                        })}
-                      >
-                        Open Event Page
-                        <ArrowUpRightIcon className="ml-1.5 size-4" />
-                      </Link>
-                    </div>
-                  </div>
-                  <ScrollArea className="h-full">
-                    <EventPageContent isMobile />
-                    <ScrollBar orientation="vertical" />
-                  </ScrollArea>
-                </SheetContent>
-              </Sheet>
+                      <EventCard
+                        event={event}
+                        location={event.location}
+                        guests={4}
+                        onClick={() =>
+                          router.push(paths.event.landing.root(event.id))
+                        }
+                      />
+                    </Timeline>
+                  ))}
+                </div>
+              )}
+              {view === "list" && (
+                <div className="flex flex-col gap-12">
+                  {organization?.events.map((event, idx) => (
+                    <EventListItem
+                      key={idx}
+                      date={event.startDate}
+                      event={event}
+                      creator={event.creator.name}
+                      onClick={() =>
+                        router.push(paths.event.landing.root(event.id))
+                      }
+                    />
+                  ))}
+                </div>
+              )}
             </div>
             <div className="hidden flex-col space-y-4 md:flex">
               <div className="flex justify-between space-x-2">
