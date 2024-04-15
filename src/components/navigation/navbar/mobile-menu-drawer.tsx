@@ -275,6 +275,16 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
                   );
                 })}
             </RadioGroup>
+            <Link
+              href={paths.organization.create}
+              className={buttonVariants({
+                variant: "ghost",
+                size: "sm",
+                className: "w-full",
+              })}
+            >
+              <PlusIcon className="mr-1.5 size-4" /> New organization
+            </Link>
           </div>
         </div>
         <DrawerFooter className="border-t">
