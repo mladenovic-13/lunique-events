@@ -197,6 +197,27 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
+
+  getOverview: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.event.findFirst({
+        where: {
+          id: input.id,
+        },
+        select: {
+          startDate: true,
+          endDate: true,
+          location: {
+            select: {
+              mainText: true,
+              secondaryText: true,
+            },
+          },
+        },
+      });
+    }),
+
   // settings: protectedProcedure
   //   .input(z.object({ id: z.string() }))
   //   .query(async ({ ctx, input }) => {

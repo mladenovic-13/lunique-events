@@ -7,8 +7,9 @@ import { GuestList } from "./_components/guest-list";
 import { InviteInsights } from "./_components/invite-insights";
 import { SocialButtons } from "./_components/social-buttons";
 
-export default function EventOverviewPage({} // params: { eventId },
-: {
+export default function EventOverviewPage({
+  params, // params: { eventId },
+}: {
   params: {
     eventId: string;
   };
@@ -25,7 +26,7 @@ export default function EventOverviewPage({} // params: { eventId },
 
         <div className="space-y-3 md:flex md:flex-col md:justify-between">
           <div className="space-y-3 md:space-y-5">
-            <EventDetails />
+            <EventDetails eventId={params.eventId} />
             <CheckInButton />
           </div>
 
