@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 export const SelectPeriod = () => {
   return (
@@ -16,7 +17,7 @@ export const SelectPeriod = () => {
         <ClockIcon className="size-4 text-muted-foreground" />
         <SelectValue className="capitalize" placeholder="past week" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent ref={selectPrevendDefault}>
         <SelectGroup>
           <SelectItem className="capitalize" value="pastWeek">
             past week

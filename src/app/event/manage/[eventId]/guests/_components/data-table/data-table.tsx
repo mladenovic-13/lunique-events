@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 import { type GuestStatus } from "./columns";
 
@@ -89,7 +90,7 @@ export function DataTable<TData, TValue>({
               <FilterIcon className="size-4 text-muted-foreground" />
               <SelectValue placeholder="All Guests" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent ref={selectPrevendDefault}>
               <SelectGroup>
                 <SelectItem value="allGuests" className="px-0">
                   <div className="flex items-start px-2">All Guests</div>
