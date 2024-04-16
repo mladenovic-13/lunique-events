@@ -9,6 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 type EventVisibility = "public" | "private";
 
@@ -40,15 +41,7 @@ export function VisibilitySelect({ value, onChange }: VisibilitySelectProps) {
           {icon[innerValue]}
           {innerValue}
         </SelectTrigger>
-        <SelectContent
-          align="end"
-          ref={(ref) => {
-            if (!ref) return;
-            ref.ontouchstart = (e) => {
-              e.preventDefault();
-            };
-          }}
-        >
+        <SelectContent align="end" ref={selectPrevendDefault}>
           <SelectGroup>
             <SelectItem value="public" className="px-0">
               <div className="flex items-center gap-3 p-3">

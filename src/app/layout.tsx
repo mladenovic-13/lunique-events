@@ -18,6 +18,8 @@ const roboto = Roboto({
 export const metadata = {
   title: "Lunique Events",
   description: "Make your event, event from the future.",
+  viewport:
+    "width=device-width, initial-scale=1, maximum-scale=1, , user-scalable=no",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

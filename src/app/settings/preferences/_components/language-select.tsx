@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 export const LanguageSelect = () => {
   return (
@@ -18,7 +19,7 @@ export const LanguageSelect = () => {
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select a language" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent ref={selectPrevendDefault}>
           <SelectGroup>
             <SelectItem value="srpski">Srpski</SelectItem>
             <SelectItem value="english">English</SelectItem>

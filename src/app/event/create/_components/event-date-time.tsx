@@ -15,6 +15,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import { selectPrevendDefault } from "@/lib/select-ref";
 import { times } from "@/lib/times";
 
 import { type EventSchema } from "./validation";
@@ -105,15 +106,7 @@ const TimePicker = ({ value, onChange }: TimePickerProps) => {
         {value}
       </SelectTrigger>
 
-      <SelectContent
-        className="max-h-52 min-w-fit"
-        ref={(ref) => {
-          if (!ref) return;
-          ref.ontouchstart = (e) => {
-            e.preventDefault();
-          };
-        }}
-      >
+      <SelectContent className="max-h-52 min-w-fit" ref={selectPrevendDefault}>
         {times.map((time, idx) => (
           <SelectItem
             key={idx}

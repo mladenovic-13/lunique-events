@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 export const EventsFilter = () => {
   return (
@@ -18,7 +19,7 @@ export const EventsFilter = () => {
           <SelectTrigger className="h-6 w-[180px] border-none p-2 focus:ring-0 ">
             <SelectValue placeholder="Filter Events" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent ref={selectPrevendDefault}>
             <SelectGroup>
               <SelectItem value="all">All Events</SelectItem>
               <SelectItem value="available">Available Only</SelectItem>

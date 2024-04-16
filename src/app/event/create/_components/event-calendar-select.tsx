@@ -10,6 +10,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
+import { selectPrevendDefault } from "@/lib/select-ref";
 import { api } from "@/trpc/react";
 
 interface OrganizationInputProps {
@@ -43,7 +44,7 @@ export function OrganizationInput({ onChange }: OrganizationInputProps) {
             <span className="truncate">{org?.name}</span>
           </div>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent ref={selectPrevendDefault}>
           {organizations
             ?.sort((org) => (org.isPersonal ? -1 : 1))
             .map((org) => (

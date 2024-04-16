@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { selectPrevendDefault } from "@/lib/select-ref";
 
 export const RegistrationQuestions = () => {
   return (
@@ -64,7 +65,7 @@ export const RegistrationQuestions = () => {
                   <SelectTrigger className="h-fit w-[80px] border-none p-0 ring-0 ">
                     <SelectValue placeholder="Optional" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent ref={selectPrevendDefault}>
                     <SelectGroup>
                       <SelectItem value="off">Off</SelectItem>
                       <SelectItem value="optional">Optional</SelectItem>

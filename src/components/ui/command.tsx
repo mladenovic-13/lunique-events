@@ -28,7 +28,11 @@ type CommandDialogProps = DialogProps;
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0" closeIcon={false}>
+      <DialogContent
+        // eslint-disable-next-line tailwindcss/no-unnecessary-arbitrary-value
+        className="absolute top-52 w-full overflow-hidden p-0 md:left-[50%] md:top-[50%] md:mx-0 md:translate-x-[-50%] md:translate-y-[-50%]"
+        closeIcon={false}
+      >
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:size-5">
           {children}
         </Command>
