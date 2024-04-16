@@ -208,6 +208,8 @@ export const eventRouter = createTRPCRouter({
         select: {
           startDate: true,
           endDate: true,
+          startTime: true,
+          endTime: true,
           location: {
             select: {
               mainText: true,

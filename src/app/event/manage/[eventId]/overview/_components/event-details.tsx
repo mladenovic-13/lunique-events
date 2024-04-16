@@ -23,6 +23,8 @@ export async function EventDetails({ eventId }: EventDetailsProps) {
           <DisplayDate
             startDate={data ? data.startDate : new Date()}
             endDate={data ? data.endDate : new Date()}
+            startTime={data ? data?.startTime : ""}
+            endTime={data ? data?.endTime : ""}
           />
         </div>
       </div>
@@ -32,7 +34,7 @@ export async function EventDetails({ eventId }: EventDetailsProps) {
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-lg font-medium leading-5">
-            {data?.location?.mainText}
+            {data?.location ? data.location.mainText : "Location is missing"}
           </p>
           <p className="text-sm text-muted-foreground">
             {data?.location?.secondaryText}
@@ -49,18 +51,24 @@ export async function EventDetails({ eventId }: EventDetailsProps) {
 interface DisplayDateProps {
   startDate: Date;
   endDate: Date;
+  startTime: string;
+  endTime: string;
 }
 
-const DisplayDate = ({ startDate, endDate }: DisplayDateProps) => {
+const DisplayDate = ({
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+}: DisplayDateProps) => {
   return (
     <div className="flex flex-col">
       <p className="font-semibold">
         {format(startDate, "EEEE")}, {format(startDate, "LLL")}{" "}
-        {format(startDate, "I")}
+        {format(startDate, "do")} - {startTime}
       </p>
       <p className="text-sm text-accent-foreground/50">
-        {format(startDate, "p")} - {format(endDate, "LLL")}{" "}
-        {format(endDate, "I")}, {format(endDate, "p")}
+        Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime}
       </p>
     </div>
   );
