@@ -1,19 +1,35 @@
+import { type Event } from "@prisma/client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { api } from "@/trpc/server";
+import { type RouterOutputs } from "@/trpc/shared";
+
 import { ActionButtons } from "./_components/action-buttons";
 import { CheckInButton } from "./_components/check-in-button";
-import { EditButtons } from "./_components/edit-buttons";
+import { EditEventForm } from "./_components/edit-event-form";
 import { EventDetails } from "./_components/event-details";
 import { EventPagePreview } from "./_components/event-page-preview";
 import { GuestList } from "./_components/guest-list";
 import { InviteInsights } from "./_components/invite-insights";
 import { SocialButtons } from "./_components/social-buttons";
 
-export default function EventOverviewPage({
+export default async function EventOverviewPage({
   params, // params: { eventId },
 }: {
   params: {
     eventId: string;
   };
 }) {
+  const event: RouterOutputs["event"]["get"] = await api.event.get.query({
+    id: params.eventId,
+  });
+
   return (
     <div className="space-y-3 md:space-y-5">
       <ActionButtons />
@@ -30,7 +46,19 @@ export default function EventOverviewPage({
             <CheckInButton />
           </div>
 
-          <EditButtons />
+          <div className="flex">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="sm" className="flex-1 ">
+                  Edit Event
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetTitle>Edit Event</SheetTitle>
+                <EditEventForm event={event as Event} />
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
 

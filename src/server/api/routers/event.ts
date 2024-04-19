@@ -1,3 +1,4 @@
+import { get } from "react-hook-form";
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { ImageType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -119,6 +120,31 @@ export const eventRouter = createTRPCRouter({
               value: input.timezone.value,
             },
           },
+        },
+      });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        // eventUpdateSchema: eventSchema,
+        eventSchema: eventSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          name: input.eventSchema.name,
+          startDate: input.eventSchema.startDateTime.date,
+          startTime: input.eventSchema.startDateTime.time,
+          endDate: input.eventSchema.endDateTime.date,
+          endTime: input.eventSchema.endDateTime.time,
+          description: input.eventSchema.description,
+          capacityValue: input.eventSchema.capacity.value,
+          capacityWaitlist: input.eventSchema.capacity.waitlist,
         },
       });
     }),
