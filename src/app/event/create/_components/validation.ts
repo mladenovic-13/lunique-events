@@ -16,7 +16,6 @@ const themeSchema = z.object({
 });
 
 const timezoneSchema = z.object({
-  id: z.number(),
   value: z.string(),
   label: z.string(),
   city: z.string(),

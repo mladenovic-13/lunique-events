@@ -6,8 +6,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { EditEventForm } from "./edit-event-form";
-
 export const EditButtons = () => {
   return (
     <div className="flex ">

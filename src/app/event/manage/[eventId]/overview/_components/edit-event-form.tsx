@@ -2,10 +2,7 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Event } from "@prisma/client";
-import { Z } from "@upstash/redis/zmscore-07021e27";
 import { CircleCheckIcon, ClockIcon } from "lucide-react";
-import { z } from "zod";
 
 import {
   defaultValues,
@@ -41,7 +38,6 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
     defaultValues: defaultValues,
   });
   const { mutate: updateEvent } = api.event.update.useMutation();
-
   useEffect(() => {
     if (event && !updateForm.formState.isDirty) {
       updateForm.reset({
@@ -59,9 +55,9 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
           waitlist: event.capacityWaitlist ?? undefined,
         },
         description: event.description ?? undefined,
-        public: event.isPublic ?? undefined,
-        requireApproval: event.requireApproval ?? undefined,
-        tickets: event.tickets ?? undefined,
+        public: event.isPublic,
+        requireApproval: event.requireApproval,
+        tickets: event.tickets,
         thumbnailUrl: event.thumbnailUrl ?? "testUrl",
         location: {
           ...event.location,
@@ -78,7 +74,6 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
           mode: event.pageStyle?.mode ?? undefined,
         },
         timezone: {
-          id: 123,
           label: event.timezone?.label ?? undefined,
           value: event.timezone?.value ?? undefined,
           city: event.timezone?.city ?? undefined,
@@ -191,32 +186,64 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
           <div className="flex flex-col gap-2">
             <Label>Capacity</Label>
             <div className="flex items-center gap-2">
-              (
               <Input
                 type="number"
                 {...updateForm.register("capacity.value", {
                   valueAsNumber: true,
                 })}
               />
-              <Input
-                type="checkbox"
-                {...updateForm.register("capacity.waitlist")}
+              <Controller
+                //this works properly
+                control={updateForm.control}
+                name="capacity.waitlist"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
               />
-              <Switch checked={true} />
               <Label className="font-normal">Waitlist</Label>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <Switch checked={true} />
+            <Controller
+              control={updateForm.control}
+              name="public"
+              render={({ field }) => (
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
             <Label className="font-normal">Public visibility</Label>
           </div>
           <div className="flex items-center gap-3">
-            <Switch checked={true} />
+            <Controller
+              control={updateForm.control}
+              name="tickets"
+              render={({ field }) => (
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
             <Label className="font-normal">Paid tickets</Label>
           </div>
           <div className="flex items-center gap-3">
-            <Switch checked={true} />
+            <Controller
+              control={updateForm.control}
+              name="requireApproval"
+              render={({ field }) => (
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
             <Label className="font-normal">Require approval</Label>
           </div>
           <div className="flex items-center gap-3">

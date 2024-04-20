@@ -1,5 +1,3 @@
-import { type Event } from "@prisma/client";
-
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -55,7 +53,7 @@ export default async function EventOverviewPage({
               </SheetTrigger>
               <SheetContent>
                 <SheetTitle>Edit Event</SheetTitle>
-                <EditEventForm event={event as Event} />
+                <EditEventForm event={event} />
               </SheetContent>
             </Sheet>
           </div>

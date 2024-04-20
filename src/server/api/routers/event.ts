@@ -1,4 +1,3 @@
-import { get } from "react-hook-form";
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { ImageType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -145,6 +144,9 @@ export const eventRouter = createTRPCRouter({
           description: input.eventSchema.description,
           capacityValue: input.eventSchema.capacity.value,
           capacityWaitlist: input.eventSchema.capacity.waitlist,
+          isPublic: input.eventSchema.public,
+          tickets: input.eventSchema.tickets,
+          requireApproval: input.eventSchema.requireApproval,
         },
       });
     }),
