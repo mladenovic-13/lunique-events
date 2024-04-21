@@ -108,7 +108,7 @@ const PlacesAutocomplete = (props: {
 
       onChange({
         placeId: place.place_id,
-        descripton: place.description,
+        description: place.description,
         mainText: place.structured_formatting.main_text,
         secondaryText: place.structured_formatting.secondary_text,
         position,

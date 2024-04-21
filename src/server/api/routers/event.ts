@@ -101,7 +101,7 @@ export const eventRouter = createTRPCRouter({
             ? {
                 create: {
                   placeId: input.location.placeId,
-                  description: input.location.descripton,
+                  description: input.location.description,
                   mainText: input.location.mainText,
                   secondaryText: input.location.secondaryText,
                   lat: input.location.position.lat,
@@ -179,6 +179,18 @@ export const eventRouter = createTRPCRouter({
           organization: {
             connect: {
               id: organization.id,
+            },
+          },
+          location: {
+            update: {
+              data: {
+                description: input.eventSchema.location?.description,
+                mainText: input.eventSchema.location?.mainText,
+                secondaryText: input.eventSchema.location?.secondaryText,
+                placeId: input.eventSchema.location?.placeId,
+                lng: input.eventSchema.location?.position.lng,
+                lat: input.eventSchema.location?.position.lat,
+              },
             },
           },
         },

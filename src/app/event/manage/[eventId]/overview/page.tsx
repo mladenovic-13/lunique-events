@@ -51,7 +51,7 @@ export default async function EventOverviewPage({
                   Edit Event
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="overflow-y-scroll">
                 <SheetTitle>Edit Event</SheetTitle>
                 <EditEventForm event={event} />
               </SheetContent>

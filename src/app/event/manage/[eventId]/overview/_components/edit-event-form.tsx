@@ -1,13 +1,26 @@
 "use client";
-import React, { useEffect } from "react";
+import React, {
+  type HTMLAttributes,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type Libraries, useLoadScript } from "@react-google-maps/api";
 import {
   Building2Icon,
   CircleCheckIcon,
   ClockIcon,
+  MapPinIcon,
+  SearchIcon,
   User2Icon,
+  VideoIcon,
 } from "lucide-react";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
 
 import {
   defaultValues,
@@ -26,9 +39,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { env } from "@/env.mjs";
 import { times } from "@/lib/times";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/shared";
+import { type Place } from "@/types";
 
 import { DatePickerDemo } from "./date-picker-demo";
 
@@ -66,7 +82,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
         thumbnailUrl: event.thumbnailUrl ?? "testUrl",
         location: {
           ...event.location,
-          descripton: event.location?.description ?? "null",
+          description: event.location?.description ?? "null",
           position: {
             lat: event.location?.lat ?? undefined,
             lng: event.location?.lng ?? undefined,
@@ -87,6 +103,13 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
     }
   }, [updateForm, event]);
 
+  const libraries: Libraries = ["places"];
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+  const [open, setOpen] = useState(false);
   const onSubmit = (data: EventSchema) => {
     if (event) {
       updateEvent(
@@ -108,7 +131,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
   };
 
   return (
-    <div className="p-2 pt-14">
+    <div className="pt-14 ">
       {event && organizations && (
         <form
           onSubmit={updateForm.handleSubmit(onSubmit, onErrors)}
@@ -215,14 +238,22 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
               </div>
             </div>
           </div>
-          {/* <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Label>Location</Label>
-            <Input
-              type="search"
-              placeholder="Location"
-              value={event.locationId!}
-            />
-          </div> */}
+            {isLoaded && (
+              <Controller
+                control={updateForm.control}
+                name="location"
+                render={({ field }) => (
+                  <PlacesAutocomplete
+                    setOpen={setOpen}
+                    onChange={field.onChange}
+                    value={field.value?.mainText ?? ""}
+                  />
+                )}
+              />
+            )}
+          </div>
           <div className="flex flex-col gap-2">
             <Label>Description</Label>
             <Textarea
@@ -240,7 +271,6 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
                 })}
               />
               <Controller
-                //this works properly
                 control={updateForm.control}
                 name="capacity.waitlist"
                 render={({ field }) => (
@@ -293,8 +323,8 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
             />
             <Label className="font-normal">Require approval</Label>
           </div>
-          <div className="flex items-center gap-3">
-            <Button className="gap-2 ">
+          <div className="sticky bottom-0 flex w-full items-center gap-3 rounded-lg p-4 backdrop-blur-sm">
+            <Button className="w-full gap-2">
               <CircleCheckIcon size={20} />
               <p className="text-base">Update Event</p>
             </Button>
@@ -344,5 +374,165 @@ const TimePicker = ({ value, onChange }: TimePickerProps) => {
         ))}
       </SelectContent>
     </Select>
+  );
+};
+
+const PlacesAutocomplete = (props: {
+  onChange: (place: Place) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  value: string;
+}) => {
+  const { onChange, setOpen, value } = props;
+
+  const {
+    ready,
+    // value,
+    setValue,
+    suggestions: { status, data },
+  } = usePlacesAutocomplete();
+
+  const onSelect = useCallback(
+    async (value: string) => {
+      const place = data.find((item) => item.place_id === value);
+      if (!place) return;
+
+      const results = await getGeocode({ placeId: value });
+
+      if (!results[0]) return;
+
+      const position = getLatLng(results[0]);
+
+      onChange({
+        placeId: place.place_id,
+        description: place.description,
+        mainText: place.structured_formatting.main_text,
+        secondaryText: place.structured_formatting.secondary_text,
+        position,
+      });
+
+      setOpen(false);
+    },
+    [onChange, data, setOpen],
+  );
+
+  const isResultOpen = !!status;
+  return (
+    <div>
+      <AutocompleteInput
+        value={value}
+        onValueChange={setValue}
+        disabled={!ready}
+        placeholder="Enter location..."
+      />
+      <AutocompleteResult>
+        {isResultOpen && status === "OK" && (
+          <AutocompleteResultGroup heading="Locations">
+            {data.map(({ place_id, description }) => (
+              <AutocompleteResultItem
+                key={place_id}
+                value={place_id}
+                onSelect={onSelect}
+              >
+                <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
+                {description}
+              </AutocompleteResultItem>
+            ))}
+          </AutocompleteResultGroup>
+        )}
+        {isResultOpen && status === "ZERO_RESULTS" && (
+          <AutocompleteResultEmpty />
+        )}
+      </AutocompleteResult>
+    </div>
+  );
+};
+
+interface AutocompleteInputProps extends HTMLAttributes<HTMLInputElement> {
+  value: string;
+  onValueChange: (value: string) => void;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+const AutocompleteInput = ({
+  value,
+  onValueChange,
+  className,
+  disabled,
+  placeholder,
+  ...props
+}: AutocompleteInputProps) => {
+  return (
+    <span className="relative">
+      <Input
+        disabled={disabled}
+        placeholder={placeholder}
+        className={cn(
+          "h-10 rounded-b-none border-none bg-popover pl-10 shadow-none focus-visible:ring-0",
+          className,
+        )}
+        value={value}
+        onChange={(e) => onValueChange(e.target.value)}
+        {...props}
+      />
+      <div className="absolute left-0 top-0 flex size-10 items-center justify-center">
+        <SearchIcon className="size-4" />
+      </div>
+    </span>
+  );
+};
+
+const AutocompleteResultEmpty = () => (
+  <div className="px-3 py-2 text-sm text-muted-foreground">
+    Looks like there is no results. Try again with different terms.
+  </div>
+);
+
+interface AutocompleteResultProps {
+  children: React.ReactNode;
+}
+
+const AutocompleteResult = (props: AutocompleteResultProps) => (
+  <div className="space-y-1.5 overflow-x-auto rounded-b-md bg-popover p-1.5">
+    {props.children}
+  </div>
+);
+
+interface AutocompleteResultGroupProps {
+  heading?: string;
+  children?: React.ReactNode;
+}
+
+const AutocompleteResultGroup = (props: AutocompleteResultGroupProps) => (
+  <div>
+    {props.heading && (
+      <p className="px-3 py-2 text-sm font-semibold text-muted-foreground">
+        {props.heading}
+      </p>
+    )}
+    <div>{props.children}</div>
+  </div>
+);
+
+interface AutocompleteResultItemProps {
+  value: string;
+  onSelect: (value: string) => void;
+  children?: React.ReactNode;
+  disabled?: boolean;
+}
+
+const AutocompleteResultItem = (props: AutocompleteResultItemProps) => {
+  const { value, onSelect, disabled } = props;
+
+  return (
+    <Button
+      type="button"
+      disabled={disabled}
+      variant="ghost"
+      onClick={() => onSelect(value)}
+      className="flex w-full items-center justify-start px-3 hover:bg-accent/50"
+    >
+      {props.children}
+    </Button>
   );
 };
