@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { filter } from "jszip";
 import {
   Building2Icon,
   CircleCheckIcon,
@@ -15,7 +14,6 @@ import {
   type EventSchema,
   eventSchema,
 } from "@/app/event/create/_components/validation";
-import { OrganizationSelect } from "@/app/home/(events)/_components/organization-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
