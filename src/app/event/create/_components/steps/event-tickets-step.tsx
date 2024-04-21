@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, SparklesIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
@@ -36,10 +36,10 @@ export const EventTicketsStep = () => {
           onClick={prevStep}
           variant="secondary"
         >
-          <ChevronLeftIcon className="mr-1.5 size-4" /> Prev
+          <ChevronLeftIcon className="mr-1.5 size-4" /> Back
         </Button>
         <Button type="button" size="sm" onClick={nextStep}>
-          Create Event <SparklesIcon className="ml-1.5 size-4" />
+          Continue <ChevronRightIcon className="ml-1.5 size-4" />
         </Button>
       </StepFooter>
     </StepContent>

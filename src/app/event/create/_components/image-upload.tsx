@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import axios from "axios";
-import { DownloadIcon, ImagePlusIcon, XIcon } from "lucide-react";
+import { ImagePlusIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { getThumbnailImagePath } from "@/lib/get-path";
+import { getRandomNumber } from "@/lib/get-random-number";
 import { getImageUrl } from "@/lib/get-url";
-import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 interface ImageUploadProps {
@@ -19,13 +18,13 @@ interface ImageUploadProps {
   onChange: (value: string | null) => void;
 }
 
-export const ImageUpload = ({ onChange }: ImageUploadProps) => {
+export const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   const { mutate: fetchPresignedUrl } = api.s3.getPresignedUrl.useMutation();
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     maxSize: 10 * 1000 * 1000,
     accept: {
@@ -72,54 +71,64 @@ export const ImageUpload = ({ onChange }: ImageUploadProps) => {
     },
   });
 
+  const defaultValue = useMemo(
+    () => `/images/invited/invited-${getRandomNumber(15)}.png`,
+    [],
+  );
+
+  useEffect(() => {
+    if (value) return;
+    onChange(defaultValue);
+  }, [defaultValue, value, onChange]);
+
+  console.log({ defaultValue });
+
+  const src = (file ? URL.createObjectURL(file) : defaultValue) ?? "";
+
+  console.log({ src });
   return (
     <>
-      {file && (
+      {src && (
         <div className="relative">
-          <AspectRatio ratio={1 / 1}>
-            <Image
-              src={URL.createObjectURL(file)}
-              fill
-              alt=""
-              className="w-full rounded-md border border-border object-cover"
-            />
-          </AspectRatio>
-          {file && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              onClick={() => setFile(null)}
-              className="absolute bottom-3 right-3 rounded-full"
-            >
-              <XIcon className="size-4 text-destructive-foreground" />
-            </Button>
-          )}
-        </div>
-      )}
-      {!file && (
-        <div className="relative" {...getRootProps()}>
-          <input {...getInputProps()} />
-          <AspectRatio ratio={1 / 1} className="">
-            <div
-              className={cn(
-                "flex h-full w-full items-center justify-center rounded-md border border-border bg-muted object-cover",
-                isDragActive && "border-muted-foreground/50",
-              )}
-            >
-              <Button
+          {!file && (
+            <div {...getRootProps()} className="relative">
+              <input {...getInputProps()} />
+
+              <AspectRatio ratio={1 / 1}>
+                <Image
+                  fill
+                  src={src}
+                  alt="you are invited"
+                  className="size-full rounded-md object-cover"
+                />
+              </AspectRatio>
+              <button
                 type="button"
-                className="h-fit rounded-full bg-muted-foreground/10 p-8 hover:bg-muted-foreground/20"
+                className="absolute bottom-1.5 right-1.5 flex size-10 items-center justify-center rounded-full bg-accent transition duration-200 hover:scale-110"
               >
-                {!isDragActive && (
-                  <ImagePlusIcon className="size-10 text-muted-foreground" />
-                )}
-                {isDragActive && (
-                  <DownloadIcon className="size-10 text-muted-foreground" />
-                )}
-              </Button>
+                <ImagePlusIcon className="size-5 text-primary" />
+              </button>
             </div>
-          </AspectRatio>
+          )}
+          {file && (
+            <div className="relative">
+              <AspectRatio ratio={1 / 1}>
+                <Image
+                  fill
+                  src={src}
+                  alt="you are invited"
+                  className="size-full rounded-md object-cover"
+                />
+              </AspectRatio>
+              <button
+                type="button"
+                className="absolute bottom-1.5 right-1.5 flex size-10 items-center justify-center rounded-full bg-destructive text-destructive-foreground transition duration-200 hover:scale-110"
+                onClick={() => setFile(null)}
+              >
+                <XIcon className="size-5" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>

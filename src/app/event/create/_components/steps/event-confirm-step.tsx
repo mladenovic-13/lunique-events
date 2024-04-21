@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, SparklesIcon } from "lucide-react";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
@@ -17,30 +17,29 @@ import {
 
 // import { type EventSchema } from "./validation";
 
-export const EventBasicInfoStep = () => {
+export const EventConfirmStep = () => {
   const { isDisabledStep, nextStep, prevStep } = useStepper();
   // const form = useFormContext<EventSchema>();
 
   return (
     <StepContent>
       <StepHeader>
-        <StepTitle>Basic Info</StepTitle>
-        <StepDescriptiom>Basic info description</StepDescriptiom>
+        <StepTitle>Confirm</StepTitle>
+        <StepDescriptiom>Confirm deskription</StepDescriptiom>
       </StepHeader>
       <div></div>
       <StepFooter className="justify-between">
         <Button
           type="button"
+          size="sm"
           disabled={isDisabledStep}
           onClick={prevStep}
           variant="secondary"
-          size="sm"
         >
           <ChevronLeftIcon className="mr-1.5 size-4" /> Back
         </Button>
-        <Button type="button" size="sm" onClick={nextStep}>
-          Continue
-          <ChevronRightIcon className="ml-1.5 size-4" />
+        <Button type="submit" size="sm" onClick={nextStep}>
+          Create Event <SparklesIcon className="ml-1.5 size-4" />
         </Button>
       </StepFooter>
     </StepContent>
