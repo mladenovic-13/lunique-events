@@ -2,7 +2,13 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleCheckIcon, ClockIcon } from "lucide-react";
+import { filter } from "jszip";
+import {
+  Building2Icon,
+  CircleCheckIcon,
+  ClockIcon,
+  User2Icon,
+} from "lucide-react";
 
 import {
   defaultValues,
@@ -38,6 +44,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
     defaultValues: defaultValues,
   });
   const { mutate: updateEvent } = api.event.update.useMutation();
+  const { data: organizations } = api.organization.list.useQuery();
   useEffect(() => {
     if (event && !updateForm.formState.isDirty) {
       updateForm.reset({
@@ -67,7 +74,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
             lng: event.location?.lng ?? undefined,
           },
         },
-        organization: event.organization.name ?? undefined,
+        organization: event.organization.name,
         theme: {
           theme: event.pageStyle?.theme ?? undefined,
           font: event.pageStyle?.font ?? undefined,
@@ -100,19 +107,61 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
   const onErrors = (errors: unknown) => {
     alert("Frontend error, check console");
     console.log({ errors });
-    console.log({ updateForm: updateForm });
   };
 
   return (
     <div className="p-2 pt-14">
-      {event && (
+      {event && organizations && (
         <form
           onSubmit={updateForm.handleSubmit(onSubmit, onErrors)}
           className="space-y-5"
         >
           <div className="flex flex-col gap-2">
             <Label className="">Organization</Label>
-            <OrganizationSelect />
+            {/* <OrganizationSelect /> */}
+            <Controller
+              control={updateForm.control}
+              name="organization"
+              render={({ field }) => (
+                <Select
+                  value={field.value ?? ""}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="h-8 w-full md:w-fit">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate">
+                        {
+                          organizations.find((org) =>
+                            field.value
+                              ? org.id === field.value
+                              : org.id === event.organizationId,
+                          )?.name
+                        }
+                      </span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations
+                      ?.sort((org) => (org.isPersonal ? -1 : 1))
+                      .map((org) => (
+                        <SelectItem key={org.id} value={org.id}>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center">
+                              {org.isPersonal && (
+                                <User2Icon className="size-4" />
+                              )}
+                              {!org.isPersonal && (
+                                <Building2Icon className="size-4" />
+                              )}
+                            </div>
+                            {org.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label className="">Event name</Label>

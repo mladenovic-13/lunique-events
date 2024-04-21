@@ -131,6 +131,35 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      let organization = null;
+
+      if (input.eventSchema.organization) {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            ownerId: ctx.session.user.id,
+            id: input.eventSchema.organization,
+          },
+        });
+      } else {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            AND: {
+              ownerId: ctx.session.user.id,
+              isPersonal: true,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+
+      if (!organization)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+
       return ctx.db.event.update({
         where: {
           id: input.eventId,
@@ -147,6 +176,11 @@ export const eventRouter = createTRPCRouter({
           isPublic: input.eventSchema.public,
           tickets: input.eventSchema.tickets,
           requireApproval: input.eventSchema.requireApproval,
+          organization: {
+            connect: {
+              id: organization.id,
+            },
+          },
         },
       });
     }),
