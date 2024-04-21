@@ -23,7 +23,7 @@ type EventWithOwner = Event & {
 
 type Place = {
   placeId: string;
-  descripton: string;
+  description: string;
   mainText: string;
   secondaryText: string;
   position: {
