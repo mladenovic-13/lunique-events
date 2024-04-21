@@ -22,6 +22,7 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete";
 
+import { EventTimezone } from "@/app/event/create/_components/event-timezone";
 import {
   defaultValues,
   type EventSchema,
@@ -236,6 +237,18 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
                   )}
                 />
               </div>
+            </div>
+            <div>
+              <Controller
+                control={updateForm.control}
+                name="timezone"
+                render={({ field }) => (
+                  <EventTimezone
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
+                )}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-2">

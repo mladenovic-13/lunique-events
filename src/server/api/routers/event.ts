@@ -193,6 +193,15 @@ export const eventRouter = createTRPCRouter({
               },
             },
           },
+          timezone: {
+            update: {
+              data: {
+                city: input.eventSchema.timezone.city,
+                label: input.eventSchema.timezone.label,
+                value: input.eventSchema.timezone.value,
+              },
+            },
+          },
         },
       });
     }),
