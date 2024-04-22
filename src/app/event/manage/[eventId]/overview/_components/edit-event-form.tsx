@@ -261,7 +261,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
                 render={({ field }) => (
                   <PlacesAutocomplete
                     onChange={field.onChange}
-                    value={field.value?.mainText ?? ""}
+                    defaultValue={field.value?.description ?? ""}
                   />
                 )}
               />
