@@ -15,8 +15,8 @@ import {
   MapPinIcon,
   SearchIcon,
   User2Icon,
-  VideoIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -50,7 +50,6 @@ import { type Place } from "@/types";
 import { DatePickerDemo } from "./date-picker-demo";
 
 interface EditEventFormProps {
-  // event: Event; //Event model from Prisma client
   event: RouterOutputs["event"]["get"];
 }
 export const EditEventForm = ({ event }: EditEventFormProps) => {
@@ -105,12 +104,13 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
   }, [updateForm, event]);
 
   const libraries: Libraries = ["places"];
+  const router = useRouter();
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-  const [open, setOpen] = useState(false);
+
   const onSubmit = (data: EventSchema) => {
     if (event) {
       updateEvent(
@@ -119,6 +119,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
           onSuccess: (event) => {
             console.log({ event });
             toast({ title: "Event updated" });
+            router.refresh();
           },
           onError: () =>
             toast({ variant: "destructive", title: "Failed to update event" }),
@@ -259,7 +260,6 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
                 name="location"
                 render={({ field }) => (
                   <PlacesAutocomplete
-                    setOpen={setOpen}
                     onChange={field.onChange}
                     value={field.value?.mainText ?? ""}
                   />
@@ -392,17 +392,19 @@ const TimePicker = ({ value, onChange }: TimePickerProps) => {
 
 const PlacesAutocomplete = (props: {
   onChange: (place: Place) => void;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  value: string;
+  defaultValue?: string;
 }) => {
-  const { onChange, setOpen, value } = props;
-
+  const { onChange, defaultValue } = props;
   const {
     ready,
-    // value,
+    value,
     setValue,
     suggestions: { status, data },
   } = usePlacesAutocomplete();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    setValue(defaultValue ?? "");
+  }, [defaultValue, setValue]);
 
   const onSelect = useCallback(
     async (value: string) => {
@@ -422,10 +424,10 @@ const PlacesAutocomplete = (props: {
         secondaryText: place.structured_formatting.secondary_text,
         position,
       });
-
+      setValue(place.description);
       setOpen(false);
     },
-    [onChange, data, setOpen],
+    [onChange, data, setOpen, setValue],
   );
 
   const isResultOpen = !!status;
@@ -433,29 +435,34 @@ const PlacesAutocomplete = (props: {
     <div>
       <AutocompleteInput
         value={value}
-        onValueChange={setValue}
+        onValueChange={(val) => {
+          setValue(val);
+          setOpen(true);
+        }}
         disabled={!ready}
-        placeholder="Enter location..."
+        placeholder="Enter a location..."
       />
-      <AutocompleteResult>
-        {isResultOpen && status === "OK" && (
-          <AutocompleteResultGroup heading="Locations">
-            {data.map(({ place_id, description }) => (
-              <AutocompleteResultItem
-                key={place_id}
-                value={place_id}
-                onSelect={onSelect}
-              >
-                <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
-                {description}
-              </AutocompleteResultItem>
-            ))}
-          </AutocompleteResultGroup>
-        )}
-        {isResultOpen && status === "ZERO_RESULTS" && (
-          <AutocompleteResultEmpty />
-        )}
-      </AutocompleteResult>
+      {open && isResultOpen && (
+        <AutocompleteResult>
+          {open && isResultOpen && status === "OK" && (
+            <AutocompleteResultGroup heading="Locations">
+              {data.map(({ place_id, description }) => (
+                <AutocompleteResultItem
+                  key={place_id}
+                  value={place_id}
+                  onSelect={onSelect}
+                >
+                  <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
+                  {description}
+                </AutocompleteResultItem>
+              ))}
+            </AutocompleteResultGroup>
+          )}
+          {open && isResultOpen && status === "ZERO_RESULTS" && (
+            <AutocompleteResultEmpty />
+          )}
+        </AutocompleteResult>
+      )}
     </div>
   );
 };
@@ -481,7 +488,7 @@ const AutocompleteInput = ({
         disabled={disabled}
         placeholder={placeholder}
         className={cn(
-          "h-10 rounded-b-none border-none bg-popover pl-10 shadow-none focus-visible:ring-0",
+          "h-10 items-center pl-10 shadow-none focus-visible:ring-0",
           className,
         )}
         value={value}
