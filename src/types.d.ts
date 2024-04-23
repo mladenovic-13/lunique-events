@@ -31,6 +31,9 @@ type Place = {
     lng: number;
   };
 };
-
 type Timeframe = "upcoming" | "past";
 type ViewMode = "card" | "list";
+
+type UpdateEventType = RouterOutputs["event"]["get"];
+
+type MeetingMode = "inPerson" | "virutal";

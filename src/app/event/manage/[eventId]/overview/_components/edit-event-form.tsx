@@ -51,8 +51,9 @@ import { DatePickerDemo } from "./date-picker-demo";
 
 interface EditEventFormProps {
   event: RouterOutputs["event"]["get"];
+  onEventUpdate: () => void;
 }
-export const EditEventForm = ({ event }: EditEventFormProps) => {
+export const EditEventForm = ({ event, onEventUpdate }: EditEventFormProps) => {
   const updateForm = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: defaultValues,
@@ -119,6 +120,7 @@ export const EditEventForm = ({ event }: EditEventFormProps) => {
           onSuccess: (event) => {
             console.log({ event });
             toast({ title: "Event updated" });
+            onEventUpdate();
             router.refresh();
           },
           onError: () =>
