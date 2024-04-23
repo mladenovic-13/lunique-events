@@ -13,14 +13,12 @@ import { type Place } from "@/types";
 export const LocationMap = ({ position }: { position: Place["position"] }) => {
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
-      <div className="h-32 w-full rounded-md">
+      <div className="h-72 w-full rounded-md">
         <Map
           mapId={env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID}
-          zoom={16}
+          zoom={15}
           center={position}
-          clickableIcons={false}
-          fullscreenControl={false}
-          zoomControl={false}
+          disableDefaultUI
           style={{
             borderRadius: "calc(var(--radius) - 2px)",
             overflow: "hidden",

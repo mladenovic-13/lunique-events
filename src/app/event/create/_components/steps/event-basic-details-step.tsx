@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import * as z from "zod";
 
 import { useStepper } from "@/components/common/stepper";
@@ -18,20 +18,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { ImageUpload } from "../image-upload";
+import { EventOrganizationInput } from "../inputs/event-organization-input";
+import { EventVisibilityInput } from "../inputs/event-visibility-input";
 
 import {
+  StepContainer,
   StepContent,
-  StepDescriptiom,
+  StepDescription,
   StepFooter,
-  StepFormContainer,
   StepHeader,
   StepTitle,
 } from "./common";
 
 const formSchema = z.object({
   name: z.string(),
-  thumbnailUrl: z.string(),
   description: z.string(),
+  thumbnailUrl: z.string(),
+  organization: z.string(),
   public: z.boolean(),
 });
 
@@ -42,10 +45,11 @@ const defaultValues: BasicDetails = {
   description: "",
   public: true,
   thumbnailUrl: "",
+  organization: "",
 };
 
 export const EventBasicDetailsStep = () => {
-  const { isDisabledStep, nextStep, prevStep } = useStepper();
+  const { nextStep } = useStepper();
 
   const form = useForm({
     defaultValues,
@@ -59,8 +63,14 @@ export const EventBasicDetailsStep = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <StepContent>
-          <StepFormContainer className="grid grid-cols-1 gap-3 md:grid-cols-5 md:gap-16">
+        <StepContainer>
+          <StepHeader>
+            <StepTitle>Basic Details</StepTitle>
+            <StepDescription>
+              Enter basic details about your event
+            </StepDescription>
+          </StepHeader>
+          <StepContent className="grid grid-cols-1 gap-5 md:grid-cols-5">
             <div className="md:col-span-2">
               <FormField
                 control={form.control}
@@ -77,7 +87,29 @@ export const EventBasicDetailsStep = () => {
                 )}
               />
             </div>
-            <div className="space-y-2 md:col-span-3">
+            <div className="space-y-3 md:col-span-3">
+              <div className="flex justify-between">
+                <FormField
+                  control={form.control}
+                  name="organization"
+                  render={({ field }) => (
+                    <EventOrganizationInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="public"
+                  render={({ field }) => (
+                    <EventVisibilityInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="name"
@@ -98,7 +130,7 @@ export const EventBasicDetailsStep = () => {
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        rows={10}
+                        rows={7}
                         placeholder="Enter youre event short description..."
                         className="resize-none"
                         {...field}
@@ -108,23 +140,15 @@ export const EventBasicDetailsStep = () => {
                 )}
               />
             </div>
-          </StepFormContainer>
-          <StepFooter className="justify-between pt-10">
-            <Button
-              type="button"
-              disabled={isDisabledStep}
-              onClick={prevStep}
-              variant="secondary"
-              size="sm"
-            >
-              <ChevronLeftIcon className="mr-1.5 size-4" /> Back
-            </Button>
+          </StepContent>
+
+          <StepFooter className="flex justify-end">
             <Button type="button" size="sm" onClick={nextStep}>
-              Continue
-              <ChevronRightIcon className="ml-1.5 size-4" />
+              <SparklesIcon className="mr-1.5 size-4" />
+              Create Event
             </Button>
           </StepFooter>
-        </StepContent>
+        </StepContainer>
       </form>
     </Form>
   );

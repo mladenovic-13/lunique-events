@@ -3,22 +3,16 @@
 import React from "react";
 import {
   CalendarIcon,
-  CheckCheckIcon,
   DollarSignIcon,
   MapPinIcon,
   TextIcon,
   UserCheck2Icon,
+  Users2Icon,
 } from "lucide-react";
 
-import {
-  Step,
-  type StepItem,
-  Stepper,
-  useStepper,
-} from "@/components/common/stepper";
+import { Step, type StepItem, Stepper } from "@/components/common/stepper";
 
 import { EventBasicDetailsStep } from "./steps/event-basic-details-step";
-import { EventConfirmStep } from "./steps/event-confirm-step";
 import { EventDateStep } from "./steps/event-date-step";
 import { EventInviteGuestsStep } from "./steps/event-invite-guests-step";
 import { EventLocationStep } from "./steps/event-location-step";
@@ -31,7 +25,7 @@ const steps = [
   { label: "Date & Time", icon: CalendarIcon },
   { label: "Registration", icon: UserCheck2Icon },
   { label: "Tickets", icon: DollarSignIcon },
-  { label: "Confirm", icon: CheckCheckIcon },
+  { label: "Guests", icon: Users2Icon },
 ] satisfies StepItem[];
 
 const stepsContent = [
@@ -40,7 +34,7 @@ const stepsContent = [
   <EventDateStep key={3} />,
   <EventRegistrationStep key={4} />,
   <EventTicketsStep key={5} />,
-  <EventConfirmStep key={6} />,
+  <EventInviteGuestsStep key={6} />,
 ];
 
 export const CreateEventSteper = () => {
@@ -50,26 +44,20 @@ export const CreateEventSteper = () => {
       size="sm"
       initialStep={0}
       steps={steps}
-      className="md:py-5"
+      className="pb-5 md:py-5"
       variant="line"
+      responsive={false}
+      styles={{
+        "step-label-container": "hidden md:block",
+      }}
     >
       {steps.map((stepProps, index) => {
         return (
-          <Step key={stepProps.label} {...stepProps} className="">
+          <Step key={stepProps.label} {...stepProps}>
             {stepsContent[index]}
           </Step>
         );
       })}
-
-      <AfterStepperCompleted>
-        <EventInviteGuestsStep />
-      </AfterStepperCompleted>
     </Stepper>
   );
-};
-
-const AfterStepperCompleted = ({ children }: { children: React.ReactNode }) => {
-  const { hasCompletedAllSteps } = useStepper();
-
-  return hasCompletedAllSteps ? children : null;
 };
