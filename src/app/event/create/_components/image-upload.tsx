@@ -48,7 +48,10 @@ export const ImageUpload = ({ onChange }: ImageUploadProps) => {
               .put(presignedUrl, files[0]!.slice(), {
                 headers: { "Content-Type": files[0]!.type },
               })
-              .then(() => onChange(getImageUrl(key)))
+              .then(() => {
+                onChange(getImageUrl(key));
+                console.log(getImageUrl(key));
+              })
               .catch((err) => {
                 console.log(err);
                 toast({
