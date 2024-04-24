@@ -1,4 +1,4 @@
-import { type Metadata, type ResolvingMetadata } from "next";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
@@ -64,6 +64,7 @@ export default async function EventPage({
             name={event.name}
             host={event.creator.name ?? "Unknown"}
             startDate={event.startDate}
+            startTime={event.startTime}
             location={event.location?.secondaryText ?? "Unknown"}
           />
           <RegisterGuest eventId={eventId} />

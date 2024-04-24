@@ -8,11 +8,13 @@ interface EventDetailsProps {
   host: string;
   startDate: Date;
   location: string;
+  startTime?: string;
 }
 
 export const EventDetails = ({
   name,
   host,
+  startTime,
   startDate,
   location,
 }: EventDetailsProps) => {
@@ -25,10 +27,11 @@ export const EventDetails = ({
       <div className="space-y-1.5 md:flex md:items-center md:gap-5 md:space-y-0">
         <div className="flex items-center gap-3">
           <CalendarIcon date={startDate} />
-          <div className="flex flex-col">
+          <div className="flex items-center gap-3">
             <p className="font-medium leading-5">
               {format(startDate, "eeee, MMM d")}
             </p>
+            <p className="font-medium leading-5">{startTime}h</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
