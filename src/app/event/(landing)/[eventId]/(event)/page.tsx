@@ -4,8 +4,8 @@ import { MainPage } from "@/components/layout/main-page";
 import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
+import { EventDescription } from "./_components/event-description";
 import { EventDetails } from "./_components/event-details";
-import { EventGallery } from "./_components/event-gallery";
 import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
@@ -44,7 +44,8 @@ export default async function EventPage({
             location={event.location?.secondaryText ?? "Unknown"}
           />
           <RegisterGuest eventId={eventId} />
-          <EventGallery />
+          <EventDescription description={event.description} />
+          {/* <EventGallery /> */}
           <EventLocation
             lat={event.location?.lat}
             lng={event.location?.lng}
