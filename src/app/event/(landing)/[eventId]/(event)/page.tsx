@@ -1,3 +1,4 @@
+import { type Metadata, type ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
@@ -11,6 +12,28 @@ import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
 import { EventThumbnail } from "./_components/event-thumbnail";
 import { RegisterGuest } from "./_components/register-guest";
+
+type Props = {
+  params: { eventId: string };
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = params.eventId;
+
+  // fetch data
+  const event = await api.event.get.query({ id });
+
+  return {
+    title: event?.name,
+    description: event?.description,
+    openGraph: {
+      images: [event?.thumbnailUrl ?? ""],
+    },
+  };
+}
 
 export default async function EventPage({
   params: { eventId },
