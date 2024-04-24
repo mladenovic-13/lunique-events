@@ -3,7 +3,6 @@ import { api } from "@/trpc/server";
 import { type RouterOutputs } from "@/trpc/shared";
 
 import { ActionButtons } from "./_components/action-buttons";
-import { CheckInButton } from "./_components/check-in-button";
 import { EventDetails } from "./_components/event-details";
 import { SocialButtons } from "./_components/social-buttons";
 
@@ -22,11 +21,10 @@ export default async function EventOverviewPage({
       <ActionButtons />
       {/* <EditEventForm event={event} /> */}
 
-      <Card className="rounded-md  bg-muted-foreground/10 p-3 md:grid md:grid-cols-1 md:gap-5 md:p-5">
+      <Card className="rounded-lg  bg-muted-foreground/10 px-3 md:grid md:grid-cols-1 md:gap-5 md:px-5">
         <div className="space-y-3  md:flex md:flex-col md:justify-between">
           <div className="space-y-3 md:space-y-5">
             <EventDetails event={event} />
-            <CheckInButton />
           </div>
 
           <div className="flex"></div>

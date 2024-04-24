@@ -124,15 +124,16 @@ export const NewEditEventForm = ({
   };
 
   return (
-    <div className="pt-14 ">
+    <div className="">
       {event && organizations && (
         <Form {...updateForm}>
           <form
             onSubmit={updateForm.handleSubmit(onSubmit, onErrors)}
-            className="space-y-5"
+            className="space-y-5 px-0 md:px-4"
+            id="edit-event-form"
           >
-            <div className="flex flex-col gap-4 md:flex md:flex-row">
-              <Card className="w-full space-y-4 p-8 px-6">
+            <div className="flex flex-col gap-4  md:flex md:flex-row md:justify-between">
+              <div className="w-full space-y-4 p-0">
                 <h1 className="text-lg font-bold">Basic Info</h1>
                 <FormField
                   control={updateForm.control}
@@ -262,11 +263,11 @@ export const NewEditEventForm = ({
                     />
                   )}
                 </div>
-              </Card>
+              </div>
 
               {/* ------------------------------------------ */}
 
-              <Card className="w-full space-y-4 p-8 px-6">
+              <div className="w-full space-y-4   px-0">
                 <h1 className="text-lg font-bold">Organization</h1>
                 <FormField
                   control={updateForm.control}
@@ -369,7 +370,7 @@ export const NewEditEventForm = ({
                     </FormItem>
                   )}
                 />
-              </Card>
+              </div>
             </div>
             <Button className="flex w-full gap-2">
               <CircleCheckBigIcon size={20} />
