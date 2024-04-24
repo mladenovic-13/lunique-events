@@ -13,33 +13,27 @@ import { EventLocation } from "./_components/event-location";
 import { EventThumbnail } from "./_components/event-thumbnail";
 import { RegisterGuest } from "./_components/register-guest";
 
-// type Props = {
-//   params: { eventId: string };
-//   // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-//   searchParams: { [key: string]: string | string[] | undefined };
-// };
-
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-//   // read route params
-//   const id = params.eventId;
-
-//   // fetch data
-//   const event = await api.event.get.query({ id });
-
-//   return {
-//     title: event?.name,
-//     description: event?.description,
-//     openGraph: {
-//       images: [event?.thumbnailUrl ?? ""],
-//     },
-//   };
-// }
-
-export const metadata: Metadata = {
-  title: "60. rodjendan",
-  description:
-    "Pozivam na svoj 60. rodjendan, da zajedno udjemo u moju drugu polovinu zivota! ",
+type Props = {
+  params: { eventId: string };
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = params.eventId;
+
+  // fetch data
+  const event = await api.event.get.query({ id });
+
+  return {
+    title: event?.name,
+    description: event?.description,
+    openGraph: {
+      images: [event?.thumbnailUrl ?? ""],
+    },
+  };
+}
 
 export default async function EventPage({
   params: { eventId },
