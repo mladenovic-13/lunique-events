@@ -68,42 +68,42 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
         </div>
       </section>
       <Separator className="bg-white/20" />
-      {(step === "importCSV" ||
-        step === "searchGuests" ||
-        step === "addEmails") && (
-        <div className="flex justify-between">
-          <Button
-            variant={"ghost"}
-            className="pl-2 text-sm font-semibold transition-all hover:bg-transparent hover:text-primary"
-          >
-            Selected guests
-          </Button>
-          <Button
-            variant={"default"}
-            onClick={() => setStep("sendInvites")}
-            className="gap-2"
-          >
-            Next
-            <ChevronRightIcon size={16} />
-          </Button>
-        </div>
-      )}
-      {step === "sendInvites" && (
-        <div className="flex justify-between">
-          <Button
-            variant={"secondary"}
-            onClick={() => setStep("searchGuests")}
-            className="gap-2"
-          >
-            <ChevronLeftIcon size={16} />
-            Back
-          </Button>
-          <Button variant={"default"} className="gap-2">
-            Send Invites
-            <SendIcon size={16} />
-          </Button>
-        </div>
-      )}
+      <div className="pt-6">
+        {step !== "sendInvites" && (
+          <div className="flex justify-between">
+            <Button
+              variant={"ghost"}
+              className="pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary"
+            >
+              {emails.length} Selected
+            </Button>
+            <Button
+              variant={"default"}
+              onClick={() => setStep("sendInvites")}
+              className="gap-2"
+            >
+              Next
+              <ChevronRightIcon size={16} />
+            </Button>
+          </div>
+        )}
+        {step === "sendInvites" && (
+          <div className="flex justify-between">
+            <Button
+              variant={"secondary"}
+              onClick={() => setStep("searchGuests")}
+              className="gap-2"
+            >
+              <ChevronLeftIcon size={16} />
+              Back
+            </Button>
+            <Button variant={"default"} className="gap-2">
+              Send Invites
+              <SendIcon size={16} />
+            </Button>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
