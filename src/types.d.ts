@@ -39,4 +39,8 @@ type UpdateEventType = RouterOutputs["event"]["get"];
 
 type MeetingMode = "inPerson" | "virutal";
 
-type InviteGuestStep = "searchGuests" | "addEmails" | "sendInvites";
+type InviteGuestStep =
+  | "searchGuests"
+  | "addEmails"
+  | "sendInvites"
+  | "importCSV";

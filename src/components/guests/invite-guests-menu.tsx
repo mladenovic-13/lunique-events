@@ -14,6 +14,7 @@ import {
 import { z } from "zod";
 
 import { upcomingAndPastEvents } from "@/lib/mock-events";
+import { cn } from "@/lib/utils";
 import { type InviteGuestStep } from "@/types";
 
 import { Button } from "../ui/button";
@@ -32,15 +33,26 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   // const [setselectedGuest, setSetselectedGuest] = useState([]);
   const [emails, setEmails] = useState<Array<string>>([]);
 
-  const handleOnEmailAdded = (value: string) => {
-    setEmails([...emails, value]);
+  const onEmailAddedHandler = (value: string) => {
+    if (!emails.includes(value)) setEmails([...emails, value]);
   };
+  const onChangeModeHandler = (mode: InviteGuestStep) => {
+    setStep(mode);
+  };
+
   return (
     <section className="flex w-full flex-col">
       <section className="flex w-full items-start gap-2">
         {/* Side menu */}
         <div className="min-h-[450px] max-w-[240px]">
-          {(step === "searchGuests" || step === "addEmails") && <SideMenu />}
+          {(step === "importCSV" ||
+            step === "searchGuests" ||
+            step === "addEmails") && (
+            <SideMenu
+              mode={step}
+              onChangeMode={(mode) => onChangeModeHandler(mode)}
+            />
+          )}
           {step === "sendInvites" && <div>Inviting </div>}
         </div>
         <Separator orientation="vertical" className="bg-accent-foreground/20" />
@@ -48,7 +60,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
         <div className="flex w-full flex-col">
           {(step === "searchGuests" || step === "addEmails") && (
             <AddEmails
-              onEmailAdded={(email) => handleOnEmailAdded(email)}
+              onEmailAdded={(email) => onEmailAddedHandler(email)}
               emails={emails}
             />
           )}
@@ -56,7 +68,9 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
         </div>
       </section>
       <Separator className="bg-white/20" />
-      {(step === "searchGuests" || step === "addEmails") && (
+      {(step === "importCSV" ||
+        step === "searchGuests" ||
+        step === "addEmails") && (
         <div className="flex justify-between">
           <Button
             variant={"ghost"}
@@ -95,22 +109,31 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
 };
 
 interface SideMenuPros {
-  prop?: string;
+  mode: InviteGuestStep;
+  onChangeMode: (mode: InviteGuestStep) => void;
 }
-const SideMenu = ({}: SideMenuPros) => {
+const SideMenu = ({ mode, onChangeMode }: SideMenuPros) => {
   return (
     <section className="flex w-[200px] flex-col gap-4">
       <div className="flex flex-col">
         <Button
-          className="flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10"
+          className={cn(
+            "flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10",
+            mode === "addEmails" && "bg-accent-foreground/10",
+          )}
           variant={"ghost"}
+          onClick={() => onChangeMode("addEmails")}
         >
           <PencilLineIcon size={17} className="text-accent-foreground/60 " />
           <p>Enter Emails</p>
         </Button>
         <Button
-          className="flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10"
+          className={cn(
+            "flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10",
+            mode === "importCSV" && "bg-accent-foreground/10",
+          )}
           variant={"ghost"}
+          onClick={() => onChangeMode("importCSV")}
         >
           <FileTextIcon size={17} className="text-accent-foreground/60" />
           <p>Import CSV</p>

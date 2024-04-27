@@ -3,6 +3,7 @@
 import { useModal } from "@/hooks/use-modal-store";
 
 import { InviteGuests } from "../guests/invite-guests-menu";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +25,12 @@ export const InviteGuestsModal = () => {
           <DialogHeader className=" p-0 pl-2 pr-14">
             <DialogTitle className="flex items-center justify-between">
               <p className="capitalize">Invite Guests</p>
-              <div className="flex h-6 items-center  rounded-full border border-accent-foreground/50 px-2 text-xs text-accent-foreground/50">
+              <Button
+                variant={"outline"}
+                className="flex h-6 cursor-pointer items-center rounded-full border border-accent-foreground/50  px-2 text-xs text-accent-foreground/50 transition-all hover:border-accent-foreground hover:text-accent-foreground"
+              >
                 <p className="uppercase">500 left</p>
-              </div>
+              </Button>
             </DialogTitle>
           </DialogHeader>
         </div>
