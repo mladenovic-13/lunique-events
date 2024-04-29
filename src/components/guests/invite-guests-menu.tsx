@@ -11,7 +11,6 @@ import {
   FileTextIcon,
   PencilLineIcon,
   SendIcon,
-  TableIcon,
 } from "lucide-react";
 import { z } from "zod";
 
@@ -34,10 +33,10 @@ export const InviteGuests = ({
   changeRemainingGuestCount,
 }: InviteGuestsMenuProps) => {
   const [step, setStep] = useState<InviteGuestStep>("addEmails");
-
-  // const [setselectedGuest, setSetselectedGuest] = useState([]);
   const [emails, setEmails] = useState<Array<string>>([]);
-
+  const [eventGuests, setEventGuests] = useState<Array<string>>([]);
+  const [eventName, setEventName] = useState<string>("");
+  // const [setselectedGuest, setSetselectedGuest] = useState([]);
   const onEmailAddedHandler = (value: string) => {
     if (!emails.includes(value)) {
       setEmails([...emails, value]);
@@ -50,8 +49,29 @@ export const InviteGuests = ({
       changeRemainingGuestCount(--emails.length);
     }
   };
-  const onChangeModeHandler = (mode: InviteGuestStep) => {
+  const onGuestCheckHandler = (value: string) => {
+    if (!emails.includes(value)) {
+      setEmails([...emails, value]);
+      changeRemainingGuestCount(++emails.length);
+    }
+    if (emails.includes(value)) {
+      setEmails([...emails.filter((e) => e !== value)]);
+      changeRemainingGuestCount(--emails.length);
+    }
+  };
+  const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
     setStep(mode);
+    if (mode === "searchGuests" && eventId) {
+      // @TODO
+      setEventGuests(
+        upcomingAndPastEvents.upcoming
+          .concat(upcomingAndPastEvents.past)
+          .find((ev) => ev.id === eventId)?.guests ?? [],
+      );
+    }
+  };
+  const emailExists = (email: string) => {
+    return emails.includes(email);
   };
 
   return (
@@ -62,20 +82,33 @@ export const InviteGuests = ({
           {step !== "sendInvites" && (
             <SideMenu
               mode={step}
-              onChangeMode={(mode) => onChangeModeHandler(mode)}
+              onChangeMode={(mode, eventId) =>
+                onChangeModeHandler(mode, eventId)
+              }
+              onEventSelect={(eventName) => setEventName(eventName)}
             />
           )}
           {step === "sendInvites" && <div>Inviting </div>}
         </div>
         <Separator orientation="vertical" className="bg-accent-foreground/20" />
-        {/* Search area */}
+        {/* Add emails */}
         <div className="flex w-full flex-col">
-          {(step === "searchGuests" || step === "addEmails") && (
+          {step === "addEmails" && (
             <AddEmails
               onEmailAdd={(email) => onEmailAddedHandler(email)}
               onEmailRemove={(email) => onEmailRemovedHandler(email)}
               emails={emails}
             />
+          )}
+          {step === "searchGuests" && (
+            <div className="flex flex-col gap-4">
+              <SearchGuests
+                eventName={eventName}
+                eventGuests={eventGuests}
+                onGuestCheck={onGuestCheckHandler}
+                emailsExists={(email) => emailExists(email)}
+              />
+            </div>
           )}
           {step === "sendInvites" && <p>Generate email for sending</p>}
           {step === "importCSV" && <ImportCSV />}
@@ -88,6 +121,7 @@ export const InviteGuests = ({
             <Button
               variant={"ghost"}
               className="pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary"
+              onClick={() => setStep("addEmails")}
             >
               {emails.length} Selected
             </Button>
@@ -124,9 +158,22 @@ export const InviteGuests = ({
 
 interface SideMenuPros {
   mode: InviteGuestStep;
-  onChangeMode: (mode: InviteGuestStep) => void;
+  onChangeMode: (mode: InviteGuestStep, eventId?: string) => void;
+  onEventSelect: (eventName: string) => void;
 }
-const SideMenu = ({ mode, onChangeMode }: SideMenuPros) => {
+const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
+  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+
+  const onEventClickHandler = (
+    mode: string,
+    eventId: string,
+    eventName: string,
+  ) => {
+    onChangeMode("searchGuests", eventId);
+    setSelectedEvent(eventId);
+    onEventSelect(eventName);
+  };
+
   return (
     <section className="flex w-[200px] flex-col gap-4">
       <div className="flex flex-col">
@@ -159,22 +206,18 @@ const SideMenu = ({ mode, onChangeMode }: SideMenuPros) => {
           Events
         </Label>
         <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
-          {upcomingAndPastEvents.past
-            .concat(upcomingAndPastEvents.upcoming)
+          {upcomingAndPastEvents.upcoming
+            .concat(upcomingAndPastEvents.past)
             .map((ev, idx) => (
-              <div
-                className="flex flex-col rounded-lg p-1 px-2  transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
+              <EventItem
+                eventName={ev.name}
+                eventDate={ev.date}
                 key={idx}
-              >
-                <h1 className="line-clamp-1 text-base font-semibold text-accent-foreground">
-                  {ev.name}
-                </h1>
-                <div className="flex items-center gap-2 text-xs text-accent-foreground/50">
-                  <p>{format(ev.date, "PPP")}</p>
-                  <CircleIcon size={5} />
-                  <p>2 Guests</p>
-                </div>
-              </div>
+                onClick={() =>
+                  onEventClickHandler("searchGuests", ev.id, ev.name)
+                }
+                selected={selectedEvent === ev.id}
+              />
             ))}
         </div>
       </div>
@@ -233,6 +276,7 @@ const AddEmails = ({ onEmailAdd, onEmailRemove, emails }: AddEmailsProps) => {
             email={email}
             key={idx}
             onClick={() => onEmailRemove(email)}
+            checked={true}
           />
         ))}
       </div>
@@ -243,20 +287,24 @@ const AddEmails = ({ onEmailAdd, onEmailRemove, emails }: AddEmailsProps) => {
 interface GuestEmailItemProps {
   email: string;
   onClick: () => void;
+  checked: boolean;
 }
-const GuestEmailItem = ({ email, onClick }: GuestEmailItemProps) => {
+const GuestEmailItem = ({ email, onClick, checked }: GuestEmailItemProps) => {
   return (
     <div
-      className="flex items-center justify-between rounded-lg p-2  transition-all hover:bg-accent-foreground/10"
+      className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90   transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
       onClick={onClick}
     >
       <div className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center text-accent-foreground/90">
+        <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
           <p className="uppercase">{email[0]}</p>
         </div>
         <p className="font-semibold">{email}</p>
       </div>
-      <CircleCheckIcon size={20} />
+      {checked && <CircleCheckIcon size={20} />}
+      {!checked && (
+        <CircleIcon size={20} className="text-accent-foreground/30" />
+      )}
     </div>
   );
 };
@@ -267,9 +315,12 @@ interface ImportCSVProps {
 
 const ImportCSV = ({}: ImportCSVProps) => {
   return (
-    <section className="flex flex-col  gap-4 pt-2">
+    <section
+      className="flex flex-col  gap-4 pt-2"
+      onClick={() => alert("@TODO")}
+    >
       <Label className="font-semibold capitalize">Import CSV</Label>
-      <div className="flex h-48 w-full flex-col items-center justify-center gap-6 rounded-lg border border-dashed border-accent-foreground/20 bg-muted hover:cursor-pointer">
+      <div className="flex h-48 w-full flex-col items-center justify-center gap-6 rounded-lg border border-dashed border-accent-foreground/20 bg-muted transition-all hover:cursor-pointer hover:bg-accent-foreground/20">
         <FileSpreadsheetIcon size={32} className="text-accent-foreground/90" />
         <div className="flex flex-col items-center">
           <p className="text-base font-semibold text-accent-foreground">
@@ -279,6 +330,76 @@ const ImportCSV = ({}: ImportCSVProps) => {
             Drop file or click here to chose file.
           </p>
         </div>
+      </div>
+    </section>
+  );
+};
+
+interface EventItemProprs {
+  prop?: string;
+  eventName: string;
+  eventDate: Date;
+  onClick: () => void;
+  selected: boolean;
+}
+
+const EventItem = ({
+  eventName,
+  eventDate,
+  onClick,
+  selected,
+}: EventItemProprs) => {
+  return (
+    <div
+      className={cn(
+        "flex flex-col rounded-lg p-1 px-2  transition-all hover:cursor-pointer hover:bg-accent-foreground/10",
+        selected && "bg-accent-foreground/10",
+      )}
+      onClick={onClick}
+    >
+      <h1 className="line-clamp-1 text-base font-semibold text-accent-foreground">
+        {eventName}
+      </h1>
+      <div className="flex items-center gap-2 text-xs text-accent-foreground/50">
+        <p>{format(eventDate, "PPP")}</p>
+        <CircleIcon size={5} />
+        <p>2 Guests</p>
+      </div>
+    </div>
+  );
+};
+
+interface SearchGuestsProps {
+  prop?: string;
+  onGuestCheck: (email: string) => void;
+  eventGuests: Array<string>;
+  eventName: string;
+  emailsExists: (email: string) => boolean;
+}
+const SearchGuests = ({
+  onGuestCheck,
+  eventGuests,
+  eventName,
+  emailsExists,
+}: SearchGuestsProps) => {
+  return (
+    <section className="flex max-h-[540px]  flex-col">
+      <div className="px-2">
+        <Input
+          type="search"
+          placeholder={`Search in "${eventName}"`}
+          className="w-full bg-muted"
+        />
+      </div>
+      <div className="overflow-y-auto">
+        {eventGuests?.map((guestEmail, idx) => (
+          <GuestEmailItem
+            email={guestEmail}
+            key={idx}
+            onClick={() => onGuestCheck(guestEmail)}
+            checked={emailsExists(guestEmail)}
+          />
+        ))}
       </div>
     </section>
   );
