@@ -36,6 +36,10 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const onEmailAddedHandler = (value: string) => {
     if (!emails.includes(value)) setEmails([...emails, value]);
   };
+  const onEmailRemovedHandler = (value: string) => {
+    if (emails.includes(value))
+      setEmails([...emails.filter((e) => e !== value)]);
+  };
   const onChangeModeHandler = (mode: InviteGuestStep) => {
     setStep(mode);
   };
@@ -60,7 +64,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
         <div className="flex w-full flex-col">
           {(step === "searchGuests" || step === "addEmails") && (
             <AddEmails
-              onEmailAdded={(email) => onEmailAddedHandler(email)}
+              onEmailAdd={(email) => onEmailAddedHandler(email)}
+              onEmailRemove={(email) => onEmailRemovedHandler(email)}
               emails={emails}
             />
           )}
@@ -169,10 +174,11 @@ const SideMenu = ({ mode, onChangeMode }: SideMenuPros) => {
 };
 
 interface AddEmailsProps {
-  onEmailAdded: (email: string) => void;
+  onEmailAdd: (email: string) => void;
+  onEmailRemove: (email: string) => void;
   emails: Array<string>;
 }
-const AddEmails = ({ onEmailAdded, emails }: AddEmailsProps) => {
+const AddEmails = ({ onEmailAdd, onEmailRemove, emails }: AddEmailsProps) => {
   const formSchema = z.object({
     email: z.string().email(),
   });
@@ -183,7 +189,7 @@ const AddEmails = ({ onEmailAdded, emails }: AddEmailsProps) => {
     },
   });
   function onSubmit(value: z.infer<typeof formSchema>) {
-    onEmailAdded(value.email);
+    onEmailAdd(value.email);
     form.reset({ email: "" });
   }
   return (
@@ -214,7 +220,11 @@ const AddEmails = ({ onEmailAdded, emails }: AddEmailsProps) => {
       </div>
       <div className="flex max-h-[475px]  flex-col gap-2 overflow-y-auto pt-3">
         {emails.map((email, idx) => (
-          <GuestEmailItem email={email} key={idx} />
+          <GuestEmailItem
+            email={email}
+            key={idx}
+            onClick={() => onEmailRemove(email)}
+          />
         ))}
       </div>
     </section>
@@ -223,10 +233,14 @@ const AddEmails = ({ onEmailAdded, emails }: AddEmailsProps) => {
 
 interface GuestEmailItemProps {
   email: string;
+  onClick: () => void;
 }
-const GuestEmailItem = ({ email }: GuestEmailItemProps) => {
+const GuestEmailItem = ({ email, onClick }: GuestEmailItemProps) => {
   return (
-    <div className="flex items-center justify-between rounded-lg p-2  transition-all hover:bg-accent-foreground/10">
+    <div
+      className="flex items-center justify-between rounded-lg p-2  transition-all hover:bg-accent-foreground/10"
+      onClick={onClick}
+    >
       <div className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center text-accent-foreground/90">
           <p className="uppercase">{email[0]}</p>
