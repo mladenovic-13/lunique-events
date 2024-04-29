@@ -7,9 +7,11 @@ import {
   ChevronRightIcon,
   CircleCheckIcon,
   CircleIcon,
+  FileSpreadsheetIcon,
   FileTextIcon,
   PencilLineIcon,
   SendIcon,
+  TableIcon,
 } from "lucide-react";
 import { z } from "zod";
 
@@ -25,20 +27,28 @@ import { Separator } from "../ui/separator";
 
 interface InviteGuestsMenuProps {
   prop?: string;
+  changeRemainingGuestCount: (count: number) => void;
 }
 
-export const InviteGuests = ({}: InviteGuestsMenuProps) => {
+export const InviteGuests = ({
+  changeRemainingGuestCount,
+}: InviteGuestsMenuProps) => {
   const [step, setStep] = useState<InviteGuestStep>("addEmails");
 
   // const [setselectedGuest, setSetselectedGuest] = useState([]);
   const [emails, setEmails] = useState<Array<string>>([]);
 
   const onEmailAddedHandler = (value: string) => {
-    if (!emails.includes(value)) setEmails([...emails, value]);
+    if (!emails.includes(value)) {
+      setEmails([...emails, value]);
+      changeRemainingGuestCount(++emails.length);
+    }
   };
   const onEmailRemovedHandler = (value: string) => {
-    if (emails.includes(value))
+    if (emails.includes(value)) {
       setEmails([...emails.filter((e) => e !== value)]);
+      changeRemainingGuestCount(--emails.length);
+    }
   };
   const onChangeModeHandler = (mode: InviteGuestStep) => {
     setStep(mode);
@@ -49,9 +59,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
       <section className="flex size-full items-start gap-2">
         {/* Side menu */}
         <div className="max-w-[240px]">
-          {(step === "importCSV" ||
-            step === "searchGuests" ||
-            step === "addEmails") && (
+          {step !== "sendInvites" && (
             <SideMenu
               mode={step}
               onChangeMode={(mode) => onChangeModeHandler(mode)}
@@ -70,6 +78,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             />
           )}
           {step === "sendInvites" && <p>Generate email for sending</p>}
+          {step === "importCSV" && <ImportCSV />}
         </div>
       </section>
       <Separator className="bg-white/20" />
@@ -249,5 +258,28 @@ const GuestEmailItem = ({ email, onClick }: GuestEmailItemProps) => {
       </div>
       <CircleCheckIcon size={20} />
     </div>
+  );
+};
+
+interface ImportCSVProps {
+  prop?: string;
+}
+
+const ImportCSV = ({}: ImportCSVProps) => {
+  return (
+    <section className="flex flex-col  gap-4 pt-2">
+      <Label className="font-semibold capitalize">Import CSV</Label>
+      <div className="flex h-48 w-full flex-col items-center justify-center gap-6 rounded-lg border border-dashed border-accent-foreground/20 bg-muted hover:cursor-pointer">
+        <FileSpreadsheetIcon size={32} className="text-accent-foreground/90" />
+        <div className="flex flex-col items-center">
+          <p className="text-base font-semibold text-accent-foreground">
+            Import CSV File
+          </p>
+          <p className="text-sm font-light text-accent-foreground/80">
+            Drop file or click here to chose file.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 };

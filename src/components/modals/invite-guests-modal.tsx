@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { useModal } from "@/hooks/use-modal-store";
 
 import { InviteGuests } from "../guests/invite-guests-menu";
@@ -16,6 +18,8 @@ import { Separator } from "../ui/separator";
 export const InviteGuestsModal = () => {
   const { isOpen, type, onClose } = useModal();
 
+  const [remainingGuestCount, setRemainingGuestCount] = useState(100);
+
   const isModalOpen = isOpen && type === "invite-guests";
 
   return (
@@ -29,14 +33,18 @@ export const InviteGuestsModal = () => {
                 variant={"outline"}
                 className="flex h-6 cursor-pointer items-center rounded-full border border-accent-foreground/50  px-2 text-xs text-accent-foreground/50 transition-all hover:border-accent-foreground hover:text-accent-foreground"
               >
-                <p className="uppercase">500 left</p>
+                <p className="uppercase">{remainingGuestCount} left</p>
               </Button>
             </DialogTitle>
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
         <div className="flex  w-full px-2">
-          <InviteGuests />
+          <InviteGuests
+            changeRemainingGuestCount={(guestsCount) =>
+              setRemainingGuestCount(100 - guestsCount)
+            }
+          />
         </div>
         <DialogDescription className="space-y-2">@ TODO</DialogDescription>
       </DialogContent>
