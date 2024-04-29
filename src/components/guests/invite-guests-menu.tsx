@@ -42,9 +42,9 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
 
   return (
     <section className="flex w-full flex-col">
-      <section className="flex w-full items-start gap-2">
+      <section className="flex size-full items-start gap-2">
         {/* Side menu */}
-        <div className="min-h-[450px] max-w-[240px]">
+        <div className="max-w-[240px]">
           {(step === "importCSV" ||
             step === "searchGuests" ||
             step === "addEmails") && (
@@ -144,22 +144,24 @@ const SideMenu = ({ mode, onChangeMode }: SideMenuPros) => {
         <Label className="px-2 pb-2 text-sm font-semibold uppercase  text-accent-foreground/50">
           Events
         </Label>
-        <div className="flex max-h-[320px] flex-col gap-2 overflow-y-scroll">
-          {upcomingAndPastEvents.upcoming.map((ev, idx) => (
-            <div
-              className="flex flex-col rounded-lg p-1 px-2  transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
-              key={idx}
-            >
-              <h1 className="text-base font-semibold text-accent-foreground">
-                {ev.name}
-              </h1>
-              <div className="flex items-center gap-2 text-xs text-accent-foreground/50">
-                <p>{format(ev.date, "PPP")}</p>
-                <CircleIcon size={5} />
-                <p>2 Guests</p>
+        <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
+          {upcomingAndPastEvents.past
+            .concat(upcomingAndPastEvents.upcoming)
+            .map((ev, idx) => (
+              <div
+                className="flex flex-col rounded-lg p-1 px-2  transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
+                key={idx}
+              >
+                <h1 className="line-clamp-1 text-base font-semibold text-accent-foreground">
+                  {ev.name}
+                </h1>
+                <div className="flex items-center gap-2 text-xs text-accent-foreground/50">
+                  <p>{format(ev.date, "PPP")}</p>
+                  <CircleIcon size={5} />
+                  <p>2 Guests</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </section>
@@ -210,7 +212,7 @@ const AddEmails = ({ onEmailAdded, emails }: AddEmailsProps) => {
           </form>
         </Form>
       </div>
-      <div className="flex h-[450px] flex-col gap-2 overflow-y-scroll pt-3">
+      <div className="flex max-h-[475px]  flex-col gap-2 overflow-y-auto pt-3">
         {emails.map((email, idx) => (
           <GuestEmailItem email={email} key={idx} />
         ))}

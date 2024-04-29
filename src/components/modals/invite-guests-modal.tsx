@@ -20,7 +20,7 @@ export const InviteGuestsModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className=" flex min-h-[650px] min-w-[700px] flex-col p-0">
+      <DialogContent className=" flex  min-w-[700px] flex-col p-0">
         <div className=" px-2 pt-5">
           <DialogHeader className=" p-0 pl-2 pr-14">
             <DialogTitle className="flex items-center justify-between">
@@ -35,7 +35,7 @@ export const InviteGuestsModal = () => {
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
-        <div className="flex w-full px-2">
+        <div className="flex  w-full px-2">
           <InviteGuests />
         </div>
         <DialogDescription className="space-y-2">@ TODO</DialogDescription>
