@@ -47,7 +47,7 @@ export const ManageNav = ({ items, title, landingPage }: ManageNavProps) => {
                   "flex items-center rounded-none border-b-2 border-transparent py-2 text-sm font-medium transition duration-300",
                   (pathname === item.href ||
                     (item.href.includes("settings") && isCalendarSettings)) &&
-                    "border-primary-foreground text-primary-foreground",
+                    "border-secondary-foreground text-secondary-foreground",
                 )}
               >
                 {item.title}

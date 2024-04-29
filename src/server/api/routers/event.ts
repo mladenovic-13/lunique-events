@@ -101,7 +101,7 @@ export const eventRouter = createTRPCRouter({
             ? {
                 create: {
                   placeId: input.location.placeId,
-                  description: input.location.descripton,
+                  description: input.location.description,
                   mainText: input.location.mainText,
                   secondaryText: input.location.secondaryText,
                   lat: input.location.position.lat,
@@ -117,6 +117,89 @@ export const eventRouter = createTRPCRouter({
               city: input.timezone.city,
               label: input.timezone.label,
               value: input.timezone.value,
+            },
+          },
+        },
+      });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        // eventUpdateSchema: eventSchema,
+        eventSchema: eventSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      let organization = null;
+
+      if (input.eventSchema.organization) {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            ownerId: ctx.session.user.id,
+            id: input.eventSchema.organization,
+          },
+        });
+      } else {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            AND: {
+              ownerId: ctx.session.user.id,
+              isPersonal: true,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+
+      if (!organization)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          name: input.eventSchema.name,
+          startDate: input.eventSchema.startDateTime.date,
+          startTime: input.eventSchema.startDateTime.time,
+          endDate: input.eventSchema.endDateTime.date,
+          endTime: input.eventSchema.endDateTime.time,
+          description: input.eventSchema.description,
+          capacityValue: input.eventSchema.capacity.value,
+          capacityWaitlist: input.eventSchema.capacity.waitlist,
+          isPublic: input.eventSchema.public,
+          tickets: input.eventSchema.tickets,
+          requireApproval: input.eventSchema.requireApproval,
+          organization: {
+            connect: {
+              id: organization.id,
+            },
+          },
+          location: {
+            update: {
+              data: {
+                description: input.eventSchema.location?.description,
+                mainText: input.eventSchema.location?.mainText,
+                secondaryText: input.eventSchema.location?.secondaryText,
+                placeId: input.eventSchema.location?.placeId,
+                lng: input.eventSchema.location?.position.lng,
+                lat: input.eventSchema.location?.position.lat,
+              },
+            },
+          },
+          timezone: {
+            update: {
+              data: {
+                city: input.eventSchema.timezone.city,
+                label: input.eventSchema.timezone.label,
+                value: input.eventSchema.timezone.value,
+              },
             },
           },
         },
@@ -197,6 +280,29 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
+
+  getOverview: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.event.findFirst({
+        where: {
+          id: input.id,
+        },
+        select: {
+          startDate: true,
+          endDate: true,
+          startTime: true,
+          endTime: true,
+          location: {
+            select: {
+              mainText: true,
+              secondaryText: true,
+            },
+          },
+        },
+      });
+    }),
+
   // settings: protectedProcedure
   //   .input(z.object({ id: z.string() }))
   //   .query(async ({ ctx, input }) => {

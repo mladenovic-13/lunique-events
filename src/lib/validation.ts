@@ -17,7 +17,7 @@ export const themeNameSchema = z.nativeEnum(Theme);
 
 export const locationSchema = z.object({
   placeId: z.string(),
-  descripton: z.string(),
+  description: z.string(),
   mainText: z.string(),
   secondaryText: z.string(),
   position: z.object({
