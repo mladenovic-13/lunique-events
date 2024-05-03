@@ -24,6 +24,9 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 
+import { GuestEmailGenerator } from "./guest-email-generator";
+import { InviteList } from "./invite-list";
+
 interface InviteGuestsMenuProps {
   prop?: string;
   changeRemainingGuestCount: (count: number) => void;
@@ -33,30 +36,31 @@ export const InviteGuests = ({
   changeRemainingGuestCount,
 }: InviteGuestsMenuProps) => {
   const [step, setStep] = useState<InviteGuestStep>("addEmails");
-  const [emails, setEmails] = useState<Array<string>>([]);
+  const [selectedEmails, setSelectedEmails] = useState<Array<string>>([]);
   const [eventGuests, setEventGuests] = useState<Array<string>>([]);
   const [eventName, setEventName] = useState<string>("");
   // const [setselectedGuest, setSetselectedGuest] = useState([]);
+
   const onEmailAddedHandler = (value: string) => {
-    if (!emails.includes(value)) {
-      setEmails([...emails, value]);
-      changeRemainingGuestCount(++emails.length);
+    if (!selectedEmails.includes(value)) {
+      setSelectedEmails([...selectedEmails, value]);
+      changeRemainingGuestCount(++selectedEmails.length);
     }
   };
   const onEmailRemovedHandler = (value: string) => {
-    if (emails.includes(value)) {
-      setEmails([...emails.filter((e) => e !== value)]);
-      changeRemainingGuestCount(--emails.length);
+    if (selectedEmails.includes(value)) {
+      setSelectedEmails([...selectedEmails.filter((e) => e !== value)]);
+      changeRemainingGuestCount(--selectedEmails.length);
     }
   };
   const onGuestCheckHandler = (value: string) => {
-    if (!emails.includes(value)) {
-      setEmails([...emails, value]);
-      changeRemainingGuestCount(++emails.length);
+    if (!selectedEmails.includes(value)) {
+      setSelectedEmails([...selectedEmails, value]);
+      changeRemainingGuestCount(++selectedEmails.length);
     }
-    if (emails.includes(value)) {
-      setEmails([...emails.filter((e) => e !== value)]);
-      changeRemainingGuestCount(--emails.length);
+    if (selectedEmails.includes(value)) {
+      setSelectedEmails([...selectedEmails.filter((e) => e !== value)]);
+      changeRemainingGuestCount(--selectedEmails.length);
     }
   };
   const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
@@ -71,14 +75,14 @@ export const InviteGuests = ({
     }
   };
   const emailExists = (email: string) => {
-    return emails.includes(email);
+    return selectedEmails.includes(email);
   };
 
   return (
-    <section className="flex w-full flex-col">
+    <section className="flex w-full flex-col pb-4">
       <section className="flex size-full items-start gap-2">
         {/* Side menu */}
-        <div className="max-w-[240px]">
+        <div className="max-w-[240px] pt-4">
           {step !== "sendInvites" && (
             <SideMenu
               mode={step}
@@ -88,16 +92,18 @@ export const InviteGuests = ({
               onEventSelect={(eventName) => setEventName(eventName)}
             />
           )}
-          {step === "sendInvites" && <div>Inviting </div>}
+          {step === "sendInvites" && (
+            <InviteList guestsEmails={selectedEmails} />
+          )}
         </div>
         <Separator orientation="vertical" className="bg-accent-foreground/20" />
         {/* Add emails */}
-        <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col pt-4">
           {step === "addEmails" && (
             <AddEmails
               onEmailAdd={(email) => onEmailAddedHandler(email)}
               onEmailRemove={(email) => onEmailRemovedHandler(email)}
-              emails={emails}
+              emails={selectedEmails}
             />
           )}
           {step === "searchGuests" && (
@@ -110,7 +116,7 @@ export const InviteGuests = ({
               />
             </div>
           )}
-          {step === "sendInvites" && <p>Generate email for sending</p>}
+          {step === "sendInvites" && <GuestEmailGenerator />}
           {step === "importCSV" && <ImportCSV />}
         </div>
       </section>
@@ -120,15 +126,27 @@ export const InviteGuests = ({
           <div className="flex justify-between">
             <Button
               variant={"ghost"}
-              className="pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary"
-              onClick={() => setStep("addEmails")}
+              className={cn(
+                "pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary",
+                selectedEmails.length > 0 &&
+                  step === "addEmails" &&
+                  "text-primary",
+              )}
+              onClick={() => {
+                if (step !== "addEmails") setStep("addEmails");
+                else if (step === "addEmails") {
+                  setStep("searchGuests");
+                }
+              }}
+              disabled={selectedEmails.length === 0}
             >
-              {emails.length} Selected
+              {selectedEmails.length} Selected
             </Button>
             <Button
               variant={"default"}
               onClick={() => setStep("sendInvites")}
               className="gap-2"
+              disabled={selectedEmails.length === 0}
             >
               Next
               <ChevronRightIcon size={16} />
@@ -139,15 +157,19 @@ export const InviteGuests = ({
           <div className="flex justify-between">
             <Button
               variant={"secondary"}
-              onClick={() => setStep("searchGuests")}
+              onClick={() => setStep("addEmails")}
               className="gap-2"
             >
               <ChevronLeftIcon size={16} />
               Back
             </Button>
-            <Button variant={"default"} className="gap-2">
-              Send Invites
+            <Button
+              variant={"default"}
+              className="gap-2"
+              onClick={() => alert("@TODO")}
+            >
               <SendIcon size={16} />
+              Send Invites
             </Button>
           </div>
         )}
@@ -175,7 +197,7 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
   };
 
   return (
-    <section className="flex w-[200px] flex-col gap-4">
+    <section className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
       <div className="flex flex-col">
         <Button
           className={cn(
@@ -382,6 +404,10 @@ const SearchGuests = ({
   eventName,
   emailsExists,
 }: SearchGuestsProps) => {
+  const selectAllGuestsHandler = () => {
+    // @TODO
+  };
+
   return (
     <section className="flex max-h-[540px]  flex-col">
       <div className="px-2">
@@ -390,6 +416,15 @@ const SearchGuests = ({
           placeholder={`Search in "${eventName}"`}
           className="w-full bg-muted"
         />
+      </div>
+      <div className="flex justify-end px-2">
+        <Button
+          variant={"ghost"}
+          className="bg-none p-0 text-accent-foreground/50 transition-all hover:bg-transparent hover:text-accent-foreground"
+          onClick={() => selectAllGuestsHandler()}
+        >
+          Select All
+        </Button>
       </div>
       <div className="overflow-y-auto">
         {eventGuests?.map((guestEmail, idx) => (
