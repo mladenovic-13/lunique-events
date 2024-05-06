@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -12,7 +13,6 @@ import { paths } from "@/routes/paths";
 import { getServerAuthSession } from "@/server/auth";
 
 import { EmailSignInForm } from "./_components/email-sign-in";
-import { SocialSignInForm } from "./_components/social-sign-in";
 
 export default async function SignIn() {
   const session = await getServerAuthSession();
@@ -30,15 +30,9 @@ export default async function SignIn() {
             </CardDescription>
           </CardHeader>
 
-          <div className="space-y-5 px-5 md:px-10">
+          <CardContent className="my-5">
             <EmailSignInForm />
-            <div className="flex items-center gap-1.5">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-sm text-zinc-400">OR CONTINUE WITH</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-            <SocialSignInForm />
-          </div>
+          </CardContent>
 
           <CardFooter>
             <p className="mt-5 w-full text-center text-sm text-zinc-500">

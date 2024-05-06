@@ -12,9 +12,9 @@ export async function sendVerificationRequest({
   url,
 }: SendVerificationRequestParams) {
   await resend.emails.send({
-    from: `Better Event <${provider.from}>`,
+    from: `Lunique Tech <${provider.from}>`,
     to: [identifier],
-    subject: "Better Event Magic Link",
+    subject: "Sign In Magic Link",
     react: VerificationEmail({ magicLink: url }),
   });
 }
