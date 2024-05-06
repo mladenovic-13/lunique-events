@@ -234,6 +234,7 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
               <EventItem
                 eventName={ev.name}
                 eventDate={ev.date}
+                guestsCount={ev.guests.length}
                 key={idx}
                 onClick={() =>
                   onEventClickHandler("searchGuests", ev.id, ev.name)
@@ -363,6 +364,7 @@ interface EventItemProprs {
   eventDate: Date;
   onClick: () => void;
   selected: boolean;
+  guestsCount: number;
 }
 
 const EventItem = ({
@@ -370,6 +372,7 @@ const EventItem = ({
   eventDate,
   onClick,
   selected,
+  guestsCount,
 }: EventItemProprs) => {
   return (
     <div
@@ -385,7 +388,14 @@ const EventItem = ({
       <div className="flex items-center gap-2 text-xs text-accent-foreground/50">
         <p>{format(eventDate, "PPP")}</p>
         <CircleIcon size={5} />
-        <p>2 Guests</p>
+        <p>
+          {guestsCount > 0 && guestsCount}{" "}
+          {guestsCount === 1
+            ? "Guest"
+            : guestsCount > 0
+              ? "Guests"
+              : "No Guests"}
+        </p>
       </div>
     </div>
   );
