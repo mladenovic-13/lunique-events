@@ -7,7 +7,7 @@ export const EventGuests = ({ guests }: { guests: Guest[] }) => {
     <EventSection heading={`${guests.length} Going`}>
       {guests.length !== 0 && (
         <ul className="flex text-sm">
-          {guests.map((guest) => guest.name).join(", ")}
+          {/* {guests.map((guest) => guest.name).join(", ")} */}
         </ul>
       )}
       {guests.length === 0 && (
