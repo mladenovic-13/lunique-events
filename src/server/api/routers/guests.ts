@@ -14,7 +14,7 @@ export const guestsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.guest.create({
         data: {
-          Event: {
+          event: {
             connect: {
               id: input.eventId,
             },
