@@ -64,7 +64,7 @@ export const EventDateStep = () => {
             <StepTitle>Date & Time</StepTitle>
             <StepDescription>Enter your event date & time</StepDescription>
           </StepHeader>
-          <StepContent className="mx-auto max-w-md space-y-3">
+          <StepContent className="max-w-md space-y-3">
             <FormField
               control={form.control}
               name="timezone"
