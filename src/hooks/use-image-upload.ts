@@ -21,6 +21,7 @@ export const useImageUpload = ({
 }: UseImageUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const { mutate: fetchPresignedUrl } = api.s3.getPresignedUrl.useMutation();
 
@@ -37,6 +38,7 @@ export const useImageUpload = ({
       if (!files[0]) return;
 
       setFile(files[0]);
+      setIsUploading(true);
 
       const key = pathFormatter(files[0].name);
 
@@ -61,11 +63,13 @@ export const useImageUpload = ({
                   title: "Failed to upload image",
                   description: "Something went wrong. Please try again.",
                 });
-              });
+              })
+              .finally(() => setIsUploading(false));
           },
           onError: (err) => {
             setUrl(null);
             setFile(null);
+            setIsUploading(false);
 
             onError && onError(err);
 

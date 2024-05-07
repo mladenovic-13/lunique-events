@@ -9,13 +9,7 @@ import * as z from "zod";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { env } from "@/env.mjs";
 
 import { EventLocationInput } from "../inputs/event-location-input";
@@ -31,11 +25,11 @@ import {
 } from "./common";
 
 const formSchema = z.object({
-  input: z.string().min(3, { message: "Please enter event location" }),
+  // input: z.string().min(3, { message: "Please enter event location" }),
   map: z
     .object({
       placeId: z.string(),
-      descripton: z.string(),
+      description: z.string(),
       mainText: z.string(),
       secondaryText: z.string(),
       position: z.object({
@@ -49,7 +43,7 @@ const formSchema = z.object({
 type Location = z.infer<typeof formSchema>;
 
 const defaultValues: Location = {
-  input: "",
+  // input: "",
   map: null,
 };
 
@@ -73,6 +67,7 @@ export const EventLocationStep = () => {
 
   const onSubmit = (values: Location) => {
     console.log({ values });
+    nextStep();
   };
 
   const map = form.watch("map");
@@ -88,9 +83,11 @@ export const EventLocationStep = () => {
             </StepDescription>
           </StepHeader>
           {isLoaded && (
-            <StepContent className="grid md:grid-cols-2 md:gap-5">
-              <LocationMap position={map?.position ?? defaultPosition} />
-              <div>
+            <StepContent className="grid gap-3 md:grid-cols-2 md:gap-5">
+              <div className="order-2 md:order-1">
+                <LocationMap position={map?.position ?? defaultPosition} />
+              </div>
+              <div className="order-1 md:order-2">
                 <FormField
                   control={form.control}
                   name="map"
@@ -102,14 +99,13 @@ export const EventLocationStep = () => {
                           onChange={field.onChange}
                         />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
             </StepContent>
           )}
-          <StepFooter className="md:justify-end md:gap-3">
+          <StepFooter className="justify-end gap-3">
             <Button
               type="button"
               size="sm"

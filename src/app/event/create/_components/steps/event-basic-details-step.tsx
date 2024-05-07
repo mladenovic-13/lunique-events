@@ -58,6 +58,7 @@ export const EventBasicDetailsStep = () => {
 
   const onSubmit = (values: BasicDetails) => {
     console.log({ values });
+    nextStep();
   };
 
   return (
@@ -143,7 +144,7 @@ export const EventBasicDetailsStep = () => {
           </StepContent>
 
           <StepFooter className="flex justify-end">
-            <Button type="button" size="sm" onClick={nextStep}>
+            <Button size="sm">
               <SparklesIcon className="mr-1.5 size-4" />
               Create Event
             </Button>

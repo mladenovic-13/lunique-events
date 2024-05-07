@@ -1,7 +1,7 @@
 "use client";
 
 import React, { type HTMLAttributes, useCallback } from "react";
-import { MapPinIcon, SearchIcon, VideoIcon, XIcon } from "lucide-react";
+import { Divide, MapPinIcon, SearchIcon, XIcon } from "lucide-react";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -9,6 +9,8 @@ import usePlacesAutocomplete, {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { type Place } from "@/types";
 
@@ -40,7 +42,7 @@ export const EventLocationInput = (props: {
 
       onChange({
         placeId: place.place_id,
-        descripton: place.description,
+        description: place.description,
         mainText: place.structured_formatting.main_text,
         secondaryText: place.structured_formatting.secondary_text,
         position,
@@ -58,10 +60,10 @@ export const EventLocationInput = (props: {
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <div className="relative">
         <AutocompleteInput
-          value={props.value ? props.value.descripton : autocompleteValue}
+          value={props.value ? props.value.description : autocompleteValue}
           onValueChange={setAutocompleteValue}
           disabled={!ready || !!props.value}
           placeholder="Enter location..."
@@ -84,22 +86,7 @@ export const EventLocationInput = (props: {
             <p className="px-3 text-sm text-muted-foreground">
               No recently used locations.
             </p>
-          </AutocompleteResultGroup>
-          <AutocompleteResultGroup heading="Virtual Options">
-            <AutocompleteResultItem
-              value=""
-              onSelect={() => alert("Create Zoom meeting")}
-            >
-              <VideoIcon className="mr-1.5 size-4" />
-              Create Zoom meeting
-            </AutocompleteResultItem>
-            <AutocompleteResultItem
-              value=""
-              onSelect={() => alert("Create Zoom meeting")}
-            >
-              <VideoIcon className="mr-1.5 size-4" />
-              Select existing Zoom
-            </AutocompleteResultItem>
+            {/* TODO: fetch recent locations */}
           </AutocompleteResultGroup>
         </>
       )}
@@ -121,6 +108,12 @@ export const EventLocationInput = (props: {
       )}
 
       {status === "ZERO_RESULTS" && <AutocompleteResultEmpty />}
+      {props.value && (
+        <div className="space-y-2">
+          <Label>Further Instructions</Label>
+          <Textarea rows={9} />
+        </div>
+      )}
     </div>
   );
 };

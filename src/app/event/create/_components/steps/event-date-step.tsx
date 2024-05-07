@@ -44,7 +44,7 @@ const defaultValues: DateTime = {
 };
 
 export const EventDateStep = () => {
-  const { isDisabledStep, nextStep, prevStep } = useStepper();
+  const { isDisabledStep, nextStep } = useStepper();
 
   const form = useForm({
     defaultValues,
@@ -53,6 +53,7 @@ export const EventDateStep = () => {
 
   const onSubmit = (values: DateTime) => {
     console.log({ values });
+    nextStep();
   };
 
   return (
@@ -63,7 +64,7 @@ export const EventDateStep = () => {
             <StepTitle>Date & Time</StepTitle>
             <StepDescription>Enter your event date & time</StepDescription>
           </StepHeader>
-          <StepContent className="mx-auto max-w-md">
+          <StepContent className="mx-auto max-w-md space-y-3">
             <FormField
               control={form.control}
               name="timezone"
@@ -146,7 +147,7 @@ export const EventDateStep = () => {
               />
             </div>
           </StepContent>
-          <StepFooter className="md:justify-end md:gap-3">
+          <StepFooter className="justify-end gap-3">
             <Button
               type="button"
               size="sm"

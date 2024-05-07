@@ -6,28 +6,24 @@ import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
 
 import {
+  StepContainer,
   StepContent,
-  StepDescriptiom,
+  StepDescription,
   StepFooter,
   StepHeader,
   StepTitle,
 } from "./common";
 
-// import { useFormContext } from "react-hook-form";
-
-// import { type EventSchema } from "./validation";
-
 export const EventRegistrationStep = () => {
   const { isDisabledStep, nextStep, prevStep } = useStepper();
-  // const form = useFormContext<EventSchema>();
 
   return (
-    <StepContent>
+    <StepContainer>
       <StepHeader>
         <StepTitle>Registration</StepTitle>
-        <StepDescriptiom>Registration description</StepDescriptiom>
+        <StepDescription>Registration description</StepDescription>
       </StepHeader>
-      <div></div>
+      <StepContent>Coming soon</StepContent>
       <StepFooter className="justify-between">
         <Button
           type="button"
@@ -43,6 +39,6 @@ export const EventRegistrationStep = () => {
           <ChevronRightIcon className="ml-1.5 size-4" />
         </Button>
       </StepFooter>
-    </StepContent>
+    </StepContainer>
   );
 };

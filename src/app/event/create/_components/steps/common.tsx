@@ -18,8 +18,15 @@ export const StepContainer = React.forwardRef<
 ));
 StepContainer.displayName = "Card";
 
+export const StepContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <CardContent ref={ref} className={cn("min-h-96", className)} {...props} />
+));
+StepContent.displayName = "Card";
+
 export const StepHeader = CardHeader;
 export const StepTitle = CardTitle;
 export const StepDescription = CardDescription;
-export const StepContent = CardContent;
 export const StepFooter = CardFooter;

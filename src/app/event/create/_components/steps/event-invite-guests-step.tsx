@@ -1,9 +1,44 @@
-import { Card } from "@/components/ui/card";
+"use client";
+
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+
+import { useStepper } from "@/components/common/stepper";
+import { Button } from "@/components/ui/button";
+
+import {
+  StepContainer,
+  StepContent,
+  StepDescription,
+  StepFooter,
+  StepHeader,
+  StepTitle,
+} from "./common";
 
 export const EventInviteGuestsStep = () => {
+  const { isDisabledStep, nextStep, prevStep } = useStepper();
+
   return (
-    <Card className="flex min-h-96 items-center justify-center">
-      <h1 className="text-xl">Invite guests! 🎉</h1>
-    </Card>
+    <StepContainer>
+      <StepHeader>
+        <StepTitle>Invite Guests</StepTitle>
+        <StepDescription>Invite your guests</StepDescription>
+      </StepHeader>
+      <StepContent>Coming soon</StepContent>
+      <StepFooter className="justify-between">
+        <Button
+          type="button"
+          size="sm"
+          disabled={isDisabledStep}
+          onClick={prevStep}
+          variant="secondary"
+        >
+          <ChevronLeftIcon className="mr-1.5 size-4" /> Back
+        </Button>
+        <Button type="button" size="sm" onClick={nextStep}>
+          Continue
+          <ChevronRightIcon className="ml-1.5 size-4" />
+        </Button>
+      </StepFooter>
+    </StepContainer>
   );
 };
