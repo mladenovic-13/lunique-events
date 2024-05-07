@@ -101,8 +101,12 @@ const RegistrationForm = ({ onSuccess, eventId }: RegistrationFormProps) => {
       { eventId, ...values },
       {
         onSuccess: (guest) => {
-          onSuccess({ name: guest?.name, email: guest?.email });
-          toast({ title: "You have successfully registered for the event" });
+          // onSuccess({ name: guest?.name, email: guest?.email });
+          toast({
+            title:
+              "You have successfully registered for the event" +
+              guest?.id.toString(),
+          });
         },
         onError: () =>
           toast({

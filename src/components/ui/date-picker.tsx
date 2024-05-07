@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 export function DatePicker({
   selected,
   onSelect,
+  className,
 }: Omit<CalendarSingleProps, "mode">) {
   return (
     <Popover>
@@ -25,6 +26,7 @@ export function DatePicker({
           className={cn(
             "justify-start text-left font-normal",
             !selected && "text-muted-foreground",
+            className,
           )}
         >
           <CalendarIcon className="mr-2 size-4" />

@@ -30,7 +30,7 @@ export const EventCard = ({
   return (
     <Card
       onClick={onClick}
-      className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:p-0.5 hover:ring-1 hover:ring-accent-foreground/20"
+      className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:pl-2 hover:ring-1 hover:ring-accent-foreground/20"
     >
       <div className="flex w-full flex-col space-y-3 p-4">
         {event && (

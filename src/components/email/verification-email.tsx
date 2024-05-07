@@ -32,10 +32,10 @@ export const VerificationEmail = ({ magicLink }: VerificationEmail) => (
         </Section>
         <Text style={paragraph}>
           Best,
-          <br />- Better Event Team
+          <br />- Lunique Tech Team
         </Text>
         <Hr style={hr} />
-        <Text style={footer}>Mladenovic Technologies Inc.</Text>
+        <Text style={footer}>Lunique Tech Inc.</Text>
         <Text style={footer}>Sutjeska 40, Pirot, Srbija</Text>
       </Container>
     </Body>

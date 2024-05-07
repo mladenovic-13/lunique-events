@@ -1,16 +1,39 @@
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
 import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
+import { EventDescription } from "./_components/event-description";
 import { EventDetails } from "./_components/event-details";
-import { EventGallery } from "./_components/event-gallery";
 import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
 import { EventThumbnail } from "./_components/event-thumbnail";
 import { RegisterGuest } from "./_components/register-guest";
+
+type Props = {
+  params: { eventId: string };
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = params.eventId;
+
+  // fetch data
+  const event = await api.event.get.query({ id });
+
+  return {
+    title: event?.name,
+    description: event?.description,
+    openGraph: {
+      images: [event?.thumbnailUrl ?? ""],
+    },
+  };
+}
 
 export default async function EventPage({
   params: { eventId },
@@ -41,10 +64,12 @@ export default async function EventPage({
             name={event.name}
             host={event.creator.name ?? "Unknown"}
             startDate={event.startDate}
+            startTime={event.startTime}
             location={event.location?.secondaryText ?? "Unknown"}
           />
           <RegisterGuest eventId={eventId} />
-          <EventGallery />
+          <EventDescription description={event.description} />
+          {/* <EventGallery /> */}
           <EventLocation
             lat={event.location?.lat}
             lng={event.location?.lng}

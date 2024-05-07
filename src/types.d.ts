@@ -23,7 +23,7 @@ type EventWithOwner = Event & {
 
 type Place = {
   placeId: string;
-  descripton: string;
+  description: string;
   mainText: string;
   secondaryText: string;
   position: {
@@ -31,6 +31,9 @@ type Place = {
     lng: number;
   };
 };
-
 type Timeframe = "upcoming" | "past";
 type ViewMode = "card" | "list";
+
+type UpdateEventType = RouterOutputs["event"]["get"];
+
+type MeetingMode = "inPerson" | "virutal";

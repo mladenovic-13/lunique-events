@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { RotateCwIcon } from "lucide-react";
+import { LoaderCircleIcon } from "lucide-react";
 import { getCsrfToken } from "next-auth/react";
 import * as z from "zod";
 
@@ -81,7 +81,7 @@ export const EmailSignInForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
           name="email"
@@ -94,11 +94,11 @@ export const EmailSignInForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={sendingEmail} className="mt-5 w-full">
+        <Button type="submit" disabled={sendingEmail} className="w-full">
           {sendingEmail && (
-            <RotateCwIcon className="mr-1.5 size-5 animate-spin" />
+            <LoaderCircleIcon className="mr-1.5 size-5 animate-spin" />
           )}
-          {sendingEmail ? "Sending Email..." : "Sign In with Email"}
+          {sendingEmail ? "Sending Email..." : "Sign In"}
         </Button>
       </form>
     </Form>
