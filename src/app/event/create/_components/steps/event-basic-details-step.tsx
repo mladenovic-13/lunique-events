@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SparklesIcon } from "lucide-react";
-import * as z from "zod";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
@@ -13,13 +12,17 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { basicDetailsSchema, type EventBasicDetails } from "@/lib/validation";
+import { api } from "@/trpc/react";
 
-import { ImageUpload } from "../image-upload";
 import { EventOrganizationInput } from "../inputs/event-organization-input";
 import { EventVisibilityInput } from "../inputs/event-visibility-input";
+import { ImageUpload } from "../inputs/image-upload";
 
 import {
   StepContainer,
@@ -30,17 +33,7 @@ import {
   StepTitle,
 } from "./common";
 
-const formSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  thumbnailUrl: z.string(),
-  organization: z.string(),
-  public: z.boolean(),
-});
-
-type BasicDetails = z.infer<typeof formSchema>;
-
-const defaultValues: BasicDetails = {
+const defaultValues: EventBasicDetails = {
   name: "",
   description: "",
   public: true,
@@ -53,11 +46,21 @@ export const EventBasicDetailsStep = () => {
 
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(basicDetailsSchema),
   });
 
-  const onSubmit = (values: BasicDetails) => {
-    console.log({ values });
+  const { mutate: createEvent } = api.event.create.useMutation();
+  const { toast } = useToast();
+
+  const onSubmit = (values: EventBasicDetails) => {
+    createEvent(values, {
+      onSuccess: () =>
+        toast({
+          title: "Event create",
+          description: "Event created successfully",
+        }),
+      onError: () => toast({ title: "Failed to create event" }),
+    });
     nextStep();
   };
 
@@ -84,6 +87,7 @@ export const EventBasicDetailsStep = () => {
                         onChange={field.onChange}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -94,20 +98,30 @@ export const EventBasicDetailsStep = () => {
                   control={form.control}
                   name="organization"
                   render={({ field }) => (
-                    <EventOrganizationInput
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <FormItem>
+                      <FormControl>
+                        <EventOrganizationInput
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
                   name="public"
                   render={({ field }) => (
-                    <EventVisibilityInput
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <FormItem>
+                      <FormControl>
+                        <EventVisibilityInput
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
               </div>
@@ -120,6 +134,7 @@ export const EventBasicDetailsStep = () => {
                     <FormControl>
                       <Input placeholder="Enter youre event name" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -136,6 +151,7 @@ export const EventBasicDetailsStep = () => {
                         className="resize-none"
                         {...field}
                       />
+                      <FormMessage />
                     </FormControl>
                   </FormItem>
                 )}

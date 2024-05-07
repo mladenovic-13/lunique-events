@@ -25,3 +25,14 @@ export const locationSchema = z.object({
     lng: z.number(),
   }),
 });
+
+// EVENT
+export const basicDetailsSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  thumbnailUrl: z.string(),
+  organization: z.string(),
+  public: z.boolean(),
+});
+
+export type EventBasicDetails = z.infer<typeof basicDetailsSchema>;
