@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {
 } from "./common";
 
 export const EventRegistrationStep = () => {
-  const { isDisabledStep, nextStep, prevStep } = useStepper();
+  const { isDisabledStep, nextStep } = useStepper();
 
   return (
     <StepContainer>
@@ -24,17 +24,17 @@ export const EventRegistrationStep = () => {
         <StepDescription>Registration description</StepDescription>
       </StepHeader>
       <StepContent>Coming soon</StepContent>
-      <StepFooter className="justify-between">
+      <StepFooter className="justify-end gap-3">
         <Button
           type="button"
           size="sm"
           disabled={isDisabledStep}
-          onClick={prevStep}
-          variant="secondary"
+          onClick={nextStep}
+          variant="ghost"
         >
-          <ChevronLeftIcon className="mr-1.5 size-4" /> Back
+          Skip for now
         </Button>
-        <Button type="button" size="sm" onClick={nextStep}>
+        <Button size="sm" onClick={nextStep}>
           Continue
           <ChevronRightIcon className="ml-1.5 size-4" />
         </Button>

@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 
-import { useStepper } from "@/components/common/stepper";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 import {
   StepContainer,
@@ -15,8 +15,7 @@ import {
 } from "./common";
 
 export const EventInviteGuestsStep = () => {
-  const { isDisabledStep, nextStep, prevStep } = useStepper();
-
+  // TODO: embed invite guests modal @Lukiano99
   return (
     <StepContainer>
       <StepHeader>
@@ -24,20 +23,18 @@ export const EventInviteGuestsStep = () => {
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
       <StepContent>Coming soon</StepContent>
-      <StepFooter className="justify-between">
-        <Button
-          type="button"
-          size="sm"
-          disabled={isDisabledStep}
-          onClick={prevStep}
-          variant="secondary"
+      <StepFooter className="justify-end gap-3">
+        <Link
+          className={buttonVariants({ size: "sm", variant: "ghost" })}
+          href="/"
         >
-          <ChevronLeftIcon className="mr-1.5 size-4" /> Back
-        </Button>
-        <Button type="button" size="sm" onClick={nextStep}>
+          Skip for now
+        </Link>
+
+        <Link className={buttonVariants({ size: "sm" })} href="/">
           Continue
           <ChevronRightIcon className="ml-1.5 size-4" />
-        </Button>
+        </Link>
       </StepFooter>
     </StepContainer>
   );
