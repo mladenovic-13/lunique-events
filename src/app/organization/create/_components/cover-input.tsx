@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { XIcon } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { getDefaultImage } from "@/lib/get-default-image";
 import { getCoverImagePath } from "@/lib/get-path";
 
 interface CoverInputProps {
@@ -13,6 +15,13 @@ interface CoverInputProps {
 }
 
 export const CoverInput = ({ onChange }: CoverInputProps) => {
+  const defaultValue = useMemo(() => getDefaultImage("organization-cover"), []);
+
+  useEffect(() => {
+    onChange(defaultValue);
+    console.log({ defaultValue });
+  }, [defaultValue, onChange]);
+
   const { file, setFile, getRootProps, getInputProps } = useImageUpload({
     onSuccess: onChange,
     onError: () => onChange(null),
@@ -47,7 +56,13 @@ export const CoverInput = ({ onChange }: CoverInputProps) => {
       {...getRootProps()}
     >
       <input {...getInputProps()} />
-
+      <Image
+        src={defaultValue}
+        width={900}
+        height={200}
+        className="h-36 rounded-t-xl object-cover md:h-52"
+        alt=""
+      />
       <Button
         type="button"
         size="sm"
