@@ -1,5 +1,7 @@
 import { type PlanFeatures } from "@prisma/client";
 
+export const DEFAULT_USER_AVATAR = "/images/avatar.png" as const;
+
 type PlanType = "personal" | "professional";
 
 export const PLAN_MAP: Record<PlanType, Omit<PlanFeatures, "id">> = {
