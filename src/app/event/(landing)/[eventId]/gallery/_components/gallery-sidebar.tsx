@@ -59,11 +59,13 @@ const DetailsWidget = ({ event }: { event: EventWithOwner }) => (
     </CardHeader>
     <CardContent className="space-y-5">
       <div className="flex items-center gap-3">
-        <CalendarIcon date={event.startDate} />
+        {/* TODO: fix */}
+        <CalendarIcon date={event.startDate ?? new Date()} />
         <div className="flex flex-col text-xl font-medium">
-          <span>{format(event.startDate, "eeee, d MMMM")}</span>
+          {/* TODO: fix */}
+          <span>{format(event.startDate ?? new Date(), "eeee, d MMMM")}</span>
           <span className="text-sm text-muted-foreground">
-            {event.startDate.getFullYear()}
+            {event.startDate?.getFullYear()}
           </span>
         </div>
       </div>

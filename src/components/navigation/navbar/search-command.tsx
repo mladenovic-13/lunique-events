@@ -85,7 +85,11 @@ export const SearchCommand = () => {
                   router.push(paths.event.manage.overview(event.id))
                 }
               >
-                <CustomCalendarIcon size="sm" date={event.startDate} />
+                {/* TODO: fix */}
+                <CustomCalendarIcon
+                  size="sm"
+                  date={event.startDate ?? new Date()}
+                />
                 <span className="font-medium">{event.name}</span>
                 <span className="text-xs text-muted-foreground">
                   Hosted By {event.organization.owner.name}
@@ -102,7 +106,11 @@ export const SearchCommand = () => {
                   router.push(paths.event.manage.overview(event.id))
                 }
               >
-                <CustomCalendarIcon size="sm" date={event.startDate} />
+                {/* TODO: fix */}
+                <CustomCalendarIcon
+                  size="sm"
+                  date={event.startDate ?? new Date()}
+                />
                 <span className="font-medium">{event.name}</span>
                 <span className="text-xs text-muted-foreground">
                   Hosted By {event.organization.owner.name}

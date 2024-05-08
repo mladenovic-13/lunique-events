@@ -63,8 +63,8 @@ export default async function EventPage({
           <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
-            startDate={event.startDate}
-            startTime={event.startTime}
+            // TODO: fix
+            startDate={event.startDate ?? new Date()}
             location={event.location?.secondaryText ?? "Unknown"}
           />
           <RegisterGuest eventId={eventId} />

@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
+import { basicDetailsSchema } from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -39,7 +40,7 @@ import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 
 export const eventRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(eventSchema)
+    .input(basicDetailsSchema)
     .mutation(async ({ ctx, input }) => {
       // TODO: implement rekognition
       // await createCollection(ctx.rekognition, event.id);
@@ -85,40 +86,37 @@ export const eventRouter = createTRPCRouter({
               id: organization.id,
             },
           },
+          thumbnailUrl: input.thumbnailUrl ?? "",
           name: input.name,
           description: input.description,
-          startDate: input.startDateTime.date,
-          startTime: input.startDateTime.time,
-          endDate: input.endDateTime.date,
-          endTime: input.endDateTime.time,
           isPublic: input.public,
-          requireApproval: input.requireApproval,
-          tickets: input.tickets,
-          capacityValue: input.capacity.value,
-          capacityWaitlist: input.capacity.waitlist,
-          thumbnailUrl: input.thumbnailUrl,
-          location: input.location
-            ? {
-                create: {
-                  placeId: input.location.placeId,
-                  description: input.location.description,
-                  mainText: input.location.mainText,
-                  secondaryText: input.location.secondaryText,
-                  lat: input.location.position.lat,
-                  lng: input.location.position.lng,
-                },
-              }
-            : undefined,
-          pageStyle: {
-            create: { ...input.theme },
-          },
-          timezone: {
-            create: {
-              city: input.timezone.city,
-              label: input.timezone.label,
-              value: input.timezone.value,
-            },
-          },
+          // startDate: input.startDateTime.date,
+          // startTime: input.startDateTime.time,
+          // endDate: input.endDateTime.date,
+          // endTime: input.endDateTime.time,
+          // requireApproval: input.requireApproval,
+          // tickets: input.tickets,
+          // capacityValue: input.capacity.value,
+          // capacityWaitlist: input.capacity.waitlist,
+          // location: input.location
+          //   ? {
+          //       create: {
+          //         placeId: input.location.placeId,
+          //         description: input.location.description,
+          //         mainText: input.location.mainText,
+          //         secondaryText: input.location.secondaryText,
+          //         lat: input.location.position.lat,
+          //         lng: input.location.position.lng,
+          //       },
+          //     }
+          //   : undefined,
+          // timezone: {
+          //   create: {
+          //     city: input.timezone.city,
+          //     label: input.timezone.label,
+          //     value: input.timezone.value,
+          //   },
+          // },
         },
       });
     }),
@@ -166,15 +164,12 @@ export const eventRouter = createTRPCRouter({
         },
         data: {
           name: input.eventSchema.name,
-          startDate: input.eventSchema.startDateTime.date,
-          startTime: input.eventSchema.startDateTime.time,
-          endDate: input.eventSchema.endDateTime.date,
-          endTime: input.eventSchema.endDateTime.time,
+          startDate: input.eventSchema.startDate,
+          endDate: input.eventSchema.endDate,
           description: input.eventSchema.description,
           capacityValue: input.eventSchema.capacity.value,
           capacityWaitlist: input.eventSchema.capacity.waitlist,
           isPublic: input.eventSchema.public,
-          tickets: input.eventSchema.tickets,
           requireApproval: input.eventSchema.requireApproval,
           organization: {
             connect: {
@@ -264,7 +259,6 @@ export const eventRouter = createTRPCRouter({
           location: true,
           organization: true,
           timezone: true,
-          pageStyle: true,
         },
       });
     }),
@@ -291,8 +285,6 @@ export const eventRouter = createTRPCRouter({
         select: {
           startDate: true,
           endDate: true,
-          startTime: true,
-          endTime: true,
           location: {
             select: {
               mainText: true,

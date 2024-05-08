@@ -45,7 +45,7 @@ export const PrivateNavbar = ({ session }: { session: Session }) => {
           />
         </Link>
       </div>
-      <div className="hidden md:-ml-3 md:flex md:flex-1 md:items-center md:justify-start md:gap-1.5">
+      <div className="hidden md:flex md:flex-1 md:items-center md:justify-start md:gap-1.5">
         {links.map((link) => (
           <Link
             key={link.label}
