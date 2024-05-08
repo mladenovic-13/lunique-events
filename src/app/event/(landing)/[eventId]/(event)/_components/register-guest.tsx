@@ -86,7 +86,7 @@ interface RegistrationFormProps {
   onSuccess: (args: { name?: string | null; email?: string | null }) => void;
 }
 
-const RegistrationForm = ({ onSuccess, eventId }: RegistrationFormProps) => {
+const RegistrationForm = ({ eventId }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: registrationDefaultValues,
@@ -101,8 +101,12 @@ const RegistrationForm = ({ onSuccess, eventId }: RegistrationFormProps) => {
       { eventId, ...values },
       {
         onSuccess: (guest) => {
-          onSuccess({ name: guest?.name, email: guest?.email });
-          toast({ title: "You have successfully registered for the event" });
+          // onSuccess({ name: guest?.name, email: guest?.email });
+          toast({
+            title:
+              "You have successfully registered for the event" +
+              guest?.id.toString(),
+          });
         },
         onError: () =>
           toast({

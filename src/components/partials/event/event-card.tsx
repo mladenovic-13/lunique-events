@@ -30,15 +30,16 @@ export const EventCard = ({
   return (
     <Card
       onClick={onClick}
-      className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:p-0.5 hover:ring-1 hover:ring-accent-foreground/20"
+      className="flex min-w-[325px] max-w-[610px] transition-all hover:cursor-pointer hover:pl-2 hover:ring-1 hover:ring-accent-foreground/20"
     >
       <div className="flex w-full flex-col space-y-3 p-4">
         {event && (
           <div className="flex justify-between">
             <div className="flex flex-col space-y-2 text-sm md:text-base">
-              <p className="hidden text-accent-foreground/50 md:flex">
+              {/* TODO: fix */}
+              {/* <p className="hidden text-accent-foreground/50 md:flex">
                 {event.startTime}
-              </p>
+              </p> */}
               <h1 className="text-lg font-semibold md:text-xl">{event.name}</h1>
               <div>
                 {location && (

@@ -49,6 +49,7 @@ model User {
   ownerOfOrganizations  Organization[] @relation(name: "ownership")
   memberOfOrganizations Organization[]
   socialLinksId         String?
+  Guest                 Guest[]
 }
 
 model VerificationToken {
@@ -126,11 +127,19 @@ model Subscription {
 }
 
 model Guest {
-  id      String  @id @default(cuid())
-  name    String?
-  email   String? @unique
-  eventId String?
-  Event   Event?  @relation(fields: [eventId], references: [id])
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id])
+  userId  String
+  eventId String
+}
+
+model Invite {
+  id      String       @id @default(cuid())
+  event   Event        @relation(fields: [eventId], references: [id])
+  email   String
+  status  InviteStatus @default(PENDING)
+  eventId String
 }
 
 model Face {
@@ -188,35 +197,31 @@ model Organization {
 }
 
 model Event {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   isPublic         Boolean
   name             String
-  thumbnailUrl     String?
-  startDate        DateTime
-  startTime        String
-  endDate          DateTime
-  endTime          String
   description      String
+  thumbnailUrl     String
+  startDate        DateTime?
+  endDate          DateTime?
   capacityValue    Int?
-  capacityWaitlist Boolean  @default(false)
-  requireApproval  Boolean
-  tickets          Boolean
+  capacityWaitlist Boolean?  @default(false)
+  requireApproval  Boolean?
 
   creator      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   location     Location?    @relation(fields: [locationId], references: [id])
-  pageStyle    PageStyle?   @relation(fields: [pageStyleId], references: [id])
   timezone     Timezone?    @relation(fields: [timezoneId], references: [id])
 
-  pageStyleId    String?
   timezoneId     String?
   locationId     String?
   organizationId String
   userId         String
 
-  faces  Face[]
-  guests Guest[]
-  images Image[]
+  faces   Face[]
+  guests  Guest[]
+  images  Image[]
+  invites Invite[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -227,14 +232,6 @@ model Timezone {
   label String
   value String
   city  String
-  Event Event[]
-}
-
-model PageStyle {
-  id    String    @id @default(cuid())
-  theme Theme
-  font  Font
-  mode  ThemeMode
   Event Event[]
 }
 
@@ -252,6 +249,13 @@ model Location {
 enum ImageType {
   PNG
   JPG
+}
+
+enum InviteStatus {
+  GOING
+  NOT_GOING
+  MAYBE
+  PENDING
 }
 
 enum ThemeMode {

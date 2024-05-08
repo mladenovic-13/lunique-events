@@ -5,7 +5,6 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
-import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env.mjs";
 import { paths } from "@/routes/paths";
@@ -84,10 +83,6 @@ export const authOptions: NextAuthOptions = {
       },
       from: env.EMAIL_FROM,
       sendVerificationRequest,
-    }),
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   pages: {
