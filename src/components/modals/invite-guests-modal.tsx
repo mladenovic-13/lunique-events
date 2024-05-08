@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 
+import {
+  useGuestCapacity,
+  useInviteGuestActions,
+} from "@/hooks/use-guest-store";
 import { useModal } from "@/hooks/use-modal-store";
+import { cn } from "@/lib/utils";
 
 import { InviteGuests } from "../guests/invite-guests-menu";
 import { Button } from "../ui/button";
@@ -18,9 +23,13 @@ import { Separator } from "../ui/separator";
 export const InviteGuestsModal = () => {
   const { isOpen, type, onClose } = useModal();
 
-  const [remainingGuestCount, setRemainingGuestCount] = useState(100);
-
+  const guestCapacity = useGuestCapacity();
+  const { setStep } = useInviteGuestActions();
   const isModalOpen = isOpen && type === "invite-guests";
+
+  useEffect(() => {
+    if (isModalOpen) setStep("addEmails");
+  }, [isModalOpen, setStep]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -31,20 +40,19 @@ export const InviteGuestsModal = () => {
               <p className="capitalize">Invite Guests</p>
               <Button
                 variant={"outline"}
-                className="flex h-6 cursor-pointer items-center rounded-full border border-accent-foreground/50  px-2 text-xs text-accent-foreground/50 transition-all hover:border-accent-foreground hover:text-accent-foreground"
+                className={cn(
+                  "flex h-6 cursor-pointer items-center rounded-full border border-accent-foreground/50  px-2 text-xs text-accent-foreground/50 transition-all hover:border-accent-foreground hover:text-accent-foreground",
+                  guestCapacity === 0 && "border-red-500 text-red-500",
+                )}
               >
-                <p className="uppercase">{remainingGuestCount} left</p>
+                <p className="uppercase">{guestCapacity} left</p>
               </Button>
             </DialogTitle>
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
         <div className="flex  w-full px-2">
-          <InviteGuests
-            changeRemainingGuestCount={(guestsCount) =>
-              setRemainingGuestCount(100 - guestsCount)
-            }
-          />
+          <InviteGuests />
         </div>
         <DialogDescription className="space-y-2"></DialogDescription>
       </DialogContent>
