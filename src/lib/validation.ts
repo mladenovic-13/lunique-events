@@ -25,7 +25,7 @@ export const locationSchema = z.object({
 
 // EVENT
 export const basicDetailsSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, "Please enter event name"),
   description: z.string(),
   thumbnailUrl: z.string(),
   organization: z.string(),

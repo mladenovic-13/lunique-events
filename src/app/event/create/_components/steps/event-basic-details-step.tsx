@@ -151,7 +151,6 @@ export const EventBasicDetailsStep = () => {
                         className="resize-none"
                         {...field}
                       />
-                      <FormMessage />
                     </FormControl>
                   </FormItem>
                 )}

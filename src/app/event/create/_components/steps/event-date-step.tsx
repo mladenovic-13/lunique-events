@@ -8,13 +8,7 @@ import * as z from "zod";
 
 import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 import { EventDateInput } from "../inputs/event-date-input";
 import { EventTimeInput } from "../inputs/event-time-input";
@@ -60,17 +54,16 @@ export const EventDateStep = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <StepContainer>
-          <StepHeader>
-            <StepTitle>Date & Time</StepTitle>
-            <StepDescription>Enter your event date & time</StepDescription>
-          </StepHeader>
-          <StepContent className="max-w-md space-y-3">
+          <StepHeader className="flex justify-between gap-3 space-y-0 md:flex-row">
+            <div>
+              <StepTitle>Date & Time</StepTitle>
+              <StepDescription>Enter your event date & time</StepDescription>
+            </div>
             <FormField
               control={form.control}
               name="timezone"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Timezone</FormLabel>
                   <FormControl>
                     <EventTimezoneInput
                       value={field.value}
@@ -81,70 +74,81 @@ export const EventDateStep = () => {
                 </FormItem>
               )}
             />
-
-            <div className="flex gap-5">
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Start date</FormLabel>
-                    <FormControl>
-                      <EventDateInput
-                        value={new Date(field.value)}
-                        onChange={(date) => field.onChange(date?.toISOString())}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start time</FormLabel>
-                    <FormControl>
-                      <EventTimeInput
-                        value={new Date(field.value)}
-                        onChange={(date) => field.onChange(date?.toISOString())}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+          </StepHeader>
+          <StepContent className="space-y-5 md:flex md:flex-row md:justify-center md:gap-10 md:space-y-0 md:py-5">
+            <div className="md:space-y-2">
+              <p className="text-center font-medium">Start Date</p>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <EventDateInput
+                          value={new Date(field.value)}
+                          onChange={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem className="flex justify-center  space-y-0">
+                      <FormControl>
+                        <EventTimeInput
+                          value={new Date(field.value)}
+                          onChange={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <div className="flex gap-5">
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>End date</FormLabel>
-                    <FormControl>
-                      <EventDateInput
-                        value={new Date(field.value)}
-                        onChange={(date) => field.onChange(date?.toISOString())}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End time</FormLabel>
-                    <FormControl>
-                      <EventTimeInput
-                        value={new Date(field.value)}
-                        onChange={(date) => field.onChange(date?.toISOString())}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <div className="md:space-y-2">
+              <p className="text-center font-medium">End Date</p>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <EventDateInput
+                          value={new Date(field.value)}
+                          onChange={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem className="flex justify-center space-y-0">
+                      <FormControl>
+                        <EventTimeInput
+                          value={new Date(field.value)}
+                          onChange={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </StepContent>
           <StepFooter className="justify-end gap-3">

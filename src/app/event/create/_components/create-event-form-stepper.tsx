@@ -27,11 +27,11 @@ const steps = [
 ] satisfies StepItem[];
 
 const stepsContent = [
-  <EventBasicDetailsStep key={1} />,
-  <EventLocationStep key={2} />,
-  <EventDateStep key={3} />,
-  <EventRegistrationStep key={4} />,
-  <EventInviteGuestsStep key={5} />,
+  <EventBasicDetailsStep key={0} />,
+  <EventLocationStep key={1} />,
+  <EventDateStep key={2} />,
+  <EventRegistrationStep key={3} />,
+  <EventInviteGuestsStep key={4} />,
 ];
 
 export const CreateEventSteper = () => {

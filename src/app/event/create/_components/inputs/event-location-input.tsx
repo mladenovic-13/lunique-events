@@ -1,6 +1,7 @@
 "use client";
 
 import React, { type HTMLAttributes, useCallback } from "react";
+import { useFormContext } from "react-hook-form";
 import { MapPinIcon, SearchIcon, XIcon } from "lucide-react";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -8,6 +9,7 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 
 import { Button } from "@/components/ui/button";
+import { useFormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +21,9 @@ export const EventLocationInput = (props: {
   onChange: (place: Place | null) => void;
 }) => {
   const { onChange } = props;
+
+  const field = useFormField();
+  const form = useFormContext();
 
   const {
     ready,
@@ -50,8 +55,9 @@ export const EventLocationInput = (props: {
 
       clearSuggestions();
       clearCache();
+      form.clearErrors();
     },
-    [onChange, data, clearSuggestions, clearCache],
+    [onChange, data, clearSuggestions, clearCache, form],
   );
 
   const handleClearLocation = () => {
@@ -67,7 +73,13 @@ export const EventLocationInput = (props: {
           onValueChange={setAutocompleteValue}
           disabled={!ready || !!props.value}
           placeholder="Enter location..."
+          error={!!field.error}
         />
+        {field.error && (
+          <p className="text-[0.8rem] font-medium text-destructive">
+            {field.error.message}
+          </p>
+        )}
 
         {props.value && (
           <div className="absolute right-0 top-0 flex size-9 items-center justify-center">
@@ -123,6 +135,7 @@ interface AutocompleteInputProps extends HTMLAttributes<HTMLInputElement> {
   onValueChange: (value: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  error?: boolean;
 }
 
 const AutocompleteInput = ({
@@ -131,6 +144,7 @@ const AutocompleteInput = ({
   className,
   disabled,
   placeholder,
+  error,
   ...props
 }: AutocompleteInputProps) => {
   return (
@@ -140,6 +154,7 @@ const AutocompleteInput = ({
         placeholder={placeholder}
         className={cn(
           "h-9 bg-popover pl-10 shadow-none focus-visible:ring-0 disabled:opacity-100",
+          error && "border-destructive",
           className,
         )}
         value={value}

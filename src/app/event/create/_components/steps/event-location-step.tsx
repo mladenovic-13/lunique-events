@@ -66,8 +66,17 @@ export const EventLocationStep = () => {
   });
 
   const onSubmit = (values: Location) => {
-    console.log({ values });
-    nextStep();
+    if (!values.map) {
+      form.setError("map", {
+        type: "required",
+        message: "Please select valid location",
+      });
+    }
+
+    if (values.map) {
+      console.log({ values });
+      nextStep();
+    }
   };
 
   const map = form.watch("map");
