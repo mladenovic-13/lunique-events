@@ -6,8 +6,8 @@ import { ImagePlusIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { getDefaultImage } from "@/lib/get-default-image";
 import { getThumbnailImagePath } from "@/lib/get-path";
-import { getRandomNumber } from "@/lib/get-random-number";
 
 interface ImageUploadProps {
   value: string | null;
@@ -15,10 +15,7 @@ interface ImageUploadProps {
 }
 
 export const ImageUpload = ({ onChange }: ImageUploadProps) => {
-  const defaultValue = useMemo(
-    () => `/images/invited/invited-${getRandomNumber(15)}.png`,
-    [],
-  );
+  const defaultValue = useMemo(() => getDefaultImage("event-thumbnail"), []);
 
   useEffect(() => {
     onChange(defaultValue);
