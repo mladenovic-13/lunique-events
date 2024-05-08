@@ -48,8 +48,6 @@ export const ActionButton = (props: {
   onClick: () => void;
 }) => {
   const { title, Icon, bgColor, iconColor, description, onClick } = props;
-  const hoverColor = `hover:bg-[${bgColor}]`;
-  console.log(hoverColor);
   return (
     <button
       onClick={onClick}

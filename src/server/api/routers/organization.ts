@@ -17,7 +17,6 @@ export const organizationRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           slug: input.slug,
-          theme: input.theme,
           coverUrl: input.coverImageUrl,
           thumbnailUrl: input.thumbnailImageUrl,
           owner: {

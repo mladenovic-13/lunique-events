@@ -8,13 +8,11 @@ interface EventDetailsProps {
   host: string;
   startDate: Date;
   location: string;
-  startTime?: string;
 }
 
 export const EventDetails = ({
   name,
   host,
-  startTime,
   startDate,
   location,
 }: EventDetailsProps) => {
@@ -31,7 +29,7 @@ export const EventDetails = ({
             <p className="font-medium leading-5">
               {format(startDate, "eeee, MMM d")}
             </p>
-            <p className="font-medium leading-5">{startTime}h</p>
+            {/* <p className="font-medium leading-5">{startTime}h</p> */}
           </div>
         </div>
         <div className="flex items-center gap-3">

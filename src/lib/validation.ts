@@ -1,4 +1,3 @@
-import { Theme } from "@prisma/client";
 import * as z from "zod";
 
 export const validatePhotoId = (photoId: string | null, length: number) => {
@@ -13,11 +12,9 @@ export const validatePhotoId = (photoId: string | null, length: number) => {
   return parse.success;
 };
 
-export const themeNameSchema = z.nativeEnum(Theme);
-
 export const locationSchema = z.object({
   placeId: z.string(),
-  descripton: z.string(),
+  description: z.string(),
   mainText: z.string(),
   secondaryText: z.string(),
   position: z.object({
@@ -25,3 +22,14 @@ export const locationSchema = z.object({
     lng: z.number(),
   }),
 });
+
+// EVENT
+export const basicDetailsSchema = z.object({
+  name: z.string().min(1, "Please enter event name"),
+  description: z.string(),
+  thumbnailUrl: z.string(),
+  organization: z.string(),
+  public: z.boolean(),
+});
+
+export type EventBasicDetails = z.infer<typeof basicDetailsSchema>;

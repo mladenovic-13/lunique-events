@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
+import { basicDetailsSchema } from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -39,7 +40,7 @@ import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 
 export const eventRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(eventSchema)
+    .input(basicDetailsSchema)
     .mutation(async ({ ctx, input }) => {
       // TODO: implement rekognition
       // await createCollection(ctx.rekognition, event.id);
@@ -85,38 +86,115 @@ export const eventRouter = createTRPCRouter({
               id: organization.id,
             },
           },
+          thumbnailUrl: input.thumbnailUrl ?? "",
           name: input.name,
           description: input.description,
-          startDate: input.startDateTime.date,
-          startTime: input.startDateTime.time,
-          endDate: input.endDateTime.date,
-          endTime: input.endDateTime.time,
           isPublic: input.public,
-          requireApproval: input.requireApproval,
-          tickets: input.tickets,
-          capacityValue: input.capacity.value,
-          capacityWaitlist: input.capacity.waitlist,
-          thumbnailUrl: input.thumbnailUrl,
-          location: input.location
-            ? {
-                create: {
-                  placeId: input.location.placeId,
-                  description: input.location.descripton,
-                  mainText: input.location.mainText,
-                  secondaryText: input.location.secondaryText,
-                  lat: input.location.position.lat,
-                  lng: input.location.position.lng,
-                },
-              }
-            : undefined,
-          pageStyle: {
-            create: { ...input.theme },
+          // startDate: input.startDateTime.date,
+          // startTime: input.startDateTime.time,
+          // endDate: input.endDateTime.date,
+          // endTime: input.endDateTime.time,
+          // requireApproval: input.requireApproval,
+          // tickets: input.tickets,
+          // capacityValue: input.capacity.value,
+          // capacityWaitlist: input.capacity.waitlist,
+          // location: input.location
+          //   ? {
+          //       create: {
+          //         placeId: input.location.placeId,
+          //         description: input.location.description,
+          //         mainText: input.location.mainText,
+          //         secondaryText: input.location.secondaryText,
+          //         lat: input.location.position.lat,
+          //         lng: input.location.position.lng,
+          //       },
+          //     }
+          //   : undefined,
+          // timezone: {
+          //   create: {
+          //     city: input.timezone.city,
+          //     label: input.timezone.label,
+          //     value: input.timezone.value,
+          //   },
+          // },
+        },
+      });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        // eventUpdateSchema: eventSchema,
+        eventSchema: eventSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      let organization = null;
+
+      if (input.eventSchema.organization) {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            ownerId: ctx.session.user.id,
+            id: input.eventSchema.organization,
+          },
+        });
+      } else {
+        organization = await ctx.db.organization.findFirst({
+          where: {
+            AND: {
+              ownerId: ctx.session.user.id,
+              isPersonal: true,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+      }
+
+      if (!organization)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          name: input.eventSchema.name,
+          startDate: input.eventSchema.startDate,
+          endDate: input.eventSchema.endDate,
+          description: input.eventSchema.description,
+          capacityValue: input.eventSchema.capacity.value,
+          capacityWaitlist: input.eventSchema.capacity.waitlist,
+          isPublic: input.eventSchema.public,
+          requireApproval: input.eventSchema.requireApproval,
+          organization: {
+            connect: {
+              id: organization.id,
+            },
+          },
+          location: {
+            update: {
+              data: {
+                description: input.eventSchema.location?.description,
+                mainText: input.eventSchema.location?.mainText,
+                secondaryText: input.eventSchema.location?.secondaryText,
+                placeId: input.eventSchema.location?.placeId,
+                lng: input.eventSchema.location?.position.lng,
+                lat: input.eventSchema.location?.position.lat,
+              },
+            },
           },
           timezone: {
-            create: {
-              city: input.timezone.city,
-              label: input.timezone.label,
-              value: input.timezone.value,
+            update: {
+              data: {
+                city: input.eventSchema.timezone.city,
+                label: input.eventSchema.timezone.label,
+                value: input.eventSchema.timezone.value,
+              },
             },
           },
         },
@@ -181,7 +259,6 @@ export const eventRouter = createTRPCRouter({
           location: true,
           organization: true,
           timezone: true,
-          pageStyle: true,
         },
       });
     }),
@@ -197,6 +274,27 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
+
+  getOverview: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.event.findFirst({
+        where: {
+          id: input.id,
+        },
+        select: {
+          startDate: true,
+          endDate: true,
+          location: {
+            select: {
+              mainText: true,
+              secondaryText: true,
+            },
+          },
+        },
+      });
+    }),
+
   // settings: protectedProcedure
   //   .input(z.object({ id: z.string() }))
   //   .query(async ({ ctx, input }) => {
