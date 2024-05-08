@@ -277,15 +277,30 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
 
 interface GuestEmailItemProps {
   email: string;
+  toggle?: boolean;
 }
-const GuestEmailItem = ({ email }: GuestEmailItemProps) => {
+const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
   const { emailExists } = useInviteGuestActions();
   const { removeEmail, addEmail } = useInviteGuestActions();
   const step = useInviteStep();
+
+  const onClickHandler = () => {
+    console.log("mrk");
+    if (!toggle) {
+      addEmail(email);
+    }
+    if (toggle) {
+      if (!emailExists(email)) addEmail(email);
+      else if (emailExists(email)) removeEmail(email);
+    }
+  };
+
   return (
     <div
       className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90   transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
-      onClick={() => addEmail(email)}
+      onClick={() => {
+        onClickHandler();
+      }}
     >
       <div className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
@@ -296,7 +311,10 @@ const GuestEmailItem = ({ email }: GuestEmailItemProps) => {
       <div className="flex items-center gap-4">
         {step === "addEmails" && (
           <Button
-            onClick={() => removeEmail(email)}
+            onClick={(e) => {
+              e.stopPropagation();
+              removeEmail(email);
+            }}
             className="p-0 text-red-500/80 transition-all hover:bg-transparent hover:text-red-500"
             variant={"ghost"}
           >
@@ -413,7 +431,7 @@ const SearchGuests = ({ eventGuests, eventName }: SearchGuestsProps) => {
       </div>
       <div className="overflow-y-auto">
         {eventGuests?.map((guestEmail, idx) => (
-          <GuestEmailItem email={guestEmail} key={idx} />
+          <GuestEmailItem email={guestEmail} key={idx} toggle={true} />
         ))}
       </div>
     </section>
