@@ -5,7 +5,19 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 1)),
-      guests: [],
+      guests: [
+        "luka@lunique.tech",
+        "nikola@lunique.tech",
+        "uros@lunique.tech",
+        "vacic@lunique.tech",
+        "zeljko@lunique.tech",
+        "joka@lunique.tech",
+        "teodora@lunique.tech",
+        "marija@lunique.tech",
+        "maja@lunique.tech",
+        "test@test.com",
+        "gmail@gmail.com",
+      ],
       id: "1",
       images: [
         {
@@ -35,7 +47,15 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 5)),
-      guests: [],
+      guests: [
+        "luka@lunique.tech",
+        "nikola@lunique.tech",
+        "uros@lunique.tech",
+        "vacic@lunique.tech",
+        "maja@lunique.tech",
+        "test@test.com",
+        "gmail@gmail.com",
+      ],
       id: "2",
       images: [
         {
@@ -65,8 +85,17 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 3)),
-      guests: [],
-      id: "2",
+      guests: [
+        "luka@lunique.tech",
+        "nikola@lunique.tech",
+        "vacic@lunique.tech",
+        "joka@lunique.tech",
+        "marija@lunique.tech",
+        "maja@lunique.tech",
+        "test@test.com",
+        "gmail@gmail.com",
+      ],
+      id: "3",
       images: [
         {
           id: "2",
@@ -95,8 +124,18 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 35)),
-      guests: [],
-      id: "2",
+      guests: [
+        "nikola@lunique.tech",
+        "vacic@lunique.tech",
+        "luka@lunique.tech",
+        "vacic2@lte.com",
+        "marija@lunique.tech",
+        "test@test.com",
+        "maja@lunique.tech",
+        "joka@lunique.tech",
+        "gmail@gmail.com",
+      ],
+      id: "4",
       images: [
         {
           id: "2",
@@ -125,8 +164,17 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 10)),
-      guests: [],
-      id: "2",
+      guests: [
+        "vacic@lunique.tech",
+        "nikola@lunique.tech",
+        "joka@lunique.tech",
+        "gmail@gmail.com",
+        "maja@lunique.tech",
+        "marija@lunique.tech",
+        "test@test.com",
+        "luka@lunique.tech",
+      ],
+      id: "5",
       images: [
         {
           id: "2",
@@ -155,8 +203,8 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 2)),
-      guests: [],
-      id: "2",
+      guests: ["vacic@lunique.tech", "test@test.com", "gmail@gmail.com"],
+      id: "6",
       images: [
         {
           id: "2",
@@ -185,8 +233,15 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() + 7)),
-      guests: [],
-      id: "2",
+      guests: [
+        "vacic@lunique.tech",
+        "luka@lunique.tech",
+        "vacic2@lte.com",
+        "marija@lunique.tech",
+        "test@test.com",
+        "maja@lunique.tech",
+      ],
+      id: "7",
       images: [
         {
           id: "2",
@@ -217,8 +272,8 @@ export const upcomingAndPastEvents = {
     {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() - 5)),
-      guests: [],
-      id: "2",
+      guests: ["nikola@lunique.tech"],
+      id: "8",
       images: [
         {
           id: "2",
@@ -248,7 +303,7 @@ export const upcomingAndPastEvents = {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() - 1)),
       guests: [],
-      id: "1",
+      id: "9",
       images: [
         {
           id: "1",
@@ -278,7 +333,7 @@ export const upcomingAndPastEvents = {
       createdAt: new Date(),
       date: new Date(new Date().setDate(new Date().getDate() - 3)),
       guests: [],
-      id: "2",
+      id: "10",
       images: [
         {
           id: "2",

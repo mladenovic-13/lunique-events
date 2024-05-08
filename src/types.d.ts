@@ -37,3 +37,9 @@ type ViewMode = "card" | "list";
 type UpdateEventType = RouterOutputs["event"]["get"];
 
 type MeetingMode = "inPerson" | "virutal";
+
+type InviteGuestStep =
+  | "searchGuests"
+  | "addEmails"
+  | "sendInvites"
+  | "importCSV";
