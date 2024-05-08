@@ -86,7 +86,7 @@ interface RegistrationFormProps {
   onSuccess: (args: { name?: string | null; email?: string | null }) => void;
 }
 
-const RegistrationForm = ({ onSuccess, eventId }: RegistrationFormProps) => {
+const RegistrationForm = ({ eventId }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
     defaultValues: registrationDefaultValues,

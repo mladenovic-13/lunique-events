@@ -61,12 +61,12 @@ export const EventDetails = ({ event }: EventDetailsProps) => {
             <h2 className="text-2xl font-semibold">When & Where</h2>
 
             <div className="flex items-center gap-3">
-              <CalendarIcon date={event ? event.startDate : new Date()} />
+              <CalendarIcon
+                date={event?.startDate ? event.startDate : new Date()}
+              />
               <DisplayDate
-                startDate={event ? event.startDate : new Date()}
-                endDate={event ? event.endDate : new Date()}
-                startTime={event ? event?.startTime : ""}
-                endTime={event ? event?.endTime : ""}
+                startDate={event?.startDate ? event.startDate : new Date()}
+                endDate={event?.endDate ? event.endDate : new Date()}
               />
             </div>
             <div className="flex items-center gap-3">
@@ -115,24 +115,19 @@ export const EventDetails = ({ event }: EventDetailsProps) => {
 interface DisplayDateProps {
   startDate: Date;
   endDate: Date;
-  startTime: string;
-  endTime: string;
 }
 
-const DisplayDate = ({
-  startDate,
-  endDate,
-  startTime,
-  endTime,
-}: DisplayDateProps) => {
+const DisplayDate = ({ startDate }: DisplayDateProps) => {
   return (
     <div className="flex flex-col">
       <p className="font-semibold">
         {format(startDate, "EEEE")}, {format(startDate, "LLL")}{" "}
-        {format(startDate, "do")} - {startTime}
+        {/* TODO: fix */}
+        {/* {format(startDate, "do")} - {startTime} */}
       </p>
       <p className="text-sm text-accent-foreground/50">
-        Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime}
+        {/* TODO: fix */}
+        {/* Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime} */}
       </p>
     </div>
   );

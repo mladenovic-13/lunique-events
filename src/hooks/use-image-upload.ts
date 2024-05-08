@@ -89,5 +89,6 @@ export const useImageUpload = ({
     url,
     file,
     setFile,
+    isUploading,
   };
 };

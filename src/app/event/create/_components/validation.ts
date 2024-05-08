@@ -1,19 +1,7 @@
-import { Font, Theme, ThemeMode } from "@prisma/client";
 import * as z from "zod";
 
 import { timezones } from "@/lib/timezones";
-import { locationSchema, themeNameSchema } from "@/lib/validation";
-
-const dateTimeSchema = z.object({
-  date: z.date(),
-  time: z.string(),
-});
-
-const themeSchema = z.object({
-  theme: themeNameSchema,
-  font: z.nativeEnum(Font),
-  mode: z.nativeEnum(ThemeMode),
-});
+import { locationSchema } from "@/lib/validation";
 
 const timezoneSchema = z.object({
   value: z.string(),
@@ -30,14 +18,13 @@ export const eventSchema = z.object({
   public: z.boolean(),
   name: z.string(),
   thumbnailUrl: z.string().nullable(),
-  theme: themeSchema,
-  startDateTime: dateTimeSchema,
-  endDateTime: dateTimeSchema,
+  startDate: z.date().nullable(),
+  endDate: z.date().nullable(),
   timezone: timezoneSchema,
   location: locationSchema.nullish(),
   description: z.string(),
   capacity: capacitySchema,
-  requireApproval: z.boolean(),
+  requireApproval: z.boolean().nullable(),
   tickets: z.boolean(),
   organization: z.string().nullable(),
 });
@@ -56,19 +43,8 @@ export const defaultValues: EventSchema = {
   thumbnailUrl: null,
   name: "",
   description: "",
-  theme: {
-    font: Font.ROBOTO,
-    theme: Theme.ROSE,
-    mode: ThemeMode.SYSTEM,
-  },
-  startDateTime: {
-    date: date,
-    time: "18:00",
-  },
-  endDateTime: {
-    date: date,
-    time: "20:00",
-  },
+  startDate: date,
+  endDate: date,
   location: null,
   timezone,
   capacity: {

@@ -164,8 +164,8 @@ export const eventRouter = createTRPCRouter({
         },
         data: {
           name: input.eventSchema.name,
-          startDate: input.eventSchema.startDateTime.date,
-          endDate: input.eventSchema.endDateTime.date,
+          startDate: input.eventSchema.startDate,
+          endDate: input.eventSchema.endDate,
           description: input.eventSchema.description,
           capacityValue: input.eventSchema.capacity.value,
           capacityWaitlist: input.eventSchema.capacity.waitlist,

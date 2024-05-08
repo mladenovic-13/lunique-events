@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Libraries, useLoadScript } from "@react-google-maps/api";
-import { ArrowRightIcon, CircleCheckBigIcon } from "lucide-react";
+import { CircleCheckBigIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -12,7 +12,6 @@ import {
   eventSchema,
 } from "@/app/event/create/_components/validation";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -31,8 +30,6 @@ import { type RouterOutputs } from "@/trpc/shared";
 
 import { PickLocation } from "./update-form/pick-location";
 import { SelectOrganization } from "./update-form/select-organization";
-import { TimePicker } from "./update-form/time-picker";
-import { DatePickerDemo } from "./date-picker-demo";
 
 interface EditEventFormProps {
   event: RouterOutputs["event"]["get"];
@@ -54,22 +51,15 @@ export const NewEditEventForm = ({
     if (event && !updateForm.formState.isDirty) {
       updateForm.reset({
         name: event.name ?? undefined,
-        startDateTime: {
-          date: event.startDate,
-          time: event.startTime,
-        },
-        endDateTime: {
-          date: event.endDate ?? undefined,
-          time: event.endTime ?? undefined,
-        },
         capacity: {
           value: event.capacityValue,
           waitlist: event.capacityWaitlist ?? undefined,
         },
+        startDate: event.startDate,
+        endDate: event.endDate,
         description: event.description ?? undefined,
         public: event.isPublic,
         requireApproval: event.requireApproval,
-        tickets: event.tickets,
         thumbnailUrl: event.thumbnailUrl ?? "testUrl",
         location: {
           ...event.location,
@@ -80,11 +70,6 @@ export const NewEditEventForm = ({
           },
         },
         organization: event.organization.name,
-        theme: {
-          theme: event.pageStyle?.theme ?? undefined,
-          font: event.pageStyle?.font ?? undefined,
-          mode: event.pageStyle?.mode ?? undefined,
-        },
         timezone: {
           label: event.timezone?.label ?? undefined,
           value: event.timezone?.value ?? undefined,
@@ -178,7 +163,8 @@ export const NewEditEventForm = ({
                     </FormItem>
                   )}
                 />
-                <Card className="flex items-center justify-between bg-background/50">
+                {/* TODO: fix */}
+                {/* <Card className="flex items-center justify-between bg-background/50">
                   <div className="w-1/2">
                     <FormField
                       control={updateForm.control}
@@ -244,7 +230,7 @@ export const NewEditEventForm = ({
                       )}
                     />
                   </div>
-                </Card>
+                </Card> */}
                 <div className="w-full space-y-4">
                   {isLoaded && (
                     <FormField
@@ -348,7 +334,8 @@ export const NewEditEventForm = ({
                     </FormItem>
                   )}
                 />
-                <FormField
+                {/* TODO: fix */}
+                {/* <FormField
                   control={updateForm.control}
                   name="requireApproval"
                   render={({ field }) => (
@@ -369,7 +356,7 @@ export const NewEditEventForm = ({
                       </FormControl>
                     </FormItem>
                   )}
-                />
+                /> */}
               </div>
             </div>
             <Button className="flex w-full gap-2">

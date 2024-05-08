@@ -13,7 +13,6 @@ import { api } from "@/trpc/react";
 
 import { CoverInput } from "./cover-input";
 import { SlugInput } from "./slug-input";
-import { ThemeInput } from "./theme-input";
 import { ThumbnailInput } from "./thumbnail-input";
 import {
   defaultValues,
@@ -89,13 +88,6 @@ export const CreateOrganizationForm = () => {
         <h2 className="font-semibold">Customization</h2>
         <div className="flex flex-col gap-5 md:flex-row">
           <div className="flex flex-1 flex-col gap-3">
-            <Controller
-              control={methods.control}
-              name="theme"
-              render={({ field }) => (
-                <ThemeInput value={field.value} onChange={field.onChange} />
-              )}
-            />
             <Controller
               control={methods.control}
               name="slug"

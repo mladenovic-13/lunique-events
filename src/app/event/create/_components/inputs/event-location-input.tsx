@@ -1,7 +1,7 @@
 "use client";
 
 import React, { type HTMLAttributes, useCallback } from "react";
-import { Divide, MapPinIcon, SearchIcon, XIcon } from "lucide-react";
+import { MapPinIcon, SearchIcon, XIcon } from "lucide-react";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,

@@ -36,9 +36,10 @@ export const EventCard = ({
         {event && (
           <div className="flex justify-between">
             <div className="flex flex-col space-y-2 text-sm md:text-base">
-              <p className="hidden text-accent-foreground/50 md:flex">
+              {/* TODO: fix */}
+              {/* <p className="hidden text-accent-foreground/50 md:flex">
                 {event.startTime}
-              </p>
+              </p> */}
               <h1 className="text-lg font-semibold md:text-xl">{event.name}</h1>
               <div>
                 {location && (

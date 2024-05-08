@@ -44,7 +44,8 @@ export default function CalendarPage() {
   const selectedCalendarDays: Date[] = [];
   if (organization) {
     organization.events.forEach((event) =>
-      selectedCalendarDays.push(event.startDate),
+      // TODO: fix
+      selectedCalendarDays.push(event.startDate ?? new Date()),
     );
   }
 
@@ -122,7 +123,8 @@ export default function CalendarPage() {
                       idx={idx}
                       dataLength={organization.events.length}
                       key={idx}
-                      date={event.startDate}
+                      // TODO: fix
+                      date={event.startDate ?? new Date()}
                     >
                       <EventCard
                         event={event}
@@ -141,7 +143,8 @@ export default function CalendarPage() {
                   {organization?.events.map((event, idx) => (
                     <EventListItem
                       key={idx}
-                      date={event.startDate}
+                      // TODO: fix
+                      date={event.startDate ?? new Date()}
                       event={event}
                       creator={event.creator.name}
                       onClick={() =>
