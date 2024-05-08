@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 
+import { DEFAULT_USER_AVATAR } from "@/config";
 import { env } from "@/env.mjs";
 import { paths } from "@/routes/paths";
 import { db } from "@/server/db";
@@ -54,7 +55,10 @@ export const authOptions: NextAuthOptions = {
   adapter: {
     ...PrismaDBAdapter,
     createUser: async (user) => {
-      const createdUser = await PrismaDBAdapter.createUser!(user);
+      const createdUser = await PrismaDBAdapter.createUser!({
+        ...user,
+        image: DEFAULT_USER_AVATAR,
+      });
 
       await db.organization.create({
         data: {
