@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SparklesIcon } from "lucide-react";
 
 import { useStepper } from "@/components/common/stepper";
+import { type StepperStore } from "@/components/providers/stepper-store-provider";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useStepperActions } from "@/hooks/use-stepper-store";
 import { basicDetailsSchema, type EventBasicDetails } from "@/lib/validation";
 import { api } from "@/trpc/react";
 
@@ -43,25 +45,28 @@ const defaultValues: EventBasicDetails = {
 
 export const EventBasicDetailsStep = () => {
   const { nextStep } = useStepper();
+  const { updateEventId } = useStepperActions() as StepperStore["actions"];
 
   const form = useForm({
     defaultValues,
     resolver: zodResolver(basicDetailsSchema),
   });
 
-  const { mutate: createEvent } = api.event.create.useMutation();
+  const { mutate: createEvent, isLoading } = api.event.create.useMutation();
   const { toast } = useToast();
 
   const onSubmit = (values: EventBasicDetails) => {
     createEvent(values, {
-      onSuccess: () =>
+      onSuccess: (event) => {
         toast({
-          title: "Event create",
+          title: "Event created",
           description: "Event created successfully",
-        }),
+        });
+        updateEventId(event.id);
+        nextStep();
+      },
       onError: () => toast({ title: "Failed to create event" }),
     });
-    nextStep();
   };
 
   return (
@@ -159,7 +164,7 @@ export const EventBasicDetailsStep = () => {
           </StepContent>
 
           <StepFooter className="flex justify-end">
-            <Button size="sm">
+            <Button size="sm" disabled={isLoading}>
               <SparklesIcon className="mr-1.5 size-4" />
               Create Event
             </Button>

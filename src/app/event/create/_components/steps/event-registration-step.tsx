@@ -76,8 +76,8 @@ export const EventRegistrationStep = () => {
       </StepHeader>
       <StepContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="grid md:grid-cols-3 md:gap-10">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-8">
+            <div className="grid gap-1.5 md:grid-cols-3 md:gap-10">
               <FormField
                 control={form.control}
                 name="capacity"
@@ -132,14 +132,14 @@ export const EventRegistrationStep = () => {
                 )}
               />
             </div>
-            <StepHeader className="p-0">
+            <StepHeader className="p-0 py-5 md:p-0">
               <StepTitle>Registration Questions</StepTitle>
               <StepDescription>
                 We will ask guests the following questions when they register
                 for the event.
               </StepDescription>
             </StepHeader>
-            <div className="grid md:grid-cols-2 md:gap-5">
+            <div className="grid gap-1.5 md:grid-cols-2 md:gap-5">
               <FormField
                 control={form.control}
                 name="name"
@@ -210,7 +210,7 @@ export const EventRegistrationStep = () => {
                 )}
               />
             </div>
-            <StepHeader className="p-0">
+            <StepHeader className="p-0 py-5 md:p-0">
               <StepTitle>Custom Questions</StepTitle>
               <StepDescription>
                 You are not asking guests additional questions.
