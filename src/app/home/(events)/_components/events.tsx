@@ -61,7 +61,7 @@ export const Events = () => {
                 onClick={() => router.push(paths.event.landing.root(event.id))}
                 event={event}
                 location={null}
-                guests={4}
+                guests={event.guests?.length ?? 0}
               />
             </Timeline>
           ))}

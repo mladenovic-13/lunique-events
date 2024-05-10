@@ -46,7 +46,6 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   const { setStep } = useInviteGuestActions();
-
   const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
     setStep(mode);
     if (mode === "searchGuests" && eventId) {
@@ -185,15 +184,18 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
         </Button>
         <Button
           className={cn(
-            "flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10",
+            "flex items-center justify-between gap-2 px-2  font-bold text-accent-foreground hover:cursor-not-allowed hover:bg-accent-foreground/10",
             mode === "importCSV" && "bg-accent-foreground/10",
           )}
           variant={"ghost"}
-          // onClick={() => onChangeMode("importCSV")}
           onClick={() => setStep("importCSV")}
+          disabled={true}
         >
-          <FileTextIcon size={17} className="text-accent-foreground/60" />
-          <p>Import CSV</p>
+          <div className="flex gap-2">
+            <FileTextIcon size={17} className="text-accent-foreground/60" />
+            <p>Import CSV</p>
+          </div>
+          <p className=" text-blue-500">Soon</p>
         </Button>
       </div>
       <Separator className="bg-white/20" />
@@ -297,7 +299,7 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
 
   return (
     <div
-      className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90   transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
+      className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
       onClick={() => {
         onClickHandler();
       }}
@@ -315,8 +317,7 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
               e.stopPropagation();
               removeEmail(email);
             }}
-            className="p-0 text-red-500/80 transition-all hover:bg-transparent hover:text-red-500"
-            variant={"ghost"}
+            className="rounded-full  bg-transparent px-2 py-0.5 text-destructive hover:bg-destructive hover:text-accent-foreground"
           >
             <TrashIcon size={20} />
           </Button>
@@ -429,7 +430,7 @@ const SearchGuests = ({ eventGuests, eventName }: SearchGuestsProps) => {
           Select All
         </Button>
       </div>
-      <div className="overflow-y-auto">
+      <div className="flex flex-col gap-2 overflow-y-auto">
         {eventGuests?.map((guestEmail, idx) => (
           <GuestEmailItem email={guestEmail} key={idx} toggle={true} />
         ))}
