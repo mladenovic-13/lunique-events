@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { type InviteGuestStep } from "@/types";
 
 type GuestStore = {
@@ -8,7 +7,6 @@ type GuestStore = {
   step: InviteGuestStep;
   guestCapacity: number;
   eventGuests: string[];
-  userEvents: object[];
   actions: {
     addEmail: (email: string) => void;
     removeEmail: (email: string) => void;
@@ -25,7 +23,7 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
     step: "addEmails",
     guestCapacity: 10,
     eventGuests: [],
-    userEvents: upcomingAndPastEvents.upcoming as object[],
+    userEvents: [],
     actions: {
       addEmail: (email) => {
         if (get().guestCapacity > 0 && !get().actions.emailExists(email)) {
@@ -82,6 +80,5 @@ export const useGuestEmails = () => useGuestStore((state) => state.emails);
 export const useInviteStep = () => useGuestStore((state) => state.step);
 export const useGuestCapacity = () =>
   useGuestStore((state) => state.guestCapacity);
-export const useUserEvents = () => useGuestStore((state) => state.userEvents);
 export const useInviteGuestActions = () =>
   useGuestStore((state) => state.actions);

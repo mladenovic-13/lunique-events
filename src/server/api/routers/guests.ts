@@ -25,4 +25,17 @@ export const guestsRouter = createTRPCRouter({
 
       return null;
     }),
+  list: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.guest.findMany({
+        where: {
+          eventId: input.eventId,
+        },
+      });
+    }),
 });

@@ -20,8 +20,8 @@ import {
   useInviteGuestActions,
   useInviteStep,
 } from "@/hooks/use-guest-store";
-import { upcomingAndPastEvents } from "@/lib/mock-events";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import { type InviteGuestStep } from "@/types";
 
 import { Button } from "../ui/button";
@@ -29,6 +29,7 @@ import { Form, FormField } from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
 
 import { GuestEmailGenerator } from "./guest-email-generator";
 import { InviteList } from "./invite-list";
@@ -46,14 +47,15 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   const { setStep } = useInviteGuestActions();
+  const { data: userEvents } = api.event.list.useQuery({});
   const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
     setStep(mode);
-    if (mode === "searchGuests" && eventId) {
+    if (mode === "searchGuests" && eventId && userEvents) {
       // @TODO
       setEventGuests(
-        upcomingAndPastEvents.upcoming
-          .concat(upcomingAndPastEvents.past)
-          .find((ev) => ev.id === eventId)?.guests ?? [],
+        userEvents
+          .find((ev) => ev.id === eventId)
+          ?.guests.map((guest) => guest.email) ?? [],
       );
     }
   };
@@ -165,8 +167,8 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
     onEventSelect(eventName);
   };
 
+  const { data: userEvents, isLoading } = api.event.list.useQuery({});
   const { setStep } = useInviteGuestActions();
-
   return (
     <section className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
       <div className="flex flex-col">
@@ -204,20 +206,25 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
           Events
         </Label>
         <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
-          {upcomingAndPastEvents.upcoming
-            .concat(upcomingAndPastEvents.past)
-            .map((ev, idx) => (
-              <EventItem
-                eventName={ev.name}
-                eventDate={ev.date}
-                guestsCount={ev.guests.length}
-                key={idx}
-                onClick={() =>
-                  onEventClickHandler("searchGuests", ev.id, ev.name)
-                }
-                selected={selectedEvent === ev.id}
-              />
-            ))}
+          {isLoading && (
+            <>
+              <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
+              <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
+              <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
+            </>
+          )}
+          {userEvents?.map((ev, idx) => (
+            <EventItem
+              eventName={ev.name}
+              eventDate={ev.startDate ?? new Date()}
+              guestsCount={ev.guests.length}
+              key={idx}
+              onClick={() =>
+                onEventClickHandler("searchGuests", ev.id, ev.name)
+              }
+              selected={selectedEvent === ev.id}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -334,7 +341,6 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
 interface ImportCSVProps {
   prop?: string;
 }
-
 const ImportCSV = ({}: ImportCSVProps) => {
   return (
     <section
