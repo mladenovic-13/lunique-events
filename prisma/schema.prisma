@@ -45,11 +45,11 @@ model User {
   accounts              Account[]
   sessions              Session[]
   Subscription          Subscription?
-  events                Event[]
+  events                Event[]        @relation(name: "creatorOf")
   ownerOfOrganizations  Organization[] @relation(name: "ownership")
   memberOfOrganizations Organization[]
   socialLinksId         String?
-  Guest                 Guest[]
+  guestOf               Event[]        @relation(name: "guestOf")
 }
 
 model VerificationToken {
@@ -128,9 +128,8 @@ model Subscription {
 
 model Guest {
   id      String @id @default(cuid())
-  user    User   @relation(fields: [userId], references: [id])
+  email   String
   event   Event  @relation(fields: [eventId], references: [id])
-  userId  String
   eventId String
 }
 
@@ -208,7 +207,7 @@ model Event {
   capacityWaitlist Boolean?  @default(false)
   requireApproval  Boolean?
 
-  creator      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creator      User         @relation(name: "creatorOf", fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   location     Location?    @relation(fields: [locationId], references: [id])
   timezone     Timezone?    @relation(fields: [timezoneId], references: [id])
@@ -218,10 +217,11 @@ model Event {
   organizationId String
   userId         String
 
-  faces   Face[]
-  guests  Guest[]
-  images  Image[]
-  invites Invite[]
+  faces      Face[]
+  guests     Guest[]
+  userGuests User[]   @relation(name: "guestOf")
+  images     Image[]
+  invites    Invite[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

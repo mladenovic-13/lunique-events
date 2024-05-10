@@ -19,11 +19,7 @@ export const guestsRouter = createTRPCRouter({
               id: input.eventId,
             },
           },
-          user: {
-            connect: {
-              id: ctx.session.user.id,
-            },
-          },
+          email: input.email,
         },
       });
 
