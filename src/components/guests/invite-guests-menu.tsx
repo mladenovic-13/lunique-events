@@ -24,12 +24,14 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type InviteGuestStep } from "@/types";
 
+import section from "../header/section";
 import { Button } from "../ui/button";
 import { Form, FormField } from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
+import { toast } from "../ui/use-toast";
 
 import { GuestEmailGenerator } from "./guest-email-generator";
 import { InviteList } from "./invite-list";
@@ -137,7 +139,27 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             <Button
               variant={"default"}
               className="gap-2"
-              onClick={() => alert("@TODO")}
+              onClick={async () => {
+                await fetch("/api/emails", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    receivers: selectedEmails,
+                  }),
+                }).then((response) => {
+                  if (response.status === 200) {
+                    toast({
+                      title: "Emails succesfully sent",
+                      variant: "default",
+                    });
+                  }
+                  if (response.status === 500) {
+                    toast({
+                      title: "Email failed",
+                      variant: "destructive",
+                    });
+                  }
+                });
+              }}
             >
               <SendIcon size={16} />
               Send Invites
