@@ -48,7 +48,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
 
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
-  const { setStep } = useInviteGuestActions();
+  const { setStep, resetStore } = useInviteGuestActions();
   const { data: userEvents } = api.event.list.useQuery({});
   const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
     setStep(mode);
@@ -68,10 +68,11 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
       method: "POST",
       body: JSON.stringify({ emails: emails }),
     });
-    setEmailLoading(false);
-    if (response.status === 200)
+    if (response.status === 200) {
       toast({ title: "Emails are succesfully sent!" });
-    else toast({ title: "Sending emails failed.", variant: "destructive" });
+      resetStore();
+    } else toast({ title: "Sending emails failed.", variant: "destructive" });
+    setEmailLoading(false);
   };
   const [emailLoading, setEmailLoading] = useState(false);
   return (

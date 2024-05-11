@@ -11,6 +11,7 @@ type GuestStore = {
     addEmail: (email: string) => void;
     removeEmail: (email: string) => void;
     addEmails: (emails: Array<string>) => void;
+    resetStore: () => void;
     emailExists: (email: string) => boolean;
     setStep: (step: InviteGuestStep) => void;
     setGuestCapacity: () => void;
@@ -55,6 +56,13 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
             guestCapacity: get().guestCapacity - newEmails.length,
           }));
         }
+      },
+      resetStore: () => {
+        set((state) => ({
+          emails: [],
+          step: "addEmails",
+          guestCapacity: state.guestCapacity + state.emails.length,
+        }));
       },
       setStep: (step) => {
         set((state) => ({
