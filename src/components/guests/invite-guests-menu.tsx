@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { format } from "date-fns/esm";
 import {
   ChevronLeftIcon,
@@ -64,9 +65,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
 
   const sendInvitationEmail = async (emails: string[]) => {
     setEmailLoading(true);
-    const response = await fetch("/api/emails", {
-      method: "POST",
-      body: JSON.stringify({ emails: emails }),
+    const response = await axios.post("/api/emails", {
+      emails: emails,
     });
     if (response.status === 200) {
       toast({ title: "Emails are succesfully sent!" });
