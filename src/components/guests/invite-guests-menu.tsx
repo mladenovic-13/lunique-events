@@ -9,6 +9,7 @@ import {
   CircleIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
+  LoaderCircleIcon,
   PencilLineIcon,
   SendIcon,
   TrashIcon,
@@ -24,7 +25,6 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type InviteGuestStep } from "@/types";
 
-import section from "../header/section";
 import { Button } from "../ui/button";
 import { Form, FormField } from "../ui/form";
 import { Input } from "../ui/input";
@@ -62,6 +62,18 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
     }
   };
 
+  const sendInvitationEmail = async (emails: string[]) => {
+    setEmailLoading(true);
+    const response = await fetch("/api/emails", {
+      method: "POST",
+      body: JSON.stringify({ emails: emails }),
+    });
+    setEmailLoading(false);
+    if (response.status === 200)
+      toast({ title: "Emails are succesfully sent!" });
+    else toast({ title: "Sending emails failed.", variant: "destructive" });
+  };
+  const [emailLoading, setEmailLoading] = useState(false);
   return (
     <section className="flex w-full flex-col pb-4">
       <section className="flex size-full items-start gap-2">
@@ -139,30 +151,20 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             <Button
               variant={"default"}
               className="gap-2"
-              onClick={async () => {
-                await fetch("/api/emails", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    receivers: selectedEmails,
-                  }),
-                }).then((response) => {
-                  if (response.status === 200) {
-                    toast({
-                      title: "Emails succesfully sent",
-                      variant: "default",
-                    });
-                  }
-                  if (response.status === 500) {
-                    toast({
-                      title: "Email failed",
-                      variant: "destructive",
-                    });
-                  }
-                });
-              }}
+              onClick={() => sendInvitationEmail(selectedEmails)}
+              disabled={emailLoading}
             >
-              <SendIcon size={16} />
-              Send Invites
+              {!emailLoading && <SendIcon size={16} />}
+              {emailLoading && (
+                <svg
+                  className="size-5 animate-spin text-accent-foreground"
+                  viewBox="0 0 24 24"
+                >
+                  <LoaderCircleIcon />
+                </svg>
+              )}
+              {!emailLoading && `Send Invites`}
+              {emailLoading && `Sending Invites...`}
             </Button>
           </div>
         )}
@@ -436,7 +438,6 @@ interface SearchGuestsProps {
 const SearchGuests = ({ eventGuests, eventName }: SearchGuestsProps) => {
   const { addEmails } = useInviteGuestActions();
   const selectAllGuestsHandler = () => {
-    // @TODO
     addEmails(eventGuests);
   };
 

@@ -1,6 +1,5 @@
 import { Body } from "@react-email/body";
 import { Container } from "@react-email/container";
-import { Head } from "@react-email/head";
 import { Heading } from "@react-email/heading";
 import { Hr } from "@react-email/hr";
 import { Html } from "@react-email/html";
@@ -11,11 +10,10 @@ import { Text } from "@react-email/text";
 
 export const InvitationEmail = () => (
   <Html>
-    <Head />
-    <Preview>Log in with this magic link.</Preview>
+    <Preview>Accept Invite For This Event</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={heading}>IDEMO, CIKSI! Nekako radi hahah</Heading>
+        <Heading style={heading}>Hello! You Are Invited!</Heading>
         <Section style={body}>
           <Text style={paragraph}>
             <Link
@@ -24,7 +22,7 @@ export const InvitationEmail = () => (
                 "https://events.lunique.tech/event/clw0rwyo10000zpf6x8na0fim"
               }
             >
-              👉 Click here to test 👈
+              👉 Event Landing Page 👈
             </Link>
           </Text>
           <Text style={paragraph}>
