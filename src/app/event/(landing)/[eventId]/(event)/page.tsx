@@ -60,13 +60,13 @@ export default async function EventPage({
           </div>
         </div>
         <div className="space-y-5 md:w-3/5">
-          <EventDetails
+          {/* <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
             // TODO: fix
             startDate={event.startDate ?? new Date()}
             location={event.location?.secondaryText ?? "Unknown"}
-          />
+          /> */}
           <RegisterGuest eventId={eventId} />
           <EventDescription description={event.description} />
           {/* <EventGallery /> */}

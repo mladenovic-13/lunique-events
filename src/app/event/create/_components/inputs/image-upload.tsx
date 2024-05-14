@@ -43,7 +43,7 @@ export const ImageUpload = ({ onChange }: ImageUploadProps) => {
           </AspectRatio>
           <button
             type="button"
-            className="absolute bottom-1.5 right-1.5 flex size-10 items-center justify-center rounded-full bg-accent transition duration-200 hover:scale-110"
+            className="absolute bottom-1.5 right-1.5 flex size-10 items-center justify-center rounded-full bg-primary-foreground transition duration-200 hover:scale-110"
           >
             <ImagePlusIcon className="size-5 text-primary" />
           </button>

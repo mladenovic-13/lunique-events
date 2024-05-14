@@ -198,43 +198,29 @@ model Organization {
 }
 
 model Event {
-  id               String    @id @default(cuid())
+  id               String       @id @default(cuid())
   isPublic         Boolean
   name             String
   description      String
   thumbnailUrl     String
-  startDate        DateTime?
-  endDate          DateTime?
+  date             DateTime
+  timezone         String
   capacityValue    Int?
-  capacityWaitlist Boolean?  @default(false)
+  capacityWaitlist Boolean?     @default(false)
   requireApproval  Boolean?
-
-  creator      User         @relation(name: "creatorOf", fields: [userId], references: [id], onDelete: Cascade)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  location     Location?    @relation(fields: [locationId], references: [id])
-  timezone     Timezone?    @relation(fields: [timezoneId], references: [id])
-
-  timezoneId     String?
-  locationId     String?
-  organizationId String
-  userId         String
-
-  faces      Face[]
-  guests     Guest[]
-  userGuests User[]   @relation(name: "guestOf")
-  images     Image[]
-  invites    Invite[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Timezone {
-  id    String  @id @default(cuid())
-  label String
-  value String
-  city  String
-  Event Event[]
+  creator          User         @relation(name: "creatorOf", fields: [userId], references: [id], onDelete: Cascade)
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location         Location?    @relation(fields: [locationId], references: [id])
+  locationId       String?
+  organizationId   String
+  userId           String
+  faces            Face[]
+  guests           Guest[]
+  userGuests       User[]       @relation(name: "guestOf")
+  images           Image[]
+  invites          Invite[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 }
 
 model Location {
@@ -243,9 +229,10 @@ model Location {
   mainText      String
   secondaryText String
   description   String
+  lat           Float
+  lng           Float
   // ref: https://freddydumont.com/blog/prisma-postgis
   geom          Unsupported("geometry(Point, 4326)")
-  // ("geometry(Point,4326)")
   Event         Event[]
 
   @@index([geom], name: "location_idx", type: Gist)

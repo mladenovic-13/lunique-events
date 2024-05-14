@@ -1,5 +1,5 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
-import { ImageType, Prisma } from "@prisma/client";
+import { ImageType, type Location } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 // import { Ratelimit } from "@upstash/ratelimit";
 // import { Redis } from "@upstash/redis";
@@ -74,13 +74,25 @@ export const eventRouter = createTRPCRouter({
           message: "Organization not found",
         });
 
-      const query = Prisma.sql`
-        INSERT INTO Location (placeId, description, mainText, secondaryText, geom)
-        VALUES (1, 'Description', 'Main Text', 'Secondary Text', ST_POINT(-73.946823, 40.807416));
-      `;
-      const location = await ctx.db.$queryRaw(query);
+      console.log({ lat: input.location?.position.lat });
 
-      console.log(location);
+      // @Lukiano99 baci pogled da vidis ima li greska negde, ubi se ne mogu da nadjem...
+      const queryString = `
+        INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText")
+        VALUES (uuid_generate_v4(), '${input.location?.placeId}', '${input.location?.description}', '${input.location?.secondaryText}', st_point(${input.location?.position.lat}, ${input.location?.position.lng}), '${input.location?.mainText}')
+        RETURNING id;
+      `;
+
+      const location = await ctx.db.$queryRawUnsafe<Location[]>(queryString);
+
+      if (!location || location.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Failed to create location",
+        });
+      }
+
+      console.log({ location });
 
       return await ctx.db.event.create({
         data: {
@@ -98,33 +110,8 @@ export const eventRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           isPublic: input.public,
-          // startDate: input.startDateTime.date,
-          // startTime: input.startDateTime.time,
-          // endDate: input.endDateTime.date,
-          // endTime: input.endDateTime.time,
-          // requireApproval: input.requireApproval,
-          // tickets: input.tickets,
-          // capacityValue: input.capacity.value,
-          // capacityWaitlist: input.capacity.waitlist,
-          // location: input.location
-          //   ? {
-          //       create: {
-          //         placeId: input.location.placeId,
-          //         description: input.location.description,
-          //         mainText: input.location.mainText,
-          //         secondaryText: input.location.secondaryText,
-          //         lat: input.location.position.lat,
-          //         lng: input.location.position.lng,
-          //       },
-          //     }
-          //   : undefined,
-          // timezone: {
-          //   create: {
-          //     city: input.timezone.city,
-          //     label: input.timezone.label,
-          //     value: input.timezone.value,
-          //   },
-          // },
+          date: input.date,
+          timezone: input.timezone,
         },
       });
     }),
@@ -172,8 +159,7 @@ export const eventRouter = createTRPCRouter({
         },
         data: {
           name: input.eventSchema.name,
-          startDate: input.eventSchema.startDate,
-          endDate: input.eventSchema.endDate,
+          // date: input.eventSchema.endDate,
           description: input.eventSchema.description,
           capacityValue: input.eventSchema.capacity.value,
           capacityWaitlist: input.eventSchema.capacity.waitlist,
@@ -193,15 +179,6 @@ export const eventRouter = createTRPCRouter({
                 placeId: input.eventSchema.location?.placeId,
                 // lng: input.eventSchema.location?.position.lng,
                 // lat: input.eventSchema.location?.position.lat,
-              },
-            },
-          },
-          timezone: {
-            update: {
-              data: {
-                city: input.eventSchema.timezone.city,
-                label: input.eventSchema.timezone.label,
-                value: input.eventSchema.timezone.value,
               },
             },
           },
@@ -227,7 +204,7 @@ export const eventRouter = createTRPCRouter({
             id: input.organizationId ?? undefined,
             ownerId: ctx.session.user.id,
           },
-          startDate: {
+          date: {
             gt: input.timeframe === "upcoming" ? new Date() : undefined,
             lte: input.timeframe === "past" ? new Date() : undefined,
           },
@@ -266,7 +243,6 @@ export const eventRouter = createTRPCRouter({
           guests: true,
           location: true,
           organization: true,
-          timezone: true,
         },
       });
     }),
@@ -291,8 +267,7 @@ export const eventRouter = createTRPCRouter({
           id: input.id,
         },
         select: {
-          startDate: true,
-          endDate: true,
+          date: true,
           location: {
             select: {
               mainText: true,
