@@ -48,10 +48,10 @@ export const guestsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.resend.emails.send({
-        from: `Lunique Tech <${env.EMAIL_FROM}>`,
+        from: `Lunique Events <${env.EMAIL_FROM}>`,
         to: input.emails,
         subject: "You Are Invited",
-        react: InvitationEmail(),
+        react: InvitationEmail({}),
       });
     }),
 });

@@ -1,12 +1,15 @@
 import React from "react";
 import { UserRoundPlusIcon } from "lucide-react";
 
+import { useInviteGuestActions } from "@/hooks/use-guest-store";
+
 import { Separator } from "../ui/separator";
 
 interface AddGuestsDirectlyProps {
-  onChangeMode: () => void;
+  onChangeMode?: () => void;
 }
-export const AddGuestsDirectly = ({ onChangeMode }: AddGuestsDirectlyProps) => {
+export const AddGuestsDirectly = ({}: AddGuestsDirectlyProps) => {
+  const { setStep } = useInviteGuestActions();
   return (
     <section className="flex flex-col gap-4 px-4">
       <GuestsCardComponent />
@@ -24,7 +27,7 @@ export const AddGuestsDirectly = ({ onChangeMode }: AddGuestsDirectlyProps) => {
         If you’d like guests to register, send them an invite instead.{" "}
         <a
           className="text-primary/50 transition-all hover:cursor-pointer hover:text-primary "
-          onClick={onChangeMode}
+          onClick={() => setStep("generateEmail")}
         >
           Invite Guests
         </a>{" "}

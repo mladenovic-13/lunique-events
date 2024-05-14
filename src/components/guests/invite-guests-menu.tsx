@@ -26,14 +26,21 @@ import { api } from "@/trpc/react";
 import { type InviteGuestStep } from "@/types";
 
 import { Button } from "../ui/button";
-import { Form, FormField } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 import { toast } from "../ui/use-toast";
 
-import { GuestEmailGenerator } from "./guest-email-generator";
+import { AddGuestsDirectly } from "./add-guests-directly";
+import { GenerateEmail } from "./generate-email";
 import { InviteList } from "./invite-list";
 
 interface InviteGuestsMenuProps {
@@ -41,8 +48,9 @@ interface InviteGuestsMenuProps {
 }
 
 export const InviteGuests = ({}: InviteGuestsMenuProps) => {
-  // const [step, setStep] = useState<InviteGuestStep>("addEmails");
-  // const [selectedEmails, setSelectedEmails] = useState<Array<string>>([]);
+  const { mutate: sendInvites, isLoading: sendingEmails } =
+    api.guest.invite.useMutation();
+
   const [eventGuests, setEventGuests] = useState<Array<string>>([]);
   const [eventName, setEventName] = useState<string>("");
 
@@ -62,9 +70,6 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
     }
   };
 
-  const { mutate: sendInvites, isLoading: sendingEmails } =
-    api.guest.invite.useMutation();
-
   const sendInvitationEmails = (emails: string[]) => {
     sendInvites(
       { emails },
@@ -77,15 +82,25 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
           toast({ title: "Sending emails failed.", variant: "destructive" }),
       },
     );
-    //
   };
+
+  const emailFormSchema = z.object({
+    customMessage: z.string().max(300),
+  });
+  const emailForm = useForm<z.infer<typeof emailFormSchema>>({
+    resolver: zodResolver(emailFormSchema),
+  });
+
+  function onSubmitEmailForm(values: z.infer<typeof emailFormSchema>) {
+    console.log("uwahahhha");
+  }
 
   return (
     <section className="flex w-full flex-col pb-4">
       <section className="flex size-full items-start gap-2">
         {/* Side menu */}
         <div className="max-w-[240px] pt-4">
-          {step !== "sendInvites" && (
+          {step !== "generateEmail" && step !== "addGuestsDirectly" && (
             <SideMenu
               mode={step}
               onChangeMode={(mode, eventId) =>
@@ -94,7 +109,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
               onEventSelect={(eventName) => setEventName(eventName)}
             />
           )}
-          {step === "sendInvites" && (
+          {(step === "generateEmail" || step === "addGuestsDirectly") && (
             <InviteList guestsEmails={selectedEmails} />
           )}
         </div>
@@ -107,13 +122,37 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
               <SearchGuests eventName={eventName} eventGuests={eventGuests} />
             </div>
           )}
-          {step === "sendInvites" && <GuestEmailGenerator />}
+          {step === "generateEmail" && (
+            <Form {...emailForm}>
+              <form
+                onSubmit={emailForm.handleSubmit(onSubmitEmailForm)}
+                id="emailForm"
+              >
+                <FormField
+                  control={emailForm.control}
+                  name="customMessage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <GenerateEmail
+                          value={field.value}
+                          onValueChange={() => field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          )}
+          {step === "addGuestsDirectly" && <AddGuestsDirectly />}
           {step === "importCSV" && <ImportCSV />}
         </div>
       </section>
       <Separator className="bg-white/20" />
       <div className="pt-6">
-        {step !== "sendInvites" && (
+        {step !== "generateEmail" && step !== "addGuestsDirectly" && (
           <div className="flex justify-between">
             <Button
               variant={"ghost"}
@@ -135,7 +174,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             </Button>
             <Button
               variant={"default"}
-              onClick={() => setStep("sendInvites")}
+              onClick={() => setStep("generateEmail")}
               className="gap-2"
               disabled={selectedEmails.length === 0}
             >
@@ -144,7 +183,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             </Button>
           </div>
         )}
-        {step === "sendInvites" && (
+        {(step === "generateEmail" || step === "addGuestsDirectly") && (
           <div className="flex justify-between">
             <Button
               variant={"secondary"}
@@ -157,8 +196,9 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             <Button
               variant={"default"}
               className="gap-2"
-              onClick={() => sendInvitationEmails(selectedEmails)}
+              // onClick={() => sendInvitationEmails(selectedEmails)}
               disabled={sendingEmails}
+              form="emailForm"
             >
               {!sendingEmails && <SendIcon size={16} />}
               {sendingEmails && (
@@ -199,6 +239,7 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
 
   const { data: userEvents, isLoading } = api.event.list.useQuery({});
   const { setStep } = useInviteGuestActions();
+
   return (
     <section className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
       <div className="flex flex-col">
@@ -284,7 +325,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
       <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} id="emailForm">
             <div className="flex gap-2">
               <FormField
                 control={form.control}
@@ -324,14 +365,10 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
   const step = useInviteStep();
 
   const onClickHandler = () => {
-    console.log("mrk");
-    if (!toggle) {
-      addEmail(email);
-    }
-    if (toggle) {
+    if (!toggle) addEmail(email);
+    if (toggle)
       if (!emailExists(email)) addEmail(email);
       else if (emailExists(email)) removeEmail(email);
-    }
   };
 
   return (

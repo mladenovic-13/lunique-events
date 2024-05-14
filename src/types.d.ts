@@ -41,5 +41,6 @@ type MeetingMode = "inPerson" | "virutal";
 type InviteGuestStep =
   | "searchGuests"
   | "addEmails"
-  | "sendInvites"
-  | "importCSV";
+  | "importCSV"
+  | "generateEmail"
+  | "addGuestsDirectly";

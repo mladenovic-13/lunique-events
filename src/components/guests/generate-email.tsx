@@ -1,14 +1,18 @@
 import React from "react";
 import { TicketIcon } from "lucide-react";
 
+import { useInviteGuestActions } from "@/hooks/use-guest-store";
+
 import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
 
-interface SendInvitesProps {
-  onChangeMode: () => void;
+interface GenerateEmailProps {
+  value: string;
+  onValueChange: () => void;
 }
 
-export const SendInvites = ({ onChangeMode }: SendInvitesProps) => {
+export const GenerateEmail = ({ value, onValueChange }: GenerateEmailProps) => {
+  const { setStep } = useInviteGuestActions();
   return (
     <section className="flex flex-col items-center gap-3 px-4">
       <div className="flex w-full flex-col rounded-lg border-[1.5px] border-accent-foreground/10">
@@ -16,6 +20,8 @@ export const SendInvites = ({ onChangeMode }: SendInvitesProps) => {
           <p>Hi, Nikola Mladenovic invites you to join Bigest Event Ever.</p>
         </div>
         <Textarea
+          value={value}
+          onChange={onValueChange}
           className="min-h-28 rounded-none border-none bg-muted"
           placeholder="Add a custom message here..."
         />
@@ -37,7 +43,9 @@ export const SendInvites = ({ onChangeMode }: SendInvitesProps) => {
         guest list.{" "}
         <a
           className="text-primary/50 transition-all hover:cursor-pointer hover:text-primary "
-          onClick={onChangeMode}
+          onClick={() => {
+            setStep("addGuestsDirectly");
+          }}
         >
           Add Guests Directly
         </a>{" "}
