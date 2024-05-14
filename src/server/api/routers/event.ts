@@ -1,5 +1,5 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
-import { ImageType } from "@prisma/client";
+import { ImageType, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 // import { Ratelimit } from "@upstash/ratelimit";
 // import { Redis } from "@upstash/redis";
@@ -73,6 +73,14 @@ export const eventRouter = createTRPCRouter({
           code: "NOT_FOUND",
           message: "Organization not found",
         });
+
+      const query = Prisma.sql`
+        INSERT INTO Location (placeId, description, mainText, secondaryText, geom)
+        VALUES (1, 'Description', 'Main Text', 'Secondary Text', ST_POINT(-73.946823, 40.807416));
+      `;
+      const location = await ctx.db.$queryRaw(query);
+
+      console.log(location);
 
       return await ctx.db.event.create({
         data: {
@@ -183,8 +191,8 @@ export const eventRouter = createTRPCRouter({
                 mainText: input.eventSchema.location?.mainText,
                 secondaryText: input.eventSchema.location?.secondaryText,
                 placeId: input.eventSchema.location?.placeId,
-                lng: input.eventSchema.location?.position.lng,
-                lat: input.eventSchema.location?.position.lat,
+                // lng: input.eventSchema.location?.position.lng,
+                // lat: input.eventSchema.location?.position.lat,
               },
             },
           },

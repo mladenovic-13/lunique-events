@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  // previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // extensions = [postgis(version: "3.3.2")]
 }
 
 model Account {
@@ -236,15 +238,29 @@ model Timezone {
 }
 
 model Location {
-  id            String  @id @default(cuid())
+  id            String                               @id @default(cuid())
   placeId       String
-  description   String
   mainText      String
   secondaryText String
-  lat           Float
-  lng           Float
+  description   String
+  // ref: https://freddydumont.com/blog/prisma-postgis
+  geom          Unsupported("geometry(Point, 4326)")
+  // ("geometry(Point,4326)")
   Event         Event[]
+
+  @@index([geom], name: "location_idx", type: Gist)
 }
+
+// model Location {
+// id            String  @id @default(cuid())
+//   placeId       String
+//   description   String
+//   mainText      String
+//   secondaryText String
+//   lat           Float
+//   lng           Float
+//   Event         Event[]
+// }
 
 enum ImageType {
   PNG
