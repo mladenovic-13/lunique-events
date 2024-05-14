@@ -1,5 +1,7 @@
 import * as z from "zod";
 
+import { InvitationEmail } from "@/components/email/invitation-email";
+import { env } from "@/env.mjs";
 import { registrationSchema } from "@/validation/register-guest";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -36,6 +38,20 @@ export const guestsRouter = createTRPCRouter({
         where: {
           eventId: input.eventId,
         },
+      });
+    }),
+  invite: protectedProcedure
+    .input(
+      z.object({
+        emails: z.string().array(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.resend.emails.send({
+        from: `Lunique Tech <${env.EMAIL_FROM}>`,
+        to: input.emails,
+        subject: "You Are Invited",
+        react: InvitationEmail(),
       });
     }),
 });

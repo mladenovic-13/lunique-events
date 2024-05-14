@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { format } from "date-fns/esm";
 import {
   ChevronLeftIcon,
@@ -63,18 +62,24 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
     }
   };
 
-  const sendInvitationEmail = async (emails: string[]) => {
-    setEmailLoading(true);
-    const response = await axios.post("/api/emails", {
-      emails: emails,
-    });
-    if (response.status === 200) {
-      toast({ title: "Emails are succesfully sent!" });
-      resetStore();
-    } else toast({ title: "Sending emails failed.", variant: "destructive" });
-    setEmailLoading(false);
+  const { mutate: sendInvites, isLoading: sendingEmails } =
+    api.guest.invite.useMutation();
+
+  const sendInvitationEmails = (emails: string[]) => {
+    sendInvites(
+      { emails },
+      {
+        onSuccess: () => {
+          toast({ title: "Emails are succesfully sent!" });
+          resetStore();
+        },
+        onError: () =>
+          toast({ title: "Sending emails failed.", variant: "destructive" }),
+      },
+    );
+    //
   };
-  const [emailLoading, setEmailLoading] = useState(false);
+
   return (
     <section className="flex w-full flex-col pb-4">
       <section className="flex size-full items-start gap-2">
@@ -152,11 +157,11 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             <Button
               variant={"default"}
               className="gap-2"
-              onClick={() => sendInvitationEmail(selectedEmails)}
-              disabled={emailLoading}
+              onClick={() => sendInvitationEmails(selectedEmails)}
+              disabled={sendingEmails}
             >
-              {!emailLoading && <SendIcon size={16} />}
-              {emailLoading && (
+              {!sendingEmails && <SendIcon size={16} />}
+              {sendingEmails && (
                 <svg
                   className="size-5 animate-spin text-accent-foreground"
                   viewBox="0 0 24 24"
@@ -164,8 +169,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
                   <LoaderCircleIcon />
                 </svg>
               )}
-              {!emailLoading && `Send Invites`}
-              {emailLoading && `Sending Invites...`}
+              {!sendingEmails && `Send Invites`}
+              {sendingEmails && `Sending Invites...`}
             </Button>
           </div>
         )}
