@@ -48,18 +48,22 @@ interface InviteGuestsMenuProps {
 }
 
 export const InviteGuests = ({}: InviteGuestsMenuProps) => {
-  const { mutate: sendInvites, isLoading: sendingEmails } =
-    api.guest.invite.useMutation();
-
+  // Internal states on start
   const [eventGuests, setEventGuests] = useState<Array<string>>([]);
   const [eventName, setEventName] = useState<string>("");
 
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   const { setStep, resetStore } = useInviteGuestActions();
+
   const { data: userEvents } = api.event.list.useQuery({});
+  const { mutate: sendInvites, isLoading: sendingEmails } =
+    api.guest.invite.useMutation();
+
+  // rename -> onModeChange
   const onChangeModeHandler = (mode: InviteGuestStep, eventId?: string) => {
     setStep(mode);
+    // "search-guests" -> more readable for hardcoded strings
     if (mode === "searchGuests" && eventId && userEvents) {
       // @TODO
       setEventGuests(
@@ -84,6 +88,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
     );
   };
 
+  // move outside components
   const emailFormSchema = z.object({
     customMessage: z.string().max(300),
   });
@@ -91,6 +96,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
     resolver: zodResolver(emailFormSchema),
   });
 
+  // rename -> onSubmit
   function onSubmitEmailForm(values: z.infer<typeof emailFormSchema>) {
     console.log("uwahahhha");
   }
@@ -109,6 +115,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
               onEventSelect={(eventName) => setEventName(eventName)}
             />
           )}
+          {/* remove contidions and move whole "sidebar" for second step to new component */}
           {(step === "generateEmail" || step === "addGuestsDirectly") && (
             <InviteList guestsEmails={selectedEmails} />
           )}
@@ -123,6 +130,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             </div>
           )}
           {step === "generateEmail" && (
+            // Wrap whole "invite-guests-menu" with form provider
             <Form {...emailForm}>
               <form
                 onSubmit={emailForm.handleSubmit(onSubmitEmailForm)}
@@ -225,8 +233,14 @@ interface SideMenuPros {
   onEventSelect: (eventName: string) => void;
 }
 const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
+  // states, queries, stores on start
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
 
+  const { setStep } = useInviteGuestActions();
+
+  const { data: userEvents, isLoading } = api.event.list.useQuery({});
+
+  // rename -> onEventClick
   const onEventClickHandler = (
     mode: string,
     eventId: string,
@@ -236,9 +250,6 @@ const SideMenu = ({ mode, onChangeMode, onEventSelect }: SideMenuPros) => {
     setSelectedEvent(eventId);
     onEventSelect(eventName);
   };
-
-  const { data: userEvents, isLoading } = api.event.list.useQuery({});
-  const { setStep } = useInviteGuestActions();
 
   return (
     <section className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
@@ -306,16 +317,21 @@ interface AddEmailsProps {
   emails: Array<string>;
 }
 const AddEmails = ({ emails }: AddEmailsProps) => {
+  // outside component
   const formSchema = z.object({
     email: z.string().email(),
   });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
     },
   });
+
   const { addEmail } = useInviteGuestActions();
+
+  // const fnName = () => {}
   function onSubmit(value: z.infer<typeof formSchema>) {
     addEmail(value.email);
     form.reset({ email: "" });
@@ -359,11 +375,17 @@ interface GuestEmailItemProps {
   email: string;
   toggle?: boolean;
 }
+
+// create different components -> rm toggle
+// get necessery data from parent component
+// GuestEmailItem should be "dummy" component -> only display stuff
+// remove check icon when adding emails one by one, replace TrachIcon with XIcon (<Button size="icon"><XIcon className="size-4"></Button>)
 const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
   const { emailExists } = useInviteGuestActions();
   const { removeEmail, addEmail } = useInviteGuestActions();
   const step = useInviteStep();
 
+  // rename -> onClick
   const onClickHandler = () => {
     if (!toggle) addEmail(email);
     if (toggle)
@@ -374,6 +396,7 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
   return (
     <div
       className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
+      // onClick={onClick}
       onClick={() => {
         onClickHandler();
       }}
@@ -474,6 +497,7 @@ const EventItem = ({
 };
 
 interface SearchGuestsProps {
+  // ??
   prop?: string;
   eventGuests: Array<string>;
   eventName: string;
