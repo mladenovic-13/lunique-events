@@ -77,7 +77,7 @@ export const paths = {
     preferences: roots.settings + "/preferences",
   },
   user: { root: roots.user, landing: (id: string) => roots.user + `/${id}` },
-  signin: { root: roots.signin },
+  signin: { root: roots.signin, welcome: "/welcome" },
   explore: roots.explore,
   pricing: roots.pricing,
   help: roots.help,

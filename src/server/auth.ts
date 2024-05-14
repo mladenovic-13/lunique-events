@@ -91,6 +91,7 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: paths.signin.root,
+    newUser: paths.signin.welcome,
   },
 };
 
