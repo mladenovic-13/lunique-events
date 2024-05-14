@@ -9,7 +9,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 
-import { InviteGuests } from "../guests/invite-guests-menu";
+import { InviteGuests } from "../guests/invite-guests-panel";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -28,7 +28,7 @@ export const InviteGuestsModal = () => {
   const isModalOpen = isOpen && type === "invite-guests";
 
   useEffect(() => {
-    if (isModalOpen) setStep("addEmails");
+    if (isModalOpen) setStep("add-emails");
   }, [isModalOpen, setStep]);
 
   return (

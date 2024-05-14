@@ -44,7 +44,7 @@ export const GenerateEmail = ({ value, onValueChange }: GenerateEmailProps) => {
         <a
           className="text-primary/50 transition-all hover:cursor-pointer hover:text-primary "
           onClick={() => {
-            setStep("addGuestsDirectly");
+            setStep("add-guests-directly");
           }}
         >
           Add Guests Directly

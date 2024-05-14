@@ -27,7 +27,7 @@ export const AddGuestsDirectly = ({}: AddGuestsDirectlyProps) => {
         If you’d like guests to register, send them an invite instead.{" "}
         <a
           className="text-primary/50 transition-all hover:cursor-pointer hover:text-primary "
-          onClick={() => setStep("generateEmail")}
+          onClick={() => setStep("generate-email")}
         >
           Invite Guests
         </a>{" "}
