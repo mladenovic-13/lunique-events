@@ -8,7 +8,7 @@ import {
   CircleIcon,
   LoaderCircleIcon,
   SendIcon,
-  TrashIcon,
+  XIcon,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { z } from "zod";
@@ -275,42 +275,33 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
       </div>
       <div className="flex max-h-[475px]  flex-col gap-2 overflow-y-auto pt-3">
         {emails.map((email, idx) => (
-          <GuestEmailItem email={email} key={idx} />
+          <InviteEmail email={email} key={idx} />
         ))}
       </div>
     </section>
   );
 };
 
-interface GuestEmailItemProps {
+interface GuestEmailProps {
   email: string;
-  toggle?: boolean;
 }
 
 // create different components -> rm toggle
 // get necessery data from parent component
 // GuestEmailItem should be "dummy" component -> only display stuff
 // remove check icon when adding emails one by one, replace TrachIcon with XIcon (<Button size="icon"><XIcon className="size-4"></Button>)
-const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
+const GuestEmail = ({ email }: GuestEmailProps) => {
   const { emailExists } = useInviteGuestActions();
   const { removeEmail, addEmail } = useInviteGuestActions();
-  const step = useInviteStep();
-
-  // rename -> onClick
-  const onClickHandler = () => {
-    if (!toggle) addEmail(email);
-    if (toggle)
-      if (!emailExists(email)) addEmail(email);
-      else if (emailExists(email)) removeEmail(email);
+  const onClick = () => {
+    if (!emailExists(email)) addEmail(email);
+    else if (emailExists(email)) removeEmail(email);
   };
 
   return (
     <div
       className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all hover:cursor-pointer hover:bg-accent-foreground/10"
-      // onClick={onClick}
-      onClick={() => {
-        onClickHandler();
-      }}
+      onClick={onClick}
     >
       <div className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
@@ -319,17 +310,6 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
         <p className="font-semibold">{email}</p>
       </div>
       <div className="flex items-center gap-4">
-        {step === "add-emails" && (
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              removeEmail(email);
-            }}
-            className="rounded-full  bg-transparent px-2 py-0.5 text-destructive hover:bg-destructive hover:text-accent-foreground"
-          >
-            <TrashIcon size={20} />
-          </Button>
-        )}
         {emailExists(email) && <CircleCheckIcon size={20} />}
         {!emailExists(email) && (
           <CircleIcon size={20} className="text-accent-foreground/30" />
@@ -339,6 +319,30 @@ const GuestEmailItem = ({ email, toggle }: GuestEmailItemProps) => {
   );
 };
 
+interface InviteEmailProps {
+  email: string;
+}
+const InviteEmail = ({ email }: InviteEmailProps) => {
+  const { removeEmail } = useInviteGuestActions();
+  return (
+    <div className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all hover:cursor-pointer hover:bg-accent-foreground/10">
+      <div className="flex items-center gap-2">
+        <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
+          <p className="uppercase">{email[0]}</p>
+        </div>
+        <p className="font-semibold">{email}</p>
+      </div>
+      <Button
+        onClick={() => {
+          removeEmail(email);
+        }}
+        className="flex size-fit  items-center justify-center rounded-full bg-transparent p-2 text-destructive hover:bg-destructive hover:text-accent-foreground"
+      >
+        <XIcon size={20} className="m-0" />
+      </Button>
+    </div>
+  );
+};
 interface SearchGuestsProps {
   eventGuests: Array<string>;
 }
@@ -369,7 +373,7 @@ const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto">
         {eventGuests?.map((guestEmail, idx) => (
-          <GuestEmailItem email={guestEmail} key={idx} toggle={true} />
+          <GuestEmail email={guestEmail} key={idx} />
         ))}
       </div>
     </section>
