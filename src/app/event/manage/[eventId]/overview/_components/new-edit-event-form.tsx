@@ -55,8 +55,9 @@ export const NewEditEventForm = ({
           value: event.capacityValue,
           waitlist: event.capacityWaitlist ?? undefined,
         },
-        startDate: event.startDate,
-        endDate: event.endDate,
+        // TODO: fix
+        // startDate: event.startDate,
+        // endDate: event.endDate,
         description: event.description ?? undefined,
         public: event.isPublic,
         requireApproval: event.requireApproval,
@@ -70,11 +71,6 @@ export const NewEditEventForm = ({
           },
         },
         organization: event.organization.name,
-        timezone: {
-          label: event.timezone?.label ?? undefined,
-          value: event.timezone?.value ?? undefined,
-          city: event.timezone?.city ?? undefined,
-        },
       });
     }
   }, [updateForm, event]);

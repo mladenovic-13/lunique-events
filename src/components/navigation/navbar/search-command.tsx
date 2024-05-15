@@ -86,10 +86,7 @@ export const SearchCommand = () => {
                 }
               >
                 {/* TODO: fix */}
-                <CustomCalendarIcon
-                  size="sm"
-                  date={event.startDate ?? new Date()}
-                />
+                <CustomCalendarIcon size="sm" date={event.date ?? new Date()} />
                 <span className="font-medium">{event.name}</span>
                 <span className="text-xs text-muted-foreground">
                   Hosted By {event.organization.owner.name}
@@ -107,10 +104,7 @@ export const SearchCommand = () => {
                 }
               >
                 {/* TODO: fix */}
-                <CustomCalendarIcon
-                  size="sm"
-                  date={event.startDate ?? new Date()}
-                />
+                <CustomCalendarIcon size="sm" date={event.date ?? new Date()} />
                 <span className="font-medium">{event.name}</span>
                 <span className="text-xs text-muted-foreground">
                   Hosted By {event.organization.owner.name}

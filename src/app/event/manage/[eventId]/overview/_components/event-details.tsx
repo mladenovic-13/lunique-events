@@ -61,13 +61,13 @@ export const EventDetails = ({ event }: EventDetailsProps) => {
             <h2 className="text-2xl font-semibold">When & Where</h2>
 
             <div className="flex items-center gap-3">
-              <CalendarIcon
+              {/* <CalendarIcon
                 date={event?.startDate ? event.startDate : new Date()}
-              />
-              <DisplayDate
+              /> */}
+              {/* <DisplayDate
                 startDate={event?.startDate ? event.startDate : new Date()}
                 endDate={event?.endDate ? event.endDate : new Date()}
-              />
+              /> */}
             </div>
             <div className="flex items-center gap-3">
               <MapPinIcon className="size-11 rounded-md border border-muted-foreground/20 p-2" />

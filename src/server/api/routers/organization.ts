@@ -65,7 +65,7 @@ export const organizationRouter = createTRPCRouter({
               creator: true,
             },
             where: {
-              startDate: {
+              date: {
                 gt: input.timeframe === "upcoming" ? new Date() : undefined,
                 lte: input.timeframe === "past" ? new Date() : undefined,
               },
