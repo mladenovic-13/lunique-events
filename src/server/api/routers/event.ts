@@ -145,31 +145,35 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  upsertRegistration: protectedProcedure
-    .input(eventRegistrationSchema.extend({ eventId: z.string() }))
+  createDefaultRegistrationRules: protectedProcedure
+    .input(z.object({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.registrationSettings.upsert({
-        where: {
-          eventId: input.eventId,
-        },
-        create: {
-          questions: {
-            createMany: {
-              data: input.questions.map((q) => ({ question: q })),
-            },
-          },
+      return await ctx.db.registrationSettings.create({
+        data: {
           event: {
             connect: {
               id: input.eventId,
             },
           },
-          capacity: input.capacity ? input.capacityValue : undefined,
-          name: input.name,
-          linkedIn: input.name,
-          waitlist: input.capacityWaitlist,
-          website: input.website,
         },
-        update: {
+      });
+    }),
+  createRegisrationRules: protectedProcedure
+    .input(eventRegistrationSchema.extend({ eventId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.registrationSettings.create({
+        data: {
+          event: {
+            connect: {
+              id: input.eventId,
+            },
+          },
+          questions: {
+            createMany: {
+              data: input.questions.map((q) => ({ question: q })),
+            },
+          },
+
           capacity: input.capacity ? input.capacityValue : undefined,
           name: input.name,
           linkedIn: input.name,

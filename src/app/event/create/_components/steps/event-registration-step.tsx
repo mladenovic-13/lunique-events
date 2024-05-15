@@ -64,22 +64,48 @@ export const EventRegistrationStep = () => {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutate: upsertRegistration } =
-    api.event.upsertRegistration.useMutation();
+  const { mutate: createRules } =
+    api.event.createRegisrationRules.useMutation();
+  const { mutate: createDefaultRules } =
+    api.event.createDefaultRegistrationRules.useMutation();
 
   const onSubmit = (values: EventRegistration) => {
     if (!id) return;
 
-    upsertRegistration(
+    createRules(
       { ...values, eventId: id },
       {
-        onSuccess: () =>
-          toast({ title: "Successfully created registration rules" }),
+        onSuccess: () => {
+          toast({ title: "Successfully created registration rules" });
+          const params = new URLSearchParams();
+          params.set("id", id);
+          params.set("step", "guests");
+
+          router.push(paths.event.create + "?" + params.toString());
+        },
         onError: () =>
           toast({
             title: "Failed to create registration rules",
             variant: "destructive",
           }),
+      },
+    );
+  };
+
+  const onSkip = () => {
+    if (!id) return;
+
+    createDefaultRules(
+      { eventId: id },
+      {
+        onSuccess: () => {
+          const params = new URLSearchParams();
+          params.set("id", id);
+          params.set("step", "guests");
+          router.push(paths.event.create + "?" + params.toString());
+        },
+        onError: () =>
+          toast({ title: "Something went wrong", variant: "destructive" }),
       },
     );
   };
@@ -278,17 +304,7 @@ export const EventRegistrationStep = () => {
             />
           </StepContent>
           <StepFooter className="justify-end gap-3 pt-5 md:pt-0">
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => {
-                const params = new URLSearchParams();
-                params.set("id", id);
-                params.set("step", "guests");
-                router.push(paths.event.create + "?" + params.toString());
-              }}
-              variant="ghost"
-            >
+            <Button type="button" size="sm" onClick={onSkip} variant="ghost">
               Skip for now
             </Button>
             <Button size="sm">
