@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
-import { basicDetailsSchema } from "@/lib/validation";
+import { createEventSchema, eventRegistrationSchema } from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -40,7 +40,7 @@ import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 
 export const eventRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(basicDetailsSchema)
+    .input(createEventSchema)
     .mutation(async ({ ctx, input }) => {
       // TODO: implement rekognition
       // await createCollection(ctx.rekognition, event.id);
@@ -76,11 +76,6 @@ export const eventRouter = createTRPCRouter({
 
       console.log({ lat: input.location?.position.lat });
 
-      // const queryString = `
-      //   INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText")
-      //   VALUES (uuid_generate_v4(), $1, $2, $3, st_point($4,$5), $6)
-      //   RETURNING id;
-      // `;
       const queryString = `
         INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText", "lat", "lng")
         VALUES (uuid_generate_v4(), $1, $2, $3, st_point($4,$5), $6, $7, $8)
@@ -138,6 +133,51 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
+  getRegistration: publicProcedure
+    .input(z.object({ eventId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.registrationSettings.findUnique({
+        where: {
+          eventId: input.eventId,
+        },
+        include: {
+          questions: true,
+        },
+      });
+    }),
+  upsertRegistration: protectedProcedure
+    .input(eventRegistrationSchema.extend({ eventId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.registrationSettings.upsert({
+        where: {
+          eventId: input.eventId,
+        },
+        create: {
+          questions: {
+            createMany: {
+              data: input.questions.map((q) => ({ question: q })),
+            },
+          },
+          event: {
+            connect: {
+              id: input.eventId,
+            },
+          },
+          capacity: input.capacity ? input.capacityValue : undefined,
+          name: input.name,
+          linkedIn: input.name,
+          waitlist: input.capacityWaitlist,
+          website: input.website,
+        },
+        update: {
+          capacity: input.capacity ? input.capacityValue : undefined,
+          name: input.name,
+          linkedIn: input.name,
+          waitlist: input.capacityWaitlist,
+          website: input.website,
+        },
+      });
+    }),
   update: protectedProcedure
     .input(
       z.object({
@@ -184,10 +224,10 @@ export const eventRouter = createTRPCRouter({
           name: input.eventSchema.name,
           // date: input.eventSchema.endDate,
           description: input.eventSchema.description,
-          capacityValue: input.eventSchema.capacity.value,
-          capacityWaitlist: input.eventSchema.capacity.waitlist,
+          // capacityValue: input.eventSchema.capacity.value,
+          // capacityWaitlist: input.eventSchema.capacity.waitlist,
           isPublic: input.eventSchema.public,
-          requireApproval: input.eventSchema.requireApproval,
+          // requireApproval: input.eventSchema.requireApproval,
           organization: {
             connect: {
               id: organization.id,

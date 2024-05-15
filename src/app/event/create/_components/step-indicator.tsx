@@ -10,7 +10,7 @@ export const StepIndicator = () => {
   const step = searchParams.get("step") ?? "create";
 
   return (
-    <div className="grid grid-cols-3 gap-10 px-3 pb-8 pt-5">
+    <div className="grid grid-cols-3 gap-5 pb-5 pt-3 md:gap-10 md:px-3 md:pb-8 md:pt-5">
       <StepItem label="Create Event" isCompleted />
       <StepItem
         label="Registration"
@@ -33,7 +33,7 @@ const StepItem = ({
       <div
         className={cn("h-1 w-full bg-secondary", isCompleted && "bg-primary")}
       />
-      <p className="text-sm">{label}</p>
+      <p className="text-sm text-muted-foreground">{label}</p>
     </div>
   );
 };

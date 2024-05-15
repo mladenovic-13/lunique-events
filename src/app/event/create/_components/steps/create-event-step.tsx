@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { env } from "@/env.mjs";
 import { useOrganizationId } from "@/hooks/use-config-store";
-import { basicDetailsSchema, type EventBasicDetails } from "@/lib/validation";
+import { createEventSchema, type EventBasicDetails } from "@/lib/validation";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
@@ -60,7 +60,7 @@ export const CreateEventStep = () => {
 
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(basicDetailsSchema),
+    resolver: zodResolver(createEventSchema),
   });
 
   const { mutate: createEvent, isLoading } = api.event.create.useMutation();
