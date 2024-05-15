@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { GlobeIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,11 +31,9 @@ export const EventTimezoneInput = ({ value, onChange }: EventTimezoneProps) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-full justify-between">
+        <Button variant="outline" className=" justify-between">
           <span className="flex items-center gap-3">
-            <GlobeIcon className="size-4 opacity-50" />
-            {value.replaceAll("/", " - ").replaceAll("_", " ")}
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm">
               {Object.entries(timezones)
                 .find(([timezone]) => timezone === value)?.[1]
                 .offset.replace("+", "+ ")}
@@ -52,7 +49,7 @@ export const EventTimezoneInput = ({ value, onChange }: EventTimezoneProps) => {
           <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 md:w-full">
+      <PopoverContent align="end" className="w-full p-0">
         <Command>
           <div className="relative">
             <CommandInput

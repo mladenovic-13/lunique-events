@@ -42,12 +42,13 @@ export default function CalendarPage() {
   });
 
   const selectedCalendarDays: Date[] = [];
-  if (organization) {
-    organization.events.forEach((event) =>
-      // TODO: fix
-      selectedCalendarDays.push(event.startDate ?? new Date()),
-    );
-  }
+  // TODO: fix ???
+  // if (organization) {
+  //   organization.events.forEach((event) =>
+  //     // TODO: fix
+  //     selectedCalendarDays.push(event.date ?? new Date()),
+  //   );
+  // }
 
   const selectedDaysStyle = {
     border: "1px solid currentColor",
@@ -117,7 +118,7 @@ export default function CalendarPage() {
               </section>
               {view === "card" && (
                 <div className="flex flex-col gap-10">
-                  {organization?.events.map((event, idx) => (
+                  {/* {organization?.events.map((event, idx) => (
                     <Timeline
                       mode={"compact"}
                       idx={idx}
@@ -135,12 +136,12 @@ export default function CalendarPage() {
                         }
                       />
                     </Timeline>
-                  ))}
+                  ))} */}
                 </div>
               )}
               {view === "list" && (
                 <div className="flex flex-col gap-12">
-                  {organization?.events.map((event, idx) => (
+                  {/* {organization?.events.map((event, idx) => (
                     <EventListItem
                       key={idx}
                       // TODO: fix
@@ -151,7 +152,7 @@ export default function CalendarPage() {
                         router.push(paths.event.landing.root(event.id))
                       }
                     />
-                  ))}
+                  ))} */}
                 </div>
               )}
             </div>

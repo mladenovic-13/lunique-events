@@ -54,8 +54,7 @@ export const Events = () => {
               idx={idx}
               dataLength={data.length}
               key={idx}
-              // TODO: fix
-              date={event.startDate ?? new Date()}
+              date={event.date ?? new Date()}
             >
               <EventCard
                 onClick={() => router.push(paths.event.landing.root(event.id))}
@@ -69,8 +68,7 @@ export const Events = () => {
           data.map((event, idx) => (
             <EventListItem
               key={idx}
-              // TODO: fix
-              date={event.startDate ?? new Date()}
+              date={event.date ?? new Date()}
               event={event}
               creator={null}
               onClick={() => router.push(paths.event.landing.root(event.id))}

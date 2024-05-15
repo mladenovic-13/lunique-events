@@ -11,8 +11,6 @@ import usePlacesAutocomplete, {
 import { Button } from "@/components/ui/button";
 import { useFormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { type Place } from "@/types";
 
@@ -65,8 +63,10 @@ export const EventLocationInput = (props: {
     onChange(null);
   };
 
+  const isOpen = status === "OK" || status === "ZERO_RESULTS";
+
   return (
-    <div className="space-y-2">
+    <div className="relative">
       <div className="relative">
         <AutocompleteInput
           value={props.value ? props.value.description : autocompleteValue}
@@ -74,6 +74,7 @@ export const EventLocationInput = (props: {
           disabled={!ready || !!props.value}
           placeholder="Enter location..."
           error={!!field.error}
+          className="w-full"
         />
         {field.error && (
           <p className="text-[0.8rem] font-medium text-destructive">
@@ -92,38 +93,24 @@ export const EventLocationInput = (props: {
           </div>
         )}
       </div>
-      {!autocompleteValue && !status && (
-        <>
-          <AutocompleteResultGroup heading="Recent Locations">
-            <p className="px-3 text-sm text-muted-foreground">
-              No recently used locations.
-            </p>
-            {/* TODO: fetch recent locations */}
-          </AutocompleteResultGroup>
-        </>
-      )}
-      {!props.value && status === "OK" && (
-        <AutocompleteResult>
-          <AutocompleteResultGroup heading="Locations">
-            {data.map(({ place_id, description }) => (
-              <AutocompleteResultItem
-                key={place_id}
-                value={place_id}
-                onSelect={onSelect}
-              >
-                <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
-                {description}
-              </AutocompleteResultItem>
-            ))}
-          </AutocompleteResultGroup>
-        </AutocompleteResult>
-      )}
+      {isOpen && (
+        <div className="absolute top-10 w-full rounded-md border">
+          {!props.value && status === "OK" && (
+            <AutocompleteResult>
+              {data.map(({ place_id, description }) => (
+                <AutocompleteResultItem
+                  key={place_id}
+                  value={place_id}
+                  onSelect={onSelect}
+                >
+                  <MapPinIcon className="mr-1.5 size-4 min-w-fit" />
+                  {description}
+                </AutocompleteResultItem>
+              ))}
+            </AutocompleteResult>
+          )}
 
-      {status === "ZERO_RESULTS" && <AutocompleteResultEmpty />}
-      {props.value && (
-        <div className="space-y-2">
-          <Label>Further Instructions</Label>
-          <Textarea rows={9} />
+          {status === "ZERO_RESULTS" && <AutocompleteResultEmpty />}
         </div>
       )}
     </div>
@@ -148,12 +135,12 @@ const AutocompleteInput = ({
   ...props
 }: AutocompleteInputProps) => {
   return (
-    <span className="relative">
+    <div className="relative w-full">
       <Input
         disabled={disabled}
         placeholder={placeholder}
         className={cn(
-          "h-9 bg-popover pl-10 shadow-none focus-visible:ring-0 disabled:opacity-100",
+          "h-9 pl-10 disabled:opacity-100",
           error && "border-destructive",
           className,
         )}
@@ -164,7 +151,7 @@ const AutocompleteInput = ({
       <div className="absolute left-0 top-0 flex size-10 items-center justify-center">
         <SearchIcon className="size-4" />
       </div>
-    </span>
+    </div>
   );
 };
 
@@ -181,22 +168,6 @@ interface AutocompleteResultProps {
 const AutocompleteResult = (props: AutocompleteResultProps) => (
   <div className="space-y-1.5 overflow-x-auto rounded-b-md bg-popover p-1.5">
     {props.children}
-  </div>
-);
-
-interface AutocompleteResultGroupProps {
-  heading?: string;
-  children?: React.ReactNode;
-}
-
-const AutocompleteResultGroup = (props: AutocompleteResultGroupProps) => (
-  <div>
-    {props.heading && (
-      <p className="px-3 py-2 text-sm font-semibold text-muted-foreground">
-        {props.heading}
-      </p>
-    )}
-    <div>{props.children}</div>
   </div>
 );
 
