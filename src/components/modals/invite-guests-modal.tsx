@@ -24,12 +24,11 @@ export const InviteGuestsModal = () => {
   const { isOpen, type, onClose } = useModal();
 
   const guestCapacity = useGuestCapacity();
-  const { setStep } = useInviteGuestActions();
+  const { resetStore } = useInviteGuestActions();
   const isModalOpen = isOpen && type === "invite-guests";
-
   useEffect(() => {
-    if (isModalOpen) setStep("add-emails");
-  }, [isModalOpen, setStep]);
+    if (isModalOpen) resetStore();
+  }, [isModalOpen, resetStore]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>

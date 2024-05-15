@@ -10,6 +10,7 @@ import {
   SendIcon,
   TrashIcon,
 } from "lucide-react";
+import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import {
@@ -42,7 +43,8 @@ import { SideBar } from "./side-bar";
 
 // move outside components
 const emailFormSchema = z.object({
-  customMessage: z.string().max(300),
+  customMessage: z.string(),
+  eventId: z.string(),
 });
 
 interface InviteGuestsMenuProps {
@@ -55,13 +57,16 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const selectedEmails = useGuestEmails();
   const eventGuests = useEventGuests();
   const { setStep, resetStore } = useInviteGuestActions();
-
   const { mutate: sendInvites, isLoading: sendingEmails } =
     api.guest.invite.useMutation();
 
-  const sendInvitationEmails = (emails: string[]) => {
+  const sendInvitationEmails = (
+    emails: string[],
+    customMessage: string,
+    eventId: string,
+  ) => {
     sendInvites(
-      { emails },
+      { emails, customMessage, eventId },
       {
         onSuccess: () => {
           toast({ title: "Emails are succesfully sent!" });
@@ -75,14 +80,19 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
 
   const emailForm = useForm<z.infer<typeof emailFormSchema>>({
     resolver: zodResolver(emailFormSchema),
+    defaultValues: {
+      eventId: useParams().eventId as string,
+      customMessage: "",
+    },
   });
-
   // rename -> onSubmit
   const onSubmit = (values: z.infer<typeof emailFormSchema>) => {
-    console.log(values);
-    console.log(sendInvitationEmails);
+    sendInvitationEmails(selectedEmails, values.customMessage, values.eventId);
   };
-
+  const onErrors = (errors: unknown) => {
+    toast({ title: "Frontend error, check console. Send email form" });
+    console.log({ errors });
+  };
   return (
     <section className="flex w-full flex-col pb-4">
       <section className="flex size-full items-start gap-2">
@@ -102,7 +112,11 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
           {step === "generate-email" && (
             // Wrap whole "invite-guests-menu" with form provider
             <Form {...emailForm}>
-              <form onSubmit={emailForm.handleSubmit(onSubmit)} id="emailForm">
+              <form
+                onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
+                className="flex w-full"
+                id="email-form"
+              >
                 <FormField
                   control={emailForm.control}
                   name="customMessage"
@@ -110,8 +124,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
                     <FormItem>
                       <FormControl>
                         <GenerateEmail
-                          value={field.value}
-                          onValueChange={() => field.onChange}
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -137,6 +151,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
                   step === "add-emails" &&
                   "text-primary",
               )}
+              type="button"
               onClick={() => {
                 if (step !== "add-emails") setStep("add-emails");
                 else if (step === "add-emails") {
@@ -173,7 +188,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
               className="gap-2"
               // onClick={() => sendInvitationEmails(selectedEmails)}
               disabled={sendingEmails}
-              form="emailForm"
+              type="submit"
+              form="email-form"
             >
               {!sendingEmails && <SendIcon size={16} />}
               {sendingEmails && (
@@ -217,26 +233,40 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     addEmail(value.email);
     form.reset({ email: "" });
   };
+  const onErrors = (errors: unknown) => {
+    toast({ title: "Frontend error, check console" });
+    console.log({ errors });
+  };
   return (
     <section className="flex flex-col  pt-2">
       <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} id="emailForm">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, onErrors)}
+            id="add-email-form"
+          >
             <div className="flex gap-2">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <Input
-                    type="search"
-                    className="items-center bg-muted font-medium"
-                    placeholder="Paste or enter emails here"
-                    {...field}
-                  />
+                  <FormItem className="flex w-full gap-2">
+                    <Input
+                      type="search"
+                      className="items-center bg-muted font-medium"
+                      placeholder="Paste or enter emails here"
+                      {...field}
+                    />
+                  </FormItem>
                 )}
               />
-              <Button variant={"secondary"} className="font-semibold">
+              <Button
+                variant={"secondary"}
+                className="font-semibold"
+                type="submit"
+                form="add-email-form"
+              >
                 Add
               </Button>
             </div>

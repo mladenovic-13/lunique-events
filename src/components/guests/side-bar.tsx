@@ -17,10 +17,7 @@ import { Skeleton } from "../ui/skeleton";
 import { EventItem } from "./event-item";
 import { InviteList } from "./invite-list";
 
-interface SideBarPros {
-  prop?: string;
-}
-export const SideBar = ({}: SideBarPros) => {
+export const SideBar = () => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   return (
@@ -31,7 +28,6 @@ export const SideBar = ({}: SideBarPros) => {
           <EventList />
         </div>
       )}
-      {/* remove contidions and move whole "sidebar" for second step to new */}
       {(step === "generate-email" || step === "add-guests-directly") && (
         <InviteList guestsEmails={selectedEmails} />
       )}
@@ -74,10 +70,7 @@ const ImportActions = () => {
   );
 };
 
-interface EventListProps {
-  prop?: string;
-}
-const EventList = ({}: EventListProps) => {
+const EventList = () => {
   const { data: userEvents, isLoading } = api.event.list.useQuery({});
   const { setStep, setSelectedEventName, setEventGuests } =
     useInviteGuestActions();
@@ -92,13 +85,16 @@ const EventList = ({}: EventListProps) => {
         Events
       </Label>
       <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
-        {isLoading && (
-          <>
-            <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
-            <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
-            <Skeleton className="h-12 w-full animate-pulse bg-accent-foreground/10" />
-          </>
-        )}
+        {isLoading &&
+          Array(3)
+            .fill(0)
+            .map((_, index) => index + 1)
+            .map((idx) => (
+              <Skeleton
+                key={idx}
+                className="h-12 w-full animate-pulse bg-accent-foreground/10"
+              />
+            ))}
         {userEvents?.map((event, idx) => (
           <EventItem
             event={event}

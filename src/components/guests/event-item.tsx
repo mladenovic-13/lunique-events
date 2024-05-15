@@ -12,7 +12,7 @@ interface EventItemProprs {
 }
 export const EventItem = ({ event, onClick }: EventItemProprs) => {
   const eventName: string = event?.name ?? "";
-  const eventDate: Date = event?.startDate ?? new Date();
+  const eventDate: Date = event?.date ?? new Date();
   const guestsCount: number = event?.guests.length ?? -1;
   const selectedEventName = useGuestSelectedEvent();
   const selected = selectedEventName === eventName;
