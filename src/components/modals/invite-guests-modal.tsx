@@ -9,7 +9,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 
-import { InviteGuests } from "../guests/invite-guests-menu";
+import { InviteGuests } from "../guests/invite-guests-panel";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -24,12 +24,11 @@ export const InviteGuestsModal = () => {
   const { isOpen, type, onClose } = useModal();
 
   const guestCapacity = useGuestCapacity();
-  const { setStep } = useInviteGuestActions();
+  const { resetStore } = useInviteGuestActions();
   const isModalOpen = isOpen && type === "invite-guests";
-
   useEffect(() => {
-    if (isModalOpen) setStep("addEmails");
-  }, [isModalOpen, setStep]);
+    if (isModalOpen) resetStore();
+  }, [isModalOpen, resetStore]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>

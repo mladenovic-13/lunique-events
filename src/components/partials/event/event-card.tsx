@@ -55,10 +55,16 @@ export const EventCard = ({
                     <p className="">Location missing</p>
                   </div>
                 )}
-                {guests && (
+                {guests !== null && guests !== undefined && (
                   <div className="flex items-center space-x-2 text-accent-foreground/50">
                     <UsersIcon size={15} />
-                    <p>{guests} guests</p>
+                    <p>
+                      {guests === 0
+                        ? "No Guests"
+                        : guests === 1
+                          ? `${guests} Guest`
+                          : `${guests} Guests`}
+                    </p>
                   </div>
                 )}
               </div>

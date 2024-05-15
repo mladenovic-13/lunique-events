@@ -286,6 +286,11 @@ export const eventRouter = createTRPCRouter({
               },
             },
           },
+          guests: {
+            select: {
+              email: true,
+            },
+          },
         },
       });
     }),
@@ -325,7 +330,6 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-
   getOverview: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {

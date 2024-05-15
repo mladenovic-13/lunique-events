@@ -15,6 +15,8 @@ import { getServerAuthSession } from "@/server/auth";
 import { rekognition } from "@/server/aws/rekognition";
 import { s3 } from "@/server/aws/s3";
 import { db } from "@/server/db";
+
+import { resend } from "../resend/resend-client";
 /**
  * 1. CONTEXT
  *
@@ -35,6 +37,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     session,
     s3,
     rekognition,
+    resend,
     ...opts,
   };
 };
