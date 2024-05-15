@@ -3,6 +3,7 @@
 import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
+import { InviteGuests } from "@/components/guests/invite-guests-panel";
 import { buttonVariants } from "@/components/ui/button";
 
 import {
@@ -22,20 +23,9 @@ export const EventInviteGuestsStep = () => {
         <StepTitle>Invite Guests</StepTitle>
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
-      <StepContent>Coming soon</StepContent>
-      <StepFooter className="justify-end gap-3">
-        <Link
-          className={buttonVariants({ size: "sm", variant: "ghost" })}
-          href="/"
-        >
-          Skip for now
-        </Link>
-
-        <Link className={buttonVariants({ size: "sm" })} href="/">
-          Continue
-          <ChevronRightIcon className="ml-1.5 size-4" />
-        </Link>
-      </StepFooter>
+      <StepContent className="max-h-[500px] border-t">
+        <InviteGuests />
+      </StepContent>
     </StepContainer>
   );
 };

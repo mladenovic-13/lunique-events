@@ -23,7 +23,7 @@ export const SideBar = () => {
   return (
     <div>
       {step !== "generate-email" && step !== "add-guests-directly" && (
-        <div className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
+        <div className="flex flex-col gap-4  md:w-[200px]">
           <ImportActions />
           <EventList />
         </div>
@@ -84,7 +84,7 @@ const EventList = () => {
       <Label className="px-2 pb-2 text-sm font-semibold uppercase  text-accent-foreground/50">
         Events
       </Label>
-      <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
+      <div className="flex flex-col gap-2 overflow-y-auto">
         {isLoading &&
           Array(3)
             .fill(0)

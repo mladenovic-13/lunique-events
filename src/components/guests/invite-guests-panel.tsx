@@ -95,7 +95,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   };
   return (
     <section className="flex w-full flex-col pb-4">
-      <section className="flex size-full items-start gap-2">
+      <section className="flex items-start gap-2">
         {/* Side menu */}
         <div className="max-w-[240px] pt-4">
           <SideBar />
