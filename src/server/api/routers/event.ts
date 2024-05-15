@@ -76,23 +76,41 @@ export const eventRouter = createTRPCRouter({
 
       console.log({ lat: input.location?.position.lat });
 
-      // @Lukiano99 baci pogled da vidis ima li greska negde, ubi se ne mogu da nadjem...
+      // const queryString = `
+      //   INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText")
+      //   VALUES (uuid_generate_v4(), $1, $2, $3, st_point($4,$5), $6)
+      //   RETURNING id;
+      // `;
       const queryString = `
-        INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText")
-        VALUES (uuid_generate_v4(), '${input.location?.placeId}', '${input.location?.description}', '${input.location?.secondaryText}', st_point(${input.location?.position.lat}, ${input.location?.position.lng}), '${input.location?.mainText}')
+        INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText", "lat", "lng")
+        VALUES (uuid_generate_v4(), $1, $2, $3, st_point($4,$5), $6, $7, $8)
         RETURNING id;
       `;
 
-      const location = await ctx.db.$queryRawUnsafe<Location[]>(queryString);
+      const args = [
+        input.location?.placeId,
+        input.location?.description,
+        input.location?.secondaryText,
+        input.location?.position.lat,
+        input.location?.position.lng,
+        input.location?.mainText,
+        input.location?.position.lat,
+        input.location?.position.lng,
+      ];
 
-      if (!location || location.length === 0) {
+      const location = await ctx.db.$queryRawUnsafe<Location[]>(
+        queryString,
+        ...args,
+      );
+
+      if (!location?.[0]?.id) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Failed to create location",
         });
       }
 
-      console.log({ location });
+      const locationId = location[0].id;
 
       return await ctx.db.event.create({
         data: {
@@ -104,6 +122,11 @@ export const eventRouter = createTRPCRouter({
           organization: {
             connect: {
               id: organization.id,
+            },
+          },
+          location: {
+            connect: {
+              id: locationId,
             },
           },
           thumbnailUrl: input.thumbnailUrl ?? "",
