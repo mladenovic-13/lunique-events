@@ -9,9 +9,9 @@ import {
   MailIcon,
   User2Icon,
 } from "lucide-react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import * as z from "zod";
 
-import { useStepper } from "@/components/common/stepper";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { paths } from "@/routes/paths";
 
 import {
   StepContainer,
@@ -35,7 +36,7 @@ import {
 const formSchema = z.object({
   requireApproval: z.boolean(),
   capacity: z.boolean(),
-  capacityValue: z.number(),
+  capacityValue: z.number().optional(),
   capacityWaitlist: z.boolean(),
   name: z.boolean(),
   email: z.boolean(),
@@ -46,37 +47,49 @@ const formSchema = z.object({
 type RegistrationData = z.infer<typeof formSchema>;
 
 export const EventRegistrationStep = () => {
-  const { isDisabledStep, nextStep } = useStepper();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const step = searchParams.get("step");
 
   const form = useForm<RegistrationData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: true,
       email: true,
-      capacity: false,
-      capacityValue: 0,
-      capacityWaitlist: false,
-      linkedIn: false,
-      requireApproval: false,
       website: false,
+      linkedIn: false,
+      capacity: false,
+      capacityValue: 100,
+      capacityWaitlist: false,
+      requireApproval: false,
     },
   });
+
+  const router = useRouter();
 
   const onSubmit = (values: RegistrationData) => {
     console.log({ values });
   };
+  const onErrors = (errors: unknown) => {
+    console.log({ errors });
+  };
 
   const capacity = form.watch("capacity");
 
+  if (!step || !id) redirect(paths.event.create);
+
   return (
-    <StepContainer>
-      <StepHeader>
-        <StepTitle>Registration</StepTitle>
-        <StepDescription>Enter registration details</StepDescription>
-      </StepHeader>
-      <StepContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="md:space-y-8">
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onErrors)}
+        className="md:space-y-8"
+      >
+        <StepContainer>
+          <StepHeader>
+            <StepTitle>Registration</StepTitle>
+            <StepDescription>Enter registration details</StepDescription>
+          </StepHeader>
+          <StepContent className="space-y-8">
             <div className="grid gap-1.5 md:grid-cols-3 md:gap-10">
               <FormField
                 control={form.control}
@@ -210,30 +223,35 @@ export const EventRegistrationStep = () => {
                 )}
               />
             </div>
-            <StepHeader className="p-0 py-5 md:p-0">
+            {/* TODO: custom question */}
+            {/* <StepHeader className="p-0 py-5 md:p-0">
               <StepTitle>Custom Questions</StepTitle>
               <StepDescription>
                 You are not asking guests additional questions.
               </StepDescription>
-            </StepHeader>
-          </form>
-        </Form>
-      </StepContent>
-      <StepFooter className="justify-end gap-3">
-        <Button
-          type="button"
-          size="sm"
-          disabled={isDisabledStep}
-          onClick={nextStep}
-          variant="ghost"
-        >
-          Skip for now
-        </Button>
-        <Button size="sm" onClick={nextStep}>
-          Continue
-          <ChevronRightIcon className="ml-1.5 size-4" />
-        </Button>
-      </StepFooter>
-    </StepContainer>
+            </StepHeader> */}
+          </StepContent>
+          <StepFooter className="justify-end gap-3">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                const params = new URLSearchParams();
+                params.set("id", id);
+                params.set("step", "guests");
+                router.replace(paths.event.create + "?" + params.toString());
+              }}
+              variant="ghost"
+            >
+              Skip for now
+            </Button>
+            <Button size="sm">
+              Continue
+              <ChevronRightIcon className="ml-1.5 size-4" />
+            </Button>
+          </StepFooter>
+        </StepContainer>
+      </form>
+    </Form>
   );
 };
