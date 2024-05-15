@@ -51,16 +51,16 @@ export const NewEditEventForm = ({
     if (event && !updateForm.formState.isDirty) {
       updateForm.reset({
         name: event.name ?? undefined,
-        capacity: {
-          value: event.capacityValue,
-          waitlist: event.capacityWaitlist ?? undefined,
-        },
+        // capacity: {
+        //   value: event.capacityValue,
+        //   waitlist: event.capacityWaitlist ?? undefined,
+        // },
         // TODO: fix
         // startDate: event.startDate,
         // endDate: event.endDate,
         description: event.description ?? undefined,
         public: event.isPublic,
-        requireApproval: event.requireApproval,
+        // requireApproval: event.requireApproval,
         thumbnailUrl: event.thumbnailUrl ?? "testUrl",
         location: {
           ...event.location,
