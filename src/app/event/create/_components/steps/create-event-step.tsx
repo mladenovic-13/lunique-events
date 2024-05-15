@@ -5,9 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Libraries, useLoadScript } from "@react-google-maps/api";
 import { SparklesIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { useStepper } from "@/components/common/stepper";
-import { type StepperStore } from "@/components/providers/stepper-store-provider";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,8 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { env } from "@/env.mjs";
 import { useOrganizationId } from "@/hooks/use-config-store";
-import { useStepperActions } from "@/hooks/use-stepper-store";
-import { basicDetailsSchema, type EventBasicDetails } from "@/lib/validation";
+import { createEventSchema, type EventBasicDetails } from "@/lib/validation";
+import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
 
 import { EventDateInput } from "../inputs/event-date-input";
@@ -54,20 +53,19 @@ const defaultValues: EventBasicDetails = {
   location: null,
 };
 
-export const EventBasicDetailsStep = () => {
+export const CreateEventStep = () => {
   const libraries = useMemo<Libraries>(() => ["places"], []);
 
-  const { nextStep } = useStepper();
-  const { updateEventId } = useStepperActions() as StepperStore["actions"];
   const organization = useOrganizationId();
 
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(basicDetailsSchema),
+    resolver: zodResolver(createEventSchema),
   });
 
   const { mutate: createEvent, isLoading } = api.event.create.useMutation();
   const { toast } = useToast();
+  const router = useRouter();
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -76,16 +74,28 @@ export const EventBasicDetailsStep = () => {
   });
 
   const onSubmit = (values: EventBasicDetails) => {
+    if (!values.location?.placeId) {
+      form.setError("location", {
+        type: "required",
+        message: "Please select valid location",
+      });
+      return;
+    }
+    if (!organization) return;
+
     createEvent(
-      { ...values, organization: organization ?? "" },
+      { ...values, organization },
       {
         onSuccess: (event) => {
           toast({
             title: "Event created",
             description: "Event created successfully",
           });
-          updateEventId(event.id);
-          nextStep();
+          const params = new URLSearchParams();
+          params.set("step", "registration");
+          params.set("id", event.id);
+
+          router.replace(paths.event.create + "?" + params.toString());
         },
         onError: () => toast({ title: "Failed to create event" }),
       },
@@ -126,7 +136,7 @@ export const EventBasicDetailsStep = () => {
                   <FormControl>
                     <Input
                       placeholder="Event name"
-                      className="h-fit border-b border-none p-0 text-5xl focus-visible:ring-0"
+                      className="h-fit rounded-none border-x-0 border-b border-t-0 p-0 text-5xl shadow-none focus-visible:ring-0"
                       {...field}
                     />
                   </FormControl>

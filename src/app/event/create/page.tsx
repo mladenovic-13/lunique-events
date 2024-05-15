@@ -11,9 +11,5 @@ export default async function CreateEventPage() {
 
   if (!session?.user.id) redirect(paths.signin.root);
 
-  return (
-    <div className="mx-auto max-w-4xl p-3 pb-10 ">
-      <CreateEventSteper />
-    </div>
-  );
+  return <CreateEventSteper />;
 }

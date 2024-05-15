@@ -23,7 +23,8 @@ export const locationSchema = z.object({
     lng: z.number(),
   }),
 });
-export const basicDetailsSchema = z.object({
+
+export const createEventSchema = z.object({
   name: z.string().min(1, "Please enter event name"),
   description: z.string(),
   thumbnailUrl: z.string(),
@@ -34,4 +35,22 @@ export const basicDetailsSchema = z.object({
   location: locationSchema.nullable(),
 });
 
-export type EventBasicDetails = z.infer<typeof basicDetailsSchema>;
+export type EventBasicDetails = z.infer<typeof createEventSchema>;
+
+export const eventRegistrationSchema = z.object({
+  requireApproval: z.boolean(),
+  capacity: z.boolean(),
+  capacityValue: z.number().optional(),
+  capacityWaitlist: z.boolean(),
+  name: z.boolean(),
+  email: z.boolean(),
+  website: z.boolean(),
+  linkedIn: z.boolean(),
+  questions: z
+    .string()
+    .max(50, "Question can contain max 50 characters")
+    .array()
+    .max(3, "You can have maximum of 3 custom questions"),
+});
+
+export type EventRegistration = z.infer<typeof eventRegistrationSchema>;

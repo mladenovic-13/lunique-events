@@ -198,29 +198,46 @@ model Organization {
 }
 
 model Event {
-  id               String       @id @default(cuid())
-  isPublic         Boolean
-  name             String
-  description      String
-  thumbnailUrl     String
-  date             DateTime
-  timezone         String
-  capacityValue    Int?
-  capacityWaitlist Boolean?     @default(false)
-  requireApproval  Boolean?
-  creator          User         @relation(name: "creatorOf", fields: [userId], references: [id], onDelete: Cascade)
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  location         Location?    @relation(fields: [locationId], references: [id])
-  locationId       String?
-  organizationId   String
-  userId           String
-  faces            Face[]
-  guests           Guest[]
-  userGuests       User[]       @relation(name: "guestOf")
-  images           Image[]
-  invites          Invite[]
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  id                   String                @id @default(cuid())
+  isPublic             Boolean
+  name                 String
+  description          String
+  thumbnailUrl         String
+  date                 DateTime
+  timezone             String
+  creator              User                  @relation(name: "creatorOf", fields: [userId], references: [id], onDelete: Cascade)
+  organization         Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location             Location?             @relation(fields: [locationId], references: [id])
+  locationId           String?
+  organizationId       String
+  userId               String
+  faces                Face[]
+  guests               Guest[]
+  userGuests           User[]                @relation(name: "guestOf")
+  images               Image[]
+  invites              Invite[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  registrationSettings RegistrationSettings?
+}
+
+model RegistrationSettings {
+  id        String                 @id @default(cuid())
+  capacity  Int?
+  waitlist  Boolean                @default(false)
+  name      Boolean                @default(true)
+  website   Boolean                @default(false)
+  linkedIn  Boolean                @default(false)
+  questions RegistrationQuestion[]
+  event     Event                  @relation(fields: [eventId], references: [id])
+  eventId   String                 @unique
+}
+
+model RegistrationQuestion {
+  id                     String                @id @default(cuid())
+  question               String
+  registrationSettings   RegistrationSettings? @relation(fields: [registrationSettingsId], references: [id])
+  registrationSettingsId String?
 }
 
 model Location {
