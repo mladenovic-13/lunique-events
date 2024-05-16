@@ -40,7 +40,7 @@ export function EventVisibilityInput({
   return (
     <div>
       <Select value={innerValue} onValueChange={handleOnChange}>
-        <SelectTrigger className="h-8 w-32 border-muted-foreground/10 capitalize">
+        <SelectTrigger className="h-8 border-muted-foreground/10 capitalize md:w-32">
           {icon[innerValue]}
           {innerValue}
         </SelectTrigger>

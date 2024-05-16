@@ -22,7 +22,7 @@ export const EventDateInput = ({ value, onChange }: EventDateInputProps) => {
         <Button
           variant="outline"
           className={cn(
-            "justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal md:w-fit",
             !value && "text-muted-foreground",
           )}
         >

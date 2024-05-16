@@ -49,7 +49,7 @@ export const EventTimezoneInput = ({ value, onChange }: EventTimezoneProps) => {
           <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-full p-0">
+      <PopoverContent align="end" className="w-80 p-0 md:w-96">
         <Command>
           <div className="relative">
             <CommandInput
