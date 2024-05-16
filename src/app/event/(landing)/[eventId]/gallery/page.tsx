@@ -14,8 +14,8 @@ export default async function GalleryIdPage({
 
   if (!galleryId) notFound();
 
-  const event = await api.event.get.query({ id: galleryId });
-  const images = await api.event.getImages.query({ eventId: galleryId });
+  const event = await api.event.get({ id: galleryId });
+  const images = await api.event.getImages({ eventId: galleryId });
 
   if (!event || !images) notFound();
 

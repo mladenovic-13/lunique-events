@@ -1,9 +1,10 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import {
   type DefaultSession,
   getServerSession,
   type NextAuthOptions,
 } from "next-auth";
+import { type Adapter, type AdapterUser } from "next-auth/adapters";
 import EmailProvider from "next-auth/providers/email";
 
 import { DEFAULT_USER_AVATAR } from "@/config";
@@ -58,7 +59,7 @@ export const authOptions: NextAuthOptions = {
       const createdUser = await PrismaDBAdapter.createUser!({
         ...user,
         image: DEFAULT_USER_AVATAR,
-      });
+      } as AdapterUser);
 
       await db.organization.create({
         data: {
@@ -74,7 +75,7 @@ export const authOptions: NextAuthOptions = {
 
       return createdUser;
     },
-  },
+  } as Adapter,
   providers: [
     EmailProvider({
       server: {

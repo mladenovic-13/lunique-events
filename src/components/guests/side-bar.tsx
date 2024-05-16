@@ -8,7 +8,7 @@ import {
 } from "@/hooks/use-guest-store";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";

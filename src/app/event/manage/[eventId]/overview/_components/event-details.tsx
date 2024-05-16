@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 import { ChevronLeftIcon, CircleCheckBigIcon, MapPinIcon } from "lucide-react";
 import Image from "next/image";
 
-import { CalendarIcon } from "@/components/icons/calendar-icon";
+// import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import placeHolderImg from "@/public/images/you-are-invited.jpeg";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 // import { EditEventForm } from "./edit-event-form";
 import { NewEditEventForm } from "./new-edit-event-form";
@@ -112,23 +112,23 @@ export const EventDetails = ({ event }: EventDetailsProps) => {
   );
 };
 
-interface DisplayDateProps {
-  startDate: Date;
-  endDate: Date;
-}
+// interface DisplayDateProps {
+//   startDate: Date;
+//   endDate: Date;
+// }
 
-const DisplayDate = ({ startDate }: DisplayDateProps) => {
-  return (
-    <div className="flex flex-col">
-      <p className="font-semibold">
-        {format(startDate, "EEEE")}, {format(startDate, "LLL")}{" "}
-        {/* TODO: fix */}
-        {/* {format(startDate, "do")} - {startTime} */}
-      </p>
-      <p className="text-sm text-accent-foreground/50">
-        {/* TODO: fix */}
-        {/* Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime} */}
-      </p>
-    </div>
-  );
-};
+// const DisplayDate = ({ startDate }: DisplayDateProps) => {
+//   return (
+//     <div className="flex flex-col">
+//       <p className="font-semibold">
+//         {format(startDate, "EEEE")}, {format(startDate, "LLL")}{" "}
+//         {/* TODO: fix */}
+//         {/* {format(startDate, "do")} - {startTime} */}
+//       </p>
+//       <p className="text-sm text-accent-foreground/50">
+//         {/* TODO: fix */}
+//         {/* Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime} */}
+//       </p>
+//     </div>
+//   );
+// };

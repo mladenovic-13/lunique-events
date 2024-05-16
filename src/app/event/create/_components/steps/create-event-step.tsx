@@ -63,7 +63,7 @@ export const CreateEventStep = () => {
     resolver: zodResolver(createEventSchema),
   });
 
-  const { mutate: createEvent, isLoading } = api.event.create.useMutation();
+  const { mutate: createEvent } = api.event.create.useMutation();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -277,7 +277,7 @@ export const CreateEventStep = () => {
           </StepContent>
 
           <StepFooter className="flex justify-end">
-            <Button size="sm" disabled={isLoading}>
+            <Button size="sm">
               <SparklesIcon className="mr-1.5 size-4" />
               Create Event
             </Button>

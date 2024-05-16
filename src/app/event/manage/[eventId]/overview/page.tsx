@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
+import { type RouterOutputs } from "@/trpc/react";
 import { api } from "@/trpc/server";
-import { type RouterOutputs } from "@/trpc/shared";
 
 import { ActionButtons } from "./_components/action-buttons";
 import { EventDetails } from "./_components/event-details";
@@ -13,7 +13,7 @@ export default async function EventOverviewPage({
     eventId: string;
   };
 }) {
-  const event: RouterOutputs["event"]["get"] = await api.event.get.query({
+  const event: RouterOutputs["event"]["get"] = await api.event.get({
     id: params.eventId,
   });
   return (

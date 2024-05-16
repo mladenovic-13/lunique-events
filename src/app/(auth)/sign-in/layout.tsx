@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { AuthErrorProvider } from "@/components/providers/auth-error-provider";
 
 export default function AuthLayout({
@@ -7,7 +9,9 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <AuthErrorProvider />
+      <Suspense>
+        <AuthErrorProvider />
+      </Suspense>
       {children}
     </>
   );

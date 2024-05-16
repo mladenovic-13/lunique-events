@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { RotateCwIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
@@ -12,7 +11,7 @@ export const SignOutButton = (props: ButtonProps) => {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: () => signOut({ redirect: false }),
     onSuccess: () => router.refresh(),
     onError: () =>
@@ -23,14 +22,8 @@ export const SignOutButton = (props: ButtonProps) => {
   });
 
   return (
-    <Button
-      onClick={() => mutate()}
-      disabled={isLoading}
-      className="w-[92px]"
-      {...props}
-    >
-      {isLoading && <RotateCwIcon className="mx-auto size-5 animate-spin" />}
-      {!isLoading && "Sign Out"}
+    <Button onClick={() => mutate()} className="w-[92px]" {...props}>
+      Sign Out
     </Button>
   );
 };
