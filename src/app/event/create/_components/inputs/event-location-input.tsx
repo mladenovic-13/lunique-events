@@ -156,7 +156,7 @@ const AutocompleteInput = ({
 };
 
 const AutocompleteResultEmpty = () => (
-  <div className="px-3 py-2 text-sm text-muted-foreground">
+  <div className="bg-popover px-3 py-2 text-sm text-muted-foreground">
     Looks like there is no results. Try again with different terms.
   </div>
 );
