@@ -7,7 +7,7 @@ export const exploreRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(20).nullish(),
-        cursor: z.string().nullish(), // EVENT ID
+        cursor: z.string().nullish(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -20,7 +20,7 @@ export const exploreRouter = createTRPCRouter({
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          date: "desc",
+          createdAt: "desc",
         },
       });
 

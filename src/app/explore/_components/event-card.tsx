@@ -18,7 +18,7 @@ export const EventCard = ({
   thumbnailUrl,
 }: EventCardProps) => {
   return (
-    <div className="min-h-48 space-y-2 rounded-md border border-border/50 bg-card p-3 transition duration-200 hover:cursor-pointer hover:border-border hover:shadow-lg md:h-56">
+    <div className="min-h-48 space-y-2 rounded-md border border-border/50 bg-card p-3 transition duration-200 hover:cursor-pointer hover:border-border hover:shadow-lg hover:dark:bg-muted/60 md:h-56">
       <div className="flex items-start justify-between">
         <Image
           loader={isAwsImage(thumbnailUrl) ? awsImageLoader : undefined}
