@@ -10,7 +10,6 @@ import {
   SendIcon,
   XIcon,
 } from "lucide-react";
-import { useParams } from "next/navigation";
 import { z } from "zod";
 
 import {
@@ -23,18 +22,18 @@ import {
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
-import { toast } from "../ui/use-toast";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Separator } from "../../ui/separator";
+import { toast } from "../../ui/use-toast";
 
 import { AddGuestsDirectly } from "./add-guests-directly";
 import { GenerateEmail } from "./generate-email";
@@ -47,11 +46,12 @@ const emailFormSchema = z.object({
   eventId: z.string(),
 });
 
-interface InviteGuestsMenuProps {
-  prop?: string;
+interface InviteGuestsProps {
+  eventId: string;
+  userName: string;
 }
 
-export const InviteGuests = ({}: InviteGuestsMenuProps) => {
+const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
   // Internal states on start
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
@@ -60,11 +60,7 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const { mutate: sendInvites, isLoading: sendingEmails } =
     api.guest.invite.useMutation();
 
-  const sendInvitationEmails = (
-    emails: string[],
-    customMessage: string,
-    eventId: string,
-  ) => {
+  const sendInvitationEmails = (emails: string[], customMessage: string) => {
     sendInvites(
       { emails, customMessage, eventId },
       {
@@ -81,68 +77,72 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   const emailForm = useForm<z.infer<typeof emailFormSchema>>({
     resolver: zodResolver(emailFormSchema),
     defaultValues: {
-      eventId: useParams().eventId as string,
+      eventId: eventId,
       customMessage: "",
     },
   });
-  // rename -> onSubmit
   const onSubmit = (values: z.infer<typeof emailFormSchema>) => {
-    sendInvitationEmails(selectedEmails, values.customMessage, values.eventId);
+    sendInvitationEmails(selectedEmails, values.customMessage);
   };
   const onErrors = (errors: unknown) => {
     toast({ title: "Frontend error, check console. Send email form" });
     console.log({ errors });
   };
   return (
-    <section className="flex w-full flex-col pb-4">
-      <section className="flex items-start gap-2">
+    <section className="flex size-full flex-col pb-4">
+      <section className="flex  h-full items-start gap-2">
         {/* Side menu */}
-        <div className="max-w-[240px] pt-4">
+        <div className="h-full max-w-[240px] pt-4">
           <SideBar />
         </div>
         <Separator orientation="vertical" className="bg-accent-foreground/20" />
         {/* Add emails */}
-        <div className="flex w-full flex-col pt-4">
-          {step === "add-emails" && <AddEmails emails={selectedEmails} />}
-          {step === "search-guests" && (
-            <div className="flex flex-col gap-4">
-              <SearchGuests eventGuests={eventGuests} />
-            </div>
-          )}
-          {step === "generate-email" && (
-            // Wrap whole "invite-guests-menu" with form provider
-            <Form {...emailForm}>
-              <form
-                onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
-                className="flex w-full"
-                id="email-form"
-              >
-                <FormField
-                  control={emailForm.control}
-                  name="customMessage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <GenerateEmail
-                          value={field.value ?? ""}
-                          onChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-          )}
-          {step === "add-guests-directly" && <AddGuestsDirectly />}
-          {step === "import-CSV" && <ImportCSV />}
-        </div>
+        {/* <div className="flex size-full  flex-col pt-4"> */}
+        {step === "add-emails" && (
+          <div className="flex grow flex-col pt-4">
+            <AddEmails emails={selectedEmails} />
+          </div>
+        )}
+        {step === "search-guests" && (
+          <div className="flex h-full flex-col gap-4">
+            <SearchGuests eventGuests={eventGuests} />
+          </div>
+        )}
+        {step === "generate-email" && (
+          // Wrap whole "invite-guests-menu" with form provider
+          <Form {...emailForm}>
+            <form
+              onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
+              className="flex size-full"
+              id="email-form"
+            >
+              <FormField
+                control={emailForm.control}
+                name="customMessage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <GenerateEmail
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        eventId={eventId}
+                        userName={userName}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        )}
+        {step === "add-guests-directly" && <AddGuestsDirectly />}
+        {step === "import-CSV" && <ImportCSV />}
       </section>
       <Separator className="bg-white/20" />
-      <div className="pt-6">
+      <div className="h-full pt-6">
         {step !== "generate-email" && step !== "add-guests-directly" && (
-          <div className="flex justify-between">
+          <div className="flex h-full justify-between">
             <Button
               variant={"ghost"}
               className={cn(
@@ -186,7 +186,6 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
             <Button
               variant={"default"}
               className="gap-2"
-              // onClick={() => sendInvitationEmails(selectedEmails)}
               disabled={sendingEmails}
               type="submit"
               form="email-form"
@@ -210,6 +209,8 @@ export const InviteGuests = ({}: InviteGuestsMenuProps) => {
   );
 };
 
+export default InviteGuests;
+
 // outside component
 const formSchema = z.object({
   email: z.string().email(),
@@ -225,10 +226,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
       email: "",
     },
   });
-
   const { addEmail } = useInviteGuestActions();
-
-  // const fnName = () => {}
   const onSubmit = (value: z.infer<typeof formSchema>) => {
     addEmail(value.email);
     form.reset({ email: "" });
@@ -238,15 +236,16 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex flex-col  pt-2">
-      <div className="flex flex-col gap-2">
+    <section className="flex h-full flex-col overflow-y-hidden pt-2">
+      <div className="flex h-full flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onErrors)}
             id="add-email-form"
+            className="flex size-full"
           >
-            <div className="flex gap-2">
+            <div className="flex size-full gap-2">
               <FormField
                 control={form.control}
                 name="email"
@@ -273,7 +272,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
           </form>
         </Form>
       </div>
-      <div className="flex max-h-[475px]  flex-col gap-2 overflow-y-auto pt-3">
+      <div className="h-full overflow-y-auto">
         {emails.map((email, idx) => (
           <InviteEmail email={email} key={idx} />
         ))}
@@ -286,10 +285,6 @@ interface GuestEmailProps {
   email: string;
 }
 
-// create different components -> rm toggle
-// get necessery data from parent component
-// GuestEmailItem should be "dummy" component -> only display stuff
-// remove check icon when adding emails one by one, replace TrachIcon with XIcon (<Button size="icon"><XIcon className="size-4"></Button>)
 const GuestEmail = ({ email }: GuestEmailProps) => {
   const { emailExists } = useInviteGuestActions();
   const { removeEmail, addEmail } = useInviteGuestActions();
@@ -354,7 +349,7 @@ const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
   };
 
   return (
-    <section className="flex max-h-[540px]  flex-col">
+    <section className="flex  flex-col">
       <div className="px-2">
         <Input
           type="search"

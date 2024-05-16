@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/shared";
 
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "../../ui/button";
+import { Label } from "../../ui/label";
+import { Skeleton } from "../../ui/skeleton";
 
 import { EventItem } from "./event-item";
 import { InviteList } from "./invite-list";
