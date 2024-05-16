@@ -1,5 +1,7 @@
 import React from "react";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Label } from "../../ui/label";
 
 interface InviteListProps {
@@ -13,10 +15,13 @@ export const InviteList = ({ guestsEmails }: InviteListProps) => {
         Inviting {guestsEmails.length}{" "}
         {guestsEmails.length === 1 ? "Person" : "People"}
       </Label>
-      {guestsEmails.length > 0 &&
-        guestsEmails.map((guest, idx) => (
-          <InvitedGuestItem email={guest} key={idx} />
-        ))}
+      <ScrollArea>
+        <div className="flex flex-col gap-3 pb-2">
+          {guestsEmails.map((guest, idx) => (
+            <InvitedGuestItem email={guest} key={idx} />
+          ))}
+        </div>
+      </ScrollArea>
     </section>
   );
 };
@@ -31,8 +36,10 @@ export const InvitedGuestItem = ({ email }: InvitedGuestItemProps) => {
         <p className="uppercase">{email[0]}</p>
       </div>
       <div className="flex flex-col truncate">
-        <p className="line-clamp-1  text-sm font-semibold">{email}</p>
-        <p className="text-xs text-accent-foreground/50">{email}</p>
+        <p className="line-clamp-1  text-sm font-medium">{email}</p>
+        <p className="text-xs italic text-accent-foreground/50">
+          {email.substring(email.indexOf("@"), email.length)}
+        </p>
       </div>
     </div>
   );

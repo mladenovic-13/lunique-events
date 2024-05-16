@@ -14,7 +14,6 @@ import {
 } from "./common";
 
 export const EventInviteGuestsStep = () => {
-  // TODO: embed invite guests modal @Lukiano99
   const searchParams = useSearchParams();
   const eventId: string = searchParams.get("id") ?? "";
   const userName = useSession().data?.user.name ?? "";
@@ -22,10 +21,12 @@ export const EventInviteGuestsStep = () => {
     <StepContainer>
       <StepHeader>
         <StepTitle>Invite Guests</StepTitle>
-        <StepDescription>Invite your guests</StepDescription>
+        <StepDescription>Invite your guestdsdss</StepDescription>
       </StepHeader>
-      <StepContent className="max-h-[500px] border-t">
-        <InviteGuests eventId={eventId} userName={userName} />
+      <StepContent className="border-t">
+        <div className="flex h-[500px] w-full px-2">
+          <InviteGuests eventId={eventId} userName={userName} />
+        </div>
       </StepContent>
     </StepContainer>
   );

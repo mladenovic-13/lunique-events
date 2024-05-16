@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   useEventGuests,
   useGuestEmails,
@@ -52,7 +53,6 @@ interface InviteGuestsProps {
 }
 
 const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
-  // Internal states on start
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   const eventGuests = useEventGuests();
@@ -89,58 +89,52 @@ const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex size-full flex-col pb-4">
-      <section className="flex  h-full items-start gap-2">
-        {/* Side menu */}
-        <div className="h-full max-w-[240px] pt-4">
+    <section className="flex size-full flex-col overflow-hidden pb-4">
+      <section className="flex h-[90%] items-start gap-2">
+        {/* Side bar */}
+        <div className="size-full flex-1  flex-col pt-4">
           <SideBar />
         </div>
         <Separator orientation="vertical" className="bg-accent-foreground/20" />
         {/* Add emails */}
-        {/* <div className="flex size-full  flex-col pt-4"> */}
-        {step === "add-emails" && (
-          <div className="flex grow flex-col pt-4">
-            <AddEmails emails={selectedEmails} />
-          </div>
-        )}
-        {step === "search-guests" && (
-          <div className="flex h-full flex-col gap-4">
+        <div className="flex size-full  flex-col pt-4">
+          {step === "add-emails" && <AddEmails emails={selectedEmails} />}
+          {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
-          </div>
-        )}
-        {step === "generate-email" && (
-          // Wrap whole "invite-guests-menu" with form provider
-          <Form {...emailForm}>
-            <form
-              onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
-              className="flex size-full"
-              id="email-form"
-            >
-              <FormField
-                control={emailForm.control}
-                name="customMessage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <GenerateEmail
-                        value={field.value ?? ""}
-                        onChange={field.onChange}
-                        eventId={eventId}
-                        userName={userName}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-        )}
-        {step === "add-guests-directly" && <AddGuestsDirectly />}
-        {step === "import-CSV" && <ImportCSV />}
+          )}
+          {step === "generate-email" && (
+            <Form {...emailForm}>
+              <form
+                onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
+                className="flex size-full"
+                id="email-form"
+              >
+                <FormField
+                  control={emailForm.control}
+                  name="customMessage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <GenerateEmail
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                          eventId={eventId}
+                          userName={userName}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          )}
+          {step === "add-guests-directly" && <AddGuestsDirectly />}
+          {step === "import-CSV" && <ImportCSV />}
+        </div>
       </section>
       <Separator className="bg-white/20" />
-      <div className="h-full pt-6">
+      <div className=" pt-6">
         {step !== "generate-email" && step !== "add-guests-directly" && (
           <div className="flex h-full justify-between">
             <Button
@@ -174,7 +168,7 @@ const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
           </div>
         )}
         {(step === "generate-email" || step === "add-guests-directly") && (
-          <div className="flex justify-between">
+          <div className="flex h-full justify-between">
             <Button
               variant={"secondary"}
               onClick={() => setStep("add-emails")}
@@ -236,8 +230,8 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex h-full flex-col overflow-y-hidden pt-2">
-      <div className="flex h-full flex-col gap-2">
+    <section className="flex h-full flex-col pt-2">
+      <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
           <form
@@ -272,11 +266,11 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
           </form>
         </Form>
       </div>
-      <div className="h-full overflow-y-auto">
+      <ScrollArea className="h-full">
         {emails.map((email, idx) => (
           <InviteEmail email={email} key={idx} />
         ))}
-      </div>
+      </ScrollArea>
     </section>
   );
 };
@@ -349,7 +343,7 @@ const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
   };
 
   return (
-    <section className="flex  flex-col">
+    <section className="flex w-full  flex-col">
       <div className="px-2">
         <Input
           type="search"
@@ -366,7 +360,7 @@ const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
           Select All
         </Button>
       </div>
-      <div className="flex flex-col gap-2 overflow-y-auto">
+      <div className="flex w-full flex-col gap-2">
         {eventGuests?.map((guestEmail, idx) => (
           <GuestEmail email={guestEmail} key={idx} />
         ))}
