@@ -1,22 +1,23 @@
 "use client";
 
-import { ChevronRightIcon } from "lucide-react";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-import { InviteGuests } from "@/components/guests/invite-guests-panel";
-import { buttonVariants } from "@/components/ui/button";
+import InviteGuests from "@/components/common/invite-guests/index";
 
 import {
   StepContainer,
   StepContent,
   StepDescription,
-  StepFooter,
   StepHeader,
   StepTitle,
 } from "./common";
 
 export const EventInviteGuestsStep = () => {
   // TODO: embed invite guests modal @Lukiano99
+  const searchParams = useSearchParams();
+  const eventId: string = searchParams.get("id") ?? "";
+  const userName = useSession().data?.user.name ?? "";
   return (
     <StepContainer>
       <StepHeader>
@@ -24,7 +25,7 @@ export const EventInviteGuestsStep = () => {
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
       <StepContent className="max-h-[500px] border-t">
-        <InviteGuests />
+        <InviteGuests eventId={eventId} userName={userName} />
       </StepContent>
     </StepContainer>
   );
