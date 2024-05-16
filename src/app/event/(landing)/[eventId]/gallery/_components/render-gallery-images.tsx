@@ -14,7 +14,7 @@ import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
 import { useImagesStore } from "@/hooks/use-images-store";
 import { awsImageLoader } from "@/lib/image-loader";
 import { cn } from "@/lib/utils";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 interface RenderGalleryImagesProps {
   event: NonNullable<RouterOutputs["event"]["get"]>;

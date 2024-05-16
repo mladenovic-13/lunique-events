@@ -18,7 +18,7 @@ export default async function EventIdLayout({
 
   if (!session) return redirect(paths.signin.root);
 
-  const event = await api.event.getName.query({ id: eventId });
+  const event = await api.event.getName({ id: eventId });
 
   if (!event) return notFound();
 

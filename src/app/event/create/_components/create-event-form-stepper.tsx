@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { CreateEventStep } from "./steps/create-event-step";
@@ -13,8 +13,18 @@ export const CreateEventSteper = () => {
   const step = searchParams.get("step") ?? "create";
 
   if (step === "create") return <CreateEventStep />;
-  if (step === "registration") return <EventRegistrationStep />;
-  if (step === "guests") return <EventInviteGuestsStep />;
+  if (step === "registration")
+    return (
+      <Suspense>
+        <EventRegistrationStep />
+      </Suspense>
+    );
+  if (step === "guests")
+    return (
+      <Suspense>
+        <EventInviteGuestsStep />
+      </Suspense>
+    );
 
   return null;
 };

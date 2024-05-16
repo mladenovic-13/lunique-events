@@ -39,7 +39,7 @@ import { awsImageLoader } from "@/lib/image-loader";
 import placeholderImg from "@/public/images/placeholder.jpg";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 const mainLinks = [
   {
@@ -94,7 +94,7 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
     RouterOutputs["organization"]["list"][number] | null
   >(null);
 
-  const { mutate: signOut, isLoading: isSigningOut } = useSignOut();
+  const { mutate: signOut } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
   const { updateOrganizationId } = useConfigActions();
   const organizationId = useOrganizationId();
@@ -176,12 +176,7 @@ export const MobileMenuDrawer = ({ image }: MobileMenuDrawerProps) => {
                   </span>
                 </div>
               </div>
-              <Button
-                disabled={isSigningOut}
-                variant="secondary"
-                size="icon"
-                onClick={() => signOut()}
-              >
+              <Button variant="secondary" size="icon" onClick={() => signOut()}>
                 <LogOutIcon className="size-4" />
               </Button>
             </div>

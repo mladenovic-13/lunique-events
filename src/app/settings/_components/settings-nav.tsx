@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { CreditCardIcon, SettingsIcon, UserCircle2Icon } from "lucide-react";
+import { UserCircle2Icon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,16 +13,6 @@ export const SettingsNav = () => {
       title: "Account",
       href: paths.settings.account,
       Icon: UserCircle2Icon,
-    },
-    {
-      title: "Preferences",
-      href: paths.settings.preferences,
-      Icon: SettingsIcon,
-    },
-    {
-      title: "Payment",
-      href: paths.settings.payment,
-      Icon: CreditCardIcon,
     },
   ];
   const pathname = usePathname();

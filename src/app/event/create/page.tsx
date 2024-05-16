@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { paths } from "@/routes/paths";
@@ -11,5 +11,9 @@ export default async function CreateEventPage() {
 
   if (!session?.user.id) redirect(paths.signin.root);
 
-  return <CreateEventSteper />;
+  return (
+    <Suspense>
+      <CreateEventSteper />
+    </Suspense>
+  );
 }

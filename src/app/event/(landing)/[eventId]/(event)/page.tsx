@@ -6,7 +6,6 @@ import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
 import { EventDescription } from "./_components/event-description";
-import { EventDetails } from "./_components/event-details";
 import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
@@ -24,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = params.eventId;
 
   // fetch data
-  const event = await api.event.get.query({ id });
+  const event = await api.event.get({ id });
 
   return {
     title: event?.name,
@@ -42,7 +41,7 @@ export default async function EventPage({
     eventId: string;
   };
 }) {
-  const event = await api.event.get.query({ id: eventId });
+  const event = await api.event.get({ id: eventId });
 
   if (!event) notFound();
 

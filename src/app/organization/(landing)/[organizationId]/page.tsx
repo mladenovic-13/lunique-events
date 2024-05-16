@@ -10,10 +10,10 @@ import {
   useSearchParams,
 } from "next/navigation";
 
-import { Timeline } from "@/components/layout/timeline";
-import { EventCard } from "@/components/partials/event/event-card";
+// import { Timeline } from "@/components/layout/timeline";
+// import { EventCard } from "@/components/partials/event/event-card";
 import { EventTimeframeTabs } from "@/components/partials/event/event-date-tabs";
-import { EventListItem } from "@/components/partials/event/event-list-item";
+// import { EventListItem } from "@/components/partials/event/event-list-item";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
