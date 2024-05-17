@@ -16,9 +16,12 @@ import {
 
 export const EventInviteGuestsStep = () => {
   const searchParams = useSearchParams();
-  const eventId: string = searchParams.get("id") ?? "";
-  const userName = useSession().data?.user.name ?? "";
+  const eventId = searchParams.get("id") ?? "";
+
+  const username = useSession().data?.user.name ?? "";
+
   const router = useRouter();
+
   return (
     <StepContainer>
       <StepHeader>
@@ -29,10 +32,10 @@ export const EventInviteGuestsStep = () => {
         <div className="flex h-[500px] w-full px-2">
           <InviteGuests
             eventId={eventId}
-            userName={userName}
-            onInviteComplete={() => {
-              router.push(paths.home.root);
-            }}
+            userName={username}
+            onInviteComplete={() =>
+              router.push(paths.event.manage.overview(eventId))
+            }
           />
         </div>
       </StepContent>
