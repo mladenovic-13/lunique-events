@@ -1,9 +1,10 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import InviteGuests from "@/components/common/invite-guests/index";
+import { paths } from "@/routes/paths";
 
 import {
   StepContainer,
@@ -17,6 +18,7 @@ export const EventInviteGuestsStep = () => {
   const searchParams = useSearchParams();
   const eventId: string = searchParams.get("id") ?? "";
   const userName = useSession().data?.user.name ?? "";
+  const router = useRouter();
   return (
     <StepContainer>
       <StepHeader>
@@ -25,7 +27,13 @@ export const EventInviteGuestsStep = () => {
       </StepHeader>
       <StepContent className="border-t">
         <div className="flex h-[500px] w-full px-2">
-          <InviteGuests eventId={eventId} userName={userName} />
+          <InviteGuests
+            eventId={eventId}
+            userName={userName}
+            onInviteComplete={() => {
+              router.push(paths.home.root);
+            }}
+          />
         </div>
       </StepContent>
     </StepContainer>

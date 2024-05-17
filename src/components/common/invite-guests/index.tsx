@@ -50,9 +50,14 @@ const emailFormSchema = z.object({
 interface InviteGuestsProps {
   eventId: string;
   userName: string;
+  onInviteComplete?: () => void;
 }
 
-const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
+const InviteGuests = ({
+  eventId,
+  userName,
+  onInviteComplete,
+}: InviteGuestsProps) => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   const eventGuests = useEventGuests();
@@ -67,6 +72,7 @@ const InviteGuests = ({ eventId, userName }: InviteGuestsProps) => {
         onSuccess: () => {
           toast({ title: "Emails are succesfully sent!" });
           resetStore();
+          onInviteComplete && onInviteComplete();
         },
         onError: () =>
           toast({ title: "Sending emails failed.", variant: "destructive" }),
