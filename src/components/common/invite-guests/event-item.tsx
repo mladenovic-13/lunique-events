@@ -4,7 +4,7 @@ import { CircleIcon } from "lucide-react";
 
 import { useGuestSelectedEvent } from "@/hooks/use-guest-store";
 import { cn } from "@/lib/utils";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 interface EventItemProprs {
   event: RouterOutputs["event"]["list"][number];
