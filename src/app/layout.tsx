@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { type Viewport } from "next";
 import { Roboto } from "next/font/google";
 
