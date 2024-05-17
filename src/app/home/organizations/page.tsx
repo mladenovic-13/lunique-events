@@ -41,9 +41,10 @@ export default async function OrganizationsHomePage() {
         Subscribed Organization
       </h2>
       <div className="flex h-52 items-center justify-center">
-        <p className="text-sm text-muted-foreground">
+        {/* <p className="text-sm text-muted-foreground">
           No subscribed organizations
-        </p>
+        </p> */}
+        <p className="text-sm text-muted-foreground">Soon</p>
       </div>
     </MainPage>
   );
