@@ -25,7 +25,7 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
   (set, get) => ({
     emails: [],
     step: "add-emails",
-    guestCapacity: 10,
+    guestCapacity: 30,
     selectedEventName: null,
     eventGuests: [],
     userEvents: [],

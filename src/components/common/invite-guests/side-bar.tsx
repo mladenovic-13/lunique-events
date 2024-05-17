@@ -1,6 +1,7 @@
 import React from "react";
 import { FileTextIcon, PencilLineIcon } from "lucide-react";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   useGuestEmails,
   useInviteGuestActions,
@@ -10,9 +11,9 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/react";
 
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "../../ui/button";
+import { Label } from "../../ui/label";
+import { Skeleton } from "../../ui/skeleton";
 
 import { EventItem } from "./event-item";
 import { InviteList } from "./invite-list";
@@ -21,17 +22,22 @@ export const SideBar = () => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   return (
-    <div>
+    <section className="flex h-full flex-col pt-2">
       {step !== "generate-email" && step !== "add-guests-directly" && (
-        <div className="flex flex-col gap-4 md:h-[540px] md:w-[200px]">
+        <div className="flex h-full flex-col gap-4  md:w-[200px]">
           <ImportActions />
-          <EventList />
+          <Label className="px-2 text-sm font-semibold uppercase  text-accent-foreground/50">
+            Events
+          </Label>
+          <ScrollArea className="h-full ">
+            <EventList />
+          </ScrollArea>
         </div>
       )}
       {(step === "generate-email" || step === "add-guests-directly") && (
         <InviteList guestsEmails={selectedEmails} />
       )}
-    </div>
+    </section>
   );
 };
 
@@ -80,29 +86,24 @@ const EventList = () => {
     setEventGuests(event.guests.map((guest) => guest.email));
   };
   return (
-    <div className="flex flex-col gap-2">
-      <Label className="px-2 pb-2 text-sm font-semibold uppercase  text-accent-foreground/50">
-        Events
-      </Label>
-      <div className="flex h-[400px]  flex-col gap-2 overflow-y-auto">
-        {isLoading &&
-          Array(3)
-            .fill(0)
-            .map((_, index) => index + 1)
-            .map((idx) => (
-              <Skeleton
-                key={idx}
-                className="h-12 w-full animate-pulse bg-accent-foreground/10"
-              />
-            ))}
-        {userEvents?.map((event, idx) => (
-          <EventItem
-            event={event}
-            key={idx}
-            onClick={() => onEventClick(event)}
-          />
-        ))}
-      </div>
+    <div className="flex-col gap-2">
+      {isLoading &&
+        Array(3)
+          .fill(0)
+          .map((_, index) => index + 1)
+          .map((idx) => (
+            <Skeleton
+              key={idx}
+              className="h-12 w-full animate-pulse bg-accent-foreground/10"
+            />
+          ))}
+      {userEvents?.map((event, idx) => (
+        <EventItem
+          event={event}
+          key={idx}
+          onClick={() => onEventClick(event)}
+        />
+      ))}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { UserRoundPlusIcon } from "lucide-react";
 
 import { useInviteGuestActions } from "@/hooks/use-guest-store";
 
-import { Separator } from "../ui/separator";
+import { Separator } from "../../ui/separator";
 
 interface AddGuestsDirectlyProps {
   onChangeMode?: () => void;

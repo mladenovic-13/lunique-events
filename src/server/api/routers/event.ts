@@ -291,6 +291,11 @@ export const eventRouter = createTRPCRouter({
               email: true,
             },
           },
+          creator: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
     }),

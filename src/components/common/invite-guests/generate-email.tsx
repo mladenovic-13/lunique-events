@@ -1,29 +1,35 @@
 import React from "react";
 import { TicketIcon } from "lucide-react";
-import { useParams } from "next/navigation";
 
 import { env } from "@/env.mjs";
 import { useInviteGuestActions } from "@/hooks/use-guest-store";
 import { paths } from "@/routes/paths";
 
-import { Separator } from "../ui/separator";
-import { Textarea } from "../ui/textarea";
+import { Separator } from "../../ui/separator";
+import { Textarea } from "../../ui/textarea";
 
 interface GenerateEmailProps {
   value: string;
   onChange: () => void;
+  eventId: string;
+  userName: string;
 }
 
-export const GenerateEmail = ({ value, onChange }: GenerateEmailProps) => {
+export const GenerateEmail = ({
+  value,
+  onChange,
+  eventId,
+  userName,
+}: GenerateEmailProps) => {
   const { setStep } = useInviteGuestActions();
-  const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_URL}${paths.event.landing.root(useParams().eventId as string)}`;
+  const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_URL}${paths.event.landing.root(eventId)}`;
   return (
     <section className="flex flex-col items-center gap-3 px-4">
       <div className="flex w-full flex-col rounded-lg border-[1.5px] border-accent-foreground/10">
         <div className="p-4">
           <p>
             Hello, <br />
-            <strong>Luka Stojadinovic</strong> has invited you to the event.
+            <strong>{userName}</strong> has invited you to the event.
           </p>
         </div>
         <Textarea

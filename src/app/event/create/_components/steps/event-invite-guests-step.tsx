@@ -1,41 +1,44 @@
 "use client";
 
-import { ChevronRightIcon } from "lucide-react";
-import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-import { buttonVariants } from "@/components/ui/button";
+import InviteGuests from "@/components/common/invite-guests/index";
+import { paths } from "@/routes/paths";
 
 import {
   StepContainer,
   StepContent,
   StepDescription,
-  StepFooter,
   StepHeader,
   StepTitle,
 } from "./common";
 
 export const EventInviteGuestsStep = () => {
-  // TODO: embed invite guests modal @Lukiano99
+  const searchParams = useSearchParams();
+  const eventId = searchParams.get("id") ?? "";
+
+  const username = useSession().data?.user.name ?? "";
+
+  const router = useRouter();
+
   return (
     <StepContainer>
       <StepHeader>
         <StepTitle>Invite Guests</StepTitle>
-        <StepDescription>Invite your guests</StepDescription>
+        <StepDescription>Invite your guestdsdss</StepDescription>
       </StepHeader>
-      <StepContent>Coming soon</StepContent>
-      <StepFooter className="justify-end gap-3">
-        <Link
-          className={buttonVariants({ size: "sm", variant: "ghost" })}
-          href="/"
-        >
-          Skip for now
-        </Link>
-
-        <Link className={buttonVariants({ size: "sm" })} href="/">
-          Continue
-          <ChevronRightIcon className="ml-1.5 size-4" />
-        </Link>
-      </StepFooter>
+      <StepContent className="border-t">
+        <div className="flex h-[500px] w-full px-2">
+          <InviteGuests
+            eventId={eventId}
+            userName={username}
+            onInviteComplete={() =>
+              router.push(paths.event.manage.overview(eventId))
+            }
+          />
+        </div>
+      </StepContent>
     </StepContainer>
   );
 };
