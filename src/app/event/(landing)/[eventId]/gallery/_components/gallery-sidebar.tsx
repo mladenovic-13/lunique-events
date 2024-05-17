@@ -5,21 +5,18 @@ import { useDropzone } from "react-dropzone";
 import { type Image } from "@prisma/client";
 import { Share1Icon } from "@radix-ui/react-icons";
 import axios from "axios";
-import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import JSZip from "jszip";
 import {
   DownloadIcon,
   Loader2Icon,
   MapPinIcon,
-  // ShareIcon,
   SparklesIcon,
   TrashIcon,
   UploadCloudIcon,
 } from "lucide-react";
 
 import { AvatarIcon } from "@/components/icons/avatar-icon";
-import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -23,7 +23,7 @@ import { useSignOut } from "@/hooks/use-sign-out";
 import placeholderImg from "@/public/images/placeholder.jpg";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 interface AccountMenuProps {
   image?: string | null;
@@ -38,7 +38,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
 
   const router = useRouter();
 
-  const { mutate, isLoading } = useSignOut();
+  const { mutate } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
   const organizationId = useOrganizationId();
   const { updateOrganizationId } = useConfigActions();
@@ -140,11 +140,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </Link>
         <DropdownMenuItem asChild>
-          <button
-            disabled={isLoading}
-            onClick={() => mutate()}
-            className="flex w-full items-center"
-          >
+          <button onClick={() => mutate()} className="flex w-full items-center">
             Sign Out
           </button>
         </DropdownMenuItem>

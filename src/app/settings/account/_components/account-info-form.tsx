@@ -45,8 +45,7 @@ export const AccountInfoForm = () => {
   });
 
   const { data: account } = api.account.get.useQuery();
-  const { mutate: saveChanges, isLoading: savingChanges } =
-    api.account.update.useMutation();
+  const { mutate: saveChanges } = api.account.update.useMutation();
   const utils = api.useUtils();
   const { toast } = useToast();
 
@@ -191,7 +190,7 @@ export const AccountInfoForm = () => {
           </div>
         </div>
 
-        <Button disabled={savingChanges} className="w-full md:w-fit">
+        <Button className="w-full md:w-fit">
           <UserCheck2Icon className="mr-1.5 size-4" /> Save Changes
         </Button>
       </form>

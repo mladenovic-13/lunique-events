@@ -1,3 +1,4 @@
+import { type Viewport } from "next";
 import { Roboto } from "next/font/google";
 
 import { ModalProvider } from "@/components/providers/modal-provider";
@@ -18,9 +19,15 @@ const roboto = Roboto({
 export const metadata = {
   title: "Lunique Events",
   description: "Make your event, event from the future.",
-  viewport:
-    "width=device-width, initial-scale=1, maximum-scale=1, , user-scalable=no",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -48,7 +55,9 @@ export default function RootLayout({
               <NextAuthProvider>
                 <ModalProvider />
                 <Toaster />
+                {/* <Suspense> */}
                 {children}
+                {/* </Suspense> */}
               </NextAuthProvider>
             </TRPCReactProvider>
           </ThemeProvider>

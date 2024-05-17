@@ -1,7 +1,7 @@
 import { type Image } from "@prisma/client";
 import { create } from "zustand";
 
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 export type ModalType =
   | "share-event"

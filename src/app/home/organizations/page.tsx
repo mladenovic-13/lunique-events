@@ -11,7 +11,7 @@ import { api } from "@/trpc/server";
 import { OrganizationCard } from "./_components/organization-card";
 
 export default async function OrganizationsHomePage() {
-  const organizations = await api.organization.list.query();
+  const organizations = await api.organization.list();
 
   if (!organizations) notFound();
 

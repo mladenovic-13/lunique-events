@@ -63,7 +63,7 @@ export const CreateEventStep = () => {
     resolver: zodResolver(createEventSchema),
   });
 
-  const { mutate: createEvent, isLoading } = api.event.create.useMutation();
+  const { mutate: createEvent } = api.event.create.useMutation();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -106,26 +106,28 @@ export const CreateEventStep = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <StepContainer>
-          <StepHeader className="flex flex-row items-center justify-between space-y-0">
+          <StepHeader className="flex flex-col justify-between md:flex-row md:items-center md:space-y-0">
             <div>
               <StepTitle>Event details</StepTitle>
               <StepDescription>Enter youre event basic details</StepDescription>
             </div>
-            <FormField
-              control={form.control}
-              name="public"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <EventVisibilityInput
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="hidden md:block">
+              <FormField
+                control={form.control}
+                name="public"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <EventVisibilityInput
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </StepHeader>
           <StepContent className="grid gap-5">
             <FormField
@@ -136,7 +138,7 @@ export const CreateEventStep = () => {
                   <FormControl>
                     <Input
                       placeholder="Event name"
-                      className="h-fit rounded-none border-x-0 border-b border-t-0 p-0 text-5xl shadow-none focus-visible:ring-0"
+                      className="h-fit rounded-none border-x-0 border-b border-t-0 p-0 text-3xl shadow-none focus-visible:ring-0 md:text-5xl"
                       {...field}
                     />
                   </FormControl>
@@ -144,8 +146,9 @@ export const CreateEventStep = () => {
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-5 gap-10">
-              <div className="col-span-2">
+
+            <div className="grid gap-5 md:grid-cols-5 md:gap-10">
+              <div className="md:col-span-2">
                 <FormField
                   control={form.control}
                   name="thumbnailUrl"
@@ -162,15 +165,32 @@ export const CreateEventStep = () => {
                   )}
                 />
               </div>
-              <div className="col-span-3 space-y-2">
-                <div className="space-y-2">
+              <div className="md:hidden">
+                <FormField
+                  control={form.control}
+                  name="public"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <EventVisibilityInput
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="space-y-2 md:col-span-3">
+                <div className="w-full space-y-2">
                   <Label>Date & Time</Label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-center gap-2 md:flex-row">
                     <FormField
                       control={form.control}
                       name="date"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="w-full md:w-fit">
                           <FormControl>
                             <EventDateInput
                               value={new Date(field.value)}
@@ -182,37 +202,39 @@ export const CreateEventStep = () => {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="date"
-                      render={({ field }) => (
-                        <FormItem className="flex justify-center  space-y-0">
-                          <FormControl>
-                            <EventTimeInput
-                              value={new Date(field.value)}
-                              onChange={(date) =>
-                                field.onChange(date?.toISOString())
-                              }
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="timezone"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <FormControl>
-                            <EventTimezoneInput
-                              value={field.value}
-                              onChange={field.onChange}
-                              isDirty={fieldState.isDirty}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex w-full justify-between">
+                      <FormField
+                        control={form.control}
+                        name="date"
+                        render={({ field }) => (
+                          <FormItem className="flex justify-center  space-y-0">
+                            <FormControl>
+                              <EventTimeInput
+                                value={new Date(field.value)}
+                                onChange={(date) =>
+                                  field.onChange(date?.toISOString())
+                                }
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="timezone"
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <FormControl>
+                              <EventTimezoneInput
+                                value={field.value}
+                                onChange={field.onChange}
+                                isDirty={fieldState.isDirty}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -255,7 +277,7 @@ export const CreateEventStep = () => {
           </StepContent>
 
           <StepFooter className="flex justify-end">
-            <Button size="sm" disabled={isLoading}>
+            <Button size="sm">
               <SparklesIcon className="mr-1.5 size-4" />
               Create Event
             </Button>

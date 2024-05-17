@@ -16,7 +16,7 @@ export default async function ManageCalendarLayout({
 
   if (!session) return redirect(paths.signin.root);
 
-  const organization = await api.organization.getName.query({
+  const organization = await api.organization.getName({
     id: organizationId,
   });
 

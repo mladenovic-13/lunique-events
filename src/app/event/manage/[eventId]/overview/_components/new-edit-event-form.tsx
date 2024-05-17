@@ -26,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { env } from "@/env.mjs";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import { type RouterOutputs } from "@/trpc/react";
 
 import { PickLocation } from "./update-form/pick-location";
 import { SelectOrganization } from "./update-form/select-organization";

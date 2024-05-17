@@ -17,7 +17,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import { getGalleryImagePath } from "@/lib/get-path";
 import { convertToMB } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { type RouterInputs } from "@/trpc/shared";
+import { type RouterInputs } from "@/trpc/react";
 
 interface GalleryDropzoneProps {
   eventId: string;

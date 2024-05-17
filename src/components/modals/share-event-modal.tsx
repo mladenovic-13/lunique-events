@@ -28,7 +28,7 @@ export const ShareEventModal = () => {
 
   const galleryUrl = `${origin}/gallery/${eventId}`;
 
-  const { mutate: copy, isLoading } = useMutation({
+  const { mutate: copy } = useMutation({
     mutationFn: () => navigator.clipboard.writeText(galleryUrl),
     onSuccess: () => {
       setCopied(true);
@@ -60,14 +60,9 @@ export const ShareEventModal = () => {
         </DialogHeader>
         <div className="flex gap-3">
           <Input defaultValue={galleryUrl} className="flex-1" />
-          <Button
-            disabled={isLoading || copied}
-            onClick={() => copy()}
-            size="icon"
-            variant="secondary"
-          >
+          <Button onClick={() => copy()} size="icon" variant="secondary">
             {!copied && <CopyIcon className="size-5" />}
-            {copied && !isLoading && <CopyCheckIcon className="size-5" />}
+            {copied && <CopyCheckIcon className="size-5" />}
           </Button>
         </div>
       </DialogContent>

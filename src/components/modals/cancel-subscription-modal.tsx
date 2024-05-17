@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useModal } from "@/hooks/use-modal-store";
@@ -76,22 +75,13 @@ export const CancelSubscriptionModal = () => {
         </DialogHeader>
         <div className="mt-5 space-y-3">
           <Button
-            disabled={mutation.isLoading}
             variant="destructive"
             className="w-full"
             onClick={handleCancelSubscription}
           >
-            {mutation.isLoading && (
-              <Loader2Icon className="mr-1.5 size-4 animate-spin" />
-            )}
             Cancel subscription
           </Button>
-          <Button
-            disabled={mutation.isLoading}
-            variant="secondary"
-            className="w-full"
-            onClick={onClose}
-          >
+          <Button variant="secondary" className="w-full" onClick={onClose}>
             Discard
           </Button>
         </div>

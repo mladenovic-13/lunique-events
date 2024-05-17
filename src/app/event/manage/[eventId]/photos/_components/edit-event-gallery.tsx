@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { type Image } from "@prisma/client";
 
 import { useGalleryModal } from "@/hooks/use-gallery-modal-store";
@@ -40,14 +40,20 @@ export const EditEventGallery = ({ images }: EditEventGalleryProps) => {
         />
       )}
       {images && (
-        <EventSelectImages
-          imagesPerPage={IMAGES_PER_PAGE}
-          images={images}
-          isSelectMode={isSelectMode}
-          selected={selected}
-        />
+        <Suspense>
+          <EventSelectImages
+            imagesPerPage={IMAGES_PER_PAGE}
+            images={images}
+            isSelectMode={isSelectMode}
+            selected={selected}
+          />
+        </Suspense>
       )}
-      {images && <EventImagesPagination pages={pages} />}
+      {images && (
+        <Suspense>
+          <EventImagesPagination pages={pages} />
+        </Suspense>
+      )}
     </div>
   );
 };

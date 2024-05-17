@@ -6,7 +6,6 @@ import {
   ChevronRightIcon,
   CircleCheckIcon,
   CircleIcon,
-  LoaderCircleIcon,
   SendIcon,
   XIcon,
 } from "lucide-react";
@@ -62,8 +61,7 @@ const InviteGuests = ({
   const selectedEmails = useGuestEmails();
   const eventGuests = useEventGuests();
   const { setStep, resetStore } = useInviteGuestActions();
-  const { mutate: sendInvites, isLoading: sendingEmails } =
-    api.guest.invite.useMutation();
+  const { mutate: sendInvites } = api.guest.invite.useMutation();
 
   const sendInvitationEmails = (emails: string[], customMessage: string) => {
     sendInvites(
@@ -186,21 +184,11 @@ const InviteGuests = ({
             <Button
               variant={"default"}
               className="gap-2"
-              disabled={sendingEmails}
               type="submit"
               form="email-form"
             >
-              {!sendingEmails && <SendIcon size={16} />}
-              {sendingEmails && (
-                <svg
-                  className="size-5 animate-spin text-accent-foreground"
-                  viewBox="0 0 24 24"
-                >
-                  <LoaderCircleIcon />
-                </svg>
-              )}
-              {!sendingEmails && `Send Invites`}
-              {sendingEmails && `Sending Invites...`}
+              <SendIcon size={16} />
+              Send Invites
             </Button>
           </div>
         )}

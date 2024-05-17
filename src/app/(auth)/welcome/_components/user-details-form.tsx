@@ -47,8 +47,7 @@ export const UserDetailsForm = () => {
   });
 
   const { data: account } = api.account.get.useQuery();
-  const { mutate: saveChanges, isLoading: savingChanges } =
-    api.account.update.useMutation();
+  const { mutate: saveChanges } = api.account.update.useMutation();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -192,7 +191,7 @@ export const UserDetailsForm = () => {
         </div>
 
         <div className="flex justify-end">
-          <Button disabled={savingChanges} className="w-full md:w-fit">
+          <Button className="w-full md:w-fit">
             <UserCheck2Icon className="mr-1.5 size-4" /> Save & Continue
           </Button>
         </div>
