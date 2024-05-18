@@ -35,6 +35,14 @@ export const createEventSchema = z.object({
   location: locationSchema.nullable(),
 });
 
+export const contactFormSchema = z.object({
+  fullname: z
+    .string()
+    .min(5, { message: "Full name must be at least 5 characters." }),
+  email: z.string().email(),
+  message: z.string().min(10),
+});
+
 export type EventBasicDetails = z.infer<typeof createEventSchema>;
 
 export const eventRegistrationSchema = z.object({

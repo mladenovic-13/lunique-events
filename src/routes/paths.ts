@@ -81,4 +81,5 @@ export const paths = {
   explore: roots.explore,
   pricing: roots.pricing,
   help: roots.help,
+  contact: roots.help + "/contact",
 };

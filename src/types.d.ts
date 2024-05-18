@@ -44,3 +44,13 @@ type InviteGuestStep =
   | "import-CSV"
   | "generate-email"
   | "add-guests-directly";
+
+export type QuestionCategory = {
+  name: string;
+  active: boolean;
+};
+
+export type QuestionAnswer = {
+  question: string;
+  answer: string;
+};
