@@ -50,7 +50,7 @@ export const guestsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const eventLadingPage = `${env.NEXT_PUBLIC_VERCEL_URL}${paths.event.landing.root(input.eventId)}`;
+      const eventLadingPage = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(input.eventId)}`;
       const logo = `${env.NEXT_PUBLIC_AWS_CLOUDFRONT_DOMAIN}/assets/logo.png`;
       return await ctx.resend.emails.send({
         from: `Lunique Events <${env.EMAIL_FROM}>`,
