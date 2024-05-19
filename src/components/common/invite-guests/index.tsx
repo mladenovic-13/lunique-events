@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -6,6 +6,7 @@ import {
   ChevronRightIcon,
   CircleCheckIcon,
   CircleIcon,
+  LoaderCircleIcon,
   SendIcon,
   XIcon,
 } from "lucide-react";
@@ -62,18 +63,22 @@ const InviteGuests = ({
   const eventGuests = useEventGuests();
   const { setStep, resetStore } = useInviteGuestActions();
   const { mutate: sendInvites } = api.guest.invite.useMutation();
-
+  const [isLoading, setIsLoading] = useState(false);
   const sendInvitationEmails = (emails: string[], customMessage: string) => {
+    setIsLoading(true);
     sendInvites(
       { emails, customMessage, eventId },
       {
         onSuccess: () => {
           toast({ title: "Emails are succesfully sent!" });
+          setIsLoading(false);
           resetStore();
           onInviteComplete && onInviteComplete();
         },
-        onError: () =>
-          toast({ title: "Sending emails failed.", variant: "destructive" }),
+        onError: () => {
+          toast({ title: "Sending emails failed.", variant: "destructive" });
+          setIsLoading(false);
+        },
       },
     );
   };
@@ -187,8 +192,17 @@ const InviteGuests = ({
               type="submit"
               form="email-form"
             >
-              <SendIcon size={16} />
-              Send Invites
+              {!isLoading && <SendIcon size={16} />}
+              {isLoading && (
+                <svg
+                  className="size-5 animate-spin text-accent-foreground"
+                  viewBox="0 0 24 24"
+                >
+                  <LoaderCircleIcon />
+                </svg>
+              )}
+              {!isLoading && `Send Invites`}
+              {isLoading && `Sending Invites...`}
             </Button>
           </div>
         )}
