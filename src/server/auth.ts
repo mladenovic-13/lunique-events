@@ -65,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         data: {
           isPersonal: true,
           name: "Personal",
+          thumbnailUrl: "/images/org-thumbnail.webp",
           owner: {
             connect: {
               id: createdUser.id,
