@@ -1,7 +1,8 @@
 import { CheckIcon, XIcon } from "lucide-react";
+import Link from "next/link";
 
 import { MainPage } from "@/components/layout/main-page";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,6 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { paths } from "@/routes/paths";
+
+import { GetNowButton } from "./_components/get-now-button";
+import { GetStartedButton } from "./_components/get-started-button";
 
 export default function PricingPage() {
   return (
@@ -63,9 +68,7 @@ export default function PricingPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button variant="secondary" className="w-full">
-              Get Started
-            </Button>
+            <GetStartedButton />
           </CardFooter>
         </Card>
         <Card>
@@ -110,7 +113,7 @@ export default function PricingPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Get Now</Button>
+            <GetNowButton />
           </CardFooter>
         </Card>
         <Card>
@@ -124,9 +127,15 @@ export default function PricingPage() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="secondary" className="w-full">
+            <Link
+              href={paths.contact}
+              className={buttonVariants({
+                variant: "secondary",
+                className: "w-full",
+              })}
+            >
               Contact Us
-            </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>

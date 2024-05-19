@@ -147,7 +147,7 @@ export const billingRouter = createTRPCRouter({
           },
           productOptions: {
             enabledVariants: [variantId],
-            redirectUrl: `http://${env.NEXT_PUBLIC_VERCEL_URL}/account/billing`,
+            redirectUrl: `http://${env.NEXT_PUBLIC_VERCEL_URL}/`,
             receiptButtonText: "Go to Dashboard",
             receiptThankYouNote: "Thank you for signing up to Lemon Stand!",
           },
