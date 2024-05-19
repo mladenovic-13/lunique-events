@@ -48,7 +48,7 @@ model User {
   limit                 Int            @default(0)
   accounts              Account[]
   sessions              Session[]
-  Subscription          Subscription?
+  subscription          Subscription?
   events                Event[]        @relation(name: "creatorOf")
   ownerOfOrganizations  Organization[] @relation(name: "ownership")
   memberOfOrganizations Organization[]
