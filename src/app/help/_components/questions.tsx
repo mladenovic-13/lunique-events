@@ -7,10 +7,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type QuestionAnswer } from "@/types";
+import { type QA } from "@/types";
 
 interface QAsProps {
-  qaList: QuestionAnswer[];
+  qaList: QA[];
 }
 const QAs = ({ qaList }: QAsProps) => {
   return (
@@ -26,7 +26,7 @@ const QAs = ({ qaList }: QAsProps) => {
 };
 
 interface QuestionesProps {
-  qaList: QuestionAnswer[];
+  qaList: QA[];
 }
 const Questiones = ({ qaList }: QuestionesProps) => {
   return (

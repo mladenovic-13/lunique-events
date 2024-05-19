@@ -1,4 +1,9 @@
-import { Building2Icon, CompassIcon, TicketIcon } from "lucide-react";
+import {
+  Building2Icon,
+  CompassIcon,
+  LifeBuoyIcon,
+  TicketIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { type Session } from "next-auth";
@@ -28,6 +33,11 @@ const links = [
     label: "Explore",
     href: paths.explore,
     Icon: CompassIcon,
+  },
+  {
+    label: "Help",
+    href: paths.help,
+    Icon: LifeBuoyIcon,
   },
 ];
 

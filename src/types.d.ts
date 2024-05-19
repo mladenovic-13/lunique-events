@@ -45,12 +45,16 @@ type InviteGuestStep =
   | "generate-email"
   | "add-guests-directly";
 
-export type QuestionCategory = {
-  name: string;
-  active: boolean;
-};
-
-export type QuestionAnswer = {
+export type QA = {
   question: string;
   answer: string;
+};
+export type QuestionCategory =
+  | "event"
+  | "account"
+  | "premium-packet"
+  | "billing";
+export type QuestionAnswer = {
+  category: QuestionCategory;
+  faqs: QA[];
 };

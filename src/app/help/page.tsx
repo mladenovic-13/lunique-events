@@ -8,8 +8,10 @@ import Heading from "./_components/heading";
 const HelpPage = () => {
   return (
     <div className="mx-auto min-h-96 max-w-4xl  space-y-10  px-4 md:px-0">
-      <Heading />
-      <FAQs />
+      <div className="flex flex-col space-y-0 md:space-y-10">
+        <Heading />
+        <FAQs />
+      </div>
       <GetInTouch />
     </div>
   );
