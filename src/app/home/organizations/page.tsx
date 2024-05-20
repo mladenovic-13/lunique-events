@@ -1,13 +1,11 @@
-import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
-import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { paths } from "@/routes/paths";
 import { api } from "@/trpc/server";
 
+import { CreateButton } from "./_components/create-button";
 import { OrganizationCard } from "./_components/organization-card";
 
 export default async function OrganizationsHomePage() {
@@ -19,12 +17,7 @@ export default async function OrganizationsHomePage() {
     <MainPage>
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-medium md:text-xl">My Organizations</h2>
-        <Link
-          href={paths.organization.create}
-          className={buttonVariants({ variant: "secondary", size: "sm" })}
-        >
-          <PlusIcon className="mr-1.5 size-4" /> Create
-        </Link>
+        <CreateButton />
       </div>
 
       <ul className="grid grid-cols-1 gap-3 md:grid-cols-3">
