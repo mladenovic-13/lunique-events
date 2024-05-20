@@ -6,6 +6,7 @@ import { billingRouter } from "./routers/billing";
 import { contactRouter } from "./routers/contact";
 import { exploreRouter } from "./routers/explore";
 import { guestsRouter } from "./routers/guests";
+import { inviteRouter } from "./routers/invite";
 import { organizationRouter } from "./routers/organization";
 import { s3Router } from "./routers/s3";
 
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   account: accountRouter,
   explore: exploreRouter,
   contact: contactRouter,
+  invite: inviteRouter,
 });
 
 // export type definition of API

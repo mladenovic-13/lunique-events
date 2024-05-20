@@ -63,7 +63,7 @@ const InviteGuests = ({
   const { setStep, resetStore } = useInviteGuestActions();
 
   const { mutate: sendInvites, isPending: sendingEmails } =
-    api.guest.invite.useMutation();
+    api.invite.send.useMutation();
 
   const sendInvitationEmails = (emails: string[], customMessage: string) => {
     sendInvites(

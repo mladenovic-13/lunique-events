@@ -37,10 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EventPage({
   params: { eventId },
+  searchParams,
 }: {
   params: {
     eventId: string;
   };
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
   const event = await api.event.get({ id: eventId });
 
@@ -67,7 +69,10 @@ export default async function EventPage({
             timezone={event.timezone}
             location={event.location?.secondaryText ?? "Unknown"}
           />
-          <RegisterGuest eventId={eventId} />
+          <RegisterGuest
+            eventId={eventId}
+            inviteId={(searchParams.invite as string) ?? null}
+          />
           <EventDescription description={event.description} />
           {/* <EventGallery /> */}
           <EventLocation

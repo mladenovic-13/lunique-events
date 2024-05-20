@@ -37,11 +37,18 @@ import {
   registrationSchema,
 } from "@/validation/register-guest";
 
-export const RegisterGuest = ({ eventId }: { eventId: string }) => {
+interface RegisterGuestProps {
+  eventId: string;
+  inviteId: string | null;
+}
+
+export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter();
+
+  console.log({ inviteId });
 
   return (
     <Card>
