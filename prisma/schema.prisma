@@ -53,7 +53,7 @@ model User {
   ownerOfOrganizations  Organization[] @relation(name: "ownership")
   memberOfOrganizations Organization[]
   socialLinksId         String?
-  guestOf               Event[]        @relation(name: "guestOf")
+  guest                 Guest[]
 }
 
 model VerificationToken {
@@ -131,10 +131,15 @@ model Subscription {
 }
 
 model Guest {
-  id      String @id @default(cuid())
-  email   String
-  event   Event  @relation(fields: [eventId], references: [id])
-  eventId String
+  id       String  @id @default(cuid())
+  email    String
+  name     String?
+  website  String?
+  linkedIn String?
+  user     User?   @relation(fields: [userId], references: [id])
+  event    Event   @relation(fields: [eventId], references: [id])
+  eventId  String
+  userId   String?
 }
 
 model Invite {
@@ -215,7 +220,6 @@ model Event {
   userId               String
   faces                Face[]
   guests               Guest[]
-  userGuests           User[]                @relation(name: "guestOf")
   images               Image[]
   invites              Invite[]
   createdAt            DateTime              @default(now())
@@ -235,11 +239,18 @@ model RegistrationSettings {
   eventId   String                 @unique
 }
 
+// TODO: maybe replace with string[]
 model RegistrationQuestion {
   id                     String                @id @default(cuid())
   question               String
   registrationSettings   RegistrationSettings? @relation(fields: [registrationSettingsId], references: [id])
   registrationSettingsId String?
+}
+
+model RegistrationQA {
+  id       String @id @default(cuid())
+  question String
+  answer   String
 }
 
 model Location {

@@ -22,8 +22,6 @@ export const guestsRouter = createTRPCRouter({
           email: input.email,
         },
       });
-
-      return null;
     }),
   list: protectedProcedure
     .input(

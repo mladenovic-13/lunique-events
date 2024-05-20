@@ -46,9 +46,21 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data: rules, isLoading: isLoadingRules } =
+    api.event.getRegistration.useQuery({
+      eventId: eventId,
+    });
+  const { data: invite, isLoading: isLoadingInvite } = api.invite.get.useQuery(
+    { id: inviteId },
+    { enabled: !!inviteId },
+  );
+
   const router = useRouter();
 
-  console.log({ inviteId });
+  const isLoadingForm = isLoadingInvite || isLoadingRules;
+
+  if (isLoadingRules || isLoadingInvite)
+    return <div>TODO: Loading Skeleton...</div>;
 
   return (
     <Card>
@@ -72,14 +84,21 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
                 <DialogTitle>Your info</DialogTitle>
               </DialogHeader>
 
-              <RegistrationForm
-                eventId={eventId}
-                onSuccess={() => {
-                  setIsRegistered(true);
-                  setIsOpen(false);
-                  router.refresh();
-                }}
-              />
+              {!isLoadingForm && (
+                <RegistrationForm
+                  eventId={eventId}
+                  fields={{
+                    name: rules?.name,
+                    linkedIn: rules?.linkedIn,
+                    website: rules?.website,
+                  }}
+                  onSuccess={() => {
+                    setIsRegistered(true);
+                    setIsOpen(false);
+                    router.refresh();
+                  }}
+                />
+              )}
             </DialogContent>
           </Dialog>
         </CardFooter>
@@ -91,12 +110,22 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
 interface RegistrationFormProps {
   eventId: string;
   onSuccess: (args: { name?: string | null; email?: string | null }) => void;
+  email?: string;
+  fields?: {
+    name?: boolean;
+    website?: boolean;
+    linkedIn?: boolean;
+  };
 }
 
-const RegistrationForm = ({ eventId }: RegistrationFormProps) => {
+const RegistrationForm = ({
+  eventId,
+  fields,
+  email = "",
+}: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
-    defaultValues: registrationDefaultValues,
+    defaultValues: { ...registrationDefaultValues, email },
   });
 
   const { mutate: registerGuest } = api.guest.create.useMutation();
@@ -128,19 +157,21 @@ const RegistrationForm = ({ eventId }: RegistrationFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <div className="space-y-3">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {fields?.name && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="email"
@@ -154,6 +185,44 @@ const RegistrationForm = ({ eventId }: RegistrationFormProps) => {
               </FormItem>
             )}
           />
+          {fields?.website && (
+            <FormField
+              control={form.control}
+              name="website"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Website</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="www.website.com"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {fields?.website && (
+            <FormField
+              control={form.control}
+              name="linkedIn"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>LinkedIn</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://www.linkedin.com/in/your-id"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <Button className="w-full">Register</Button>
       </form>

@@ -1,3 +1,4 @@
+import { InviteStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import * as z from "zod";
 
@@ -9,11 +10,30 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const inviteRouter = createTRPCRouter({
   get: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string().nullable() }))
     .query(async ({ ctx, input }) => {
+      if (!input.id) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invite ID required",
+        });
+      }
+
       return await ctx.db.invite.findFirst({
         where: {
           id: input.id,
+        },
+      });
+    }),
+  updateStatus: publicProcedure
+    .input(z.object({ id: z.string(), status: z.nativeEnum(InviteStatus) }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.invite.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: input.status,
         },
       });
     }),
