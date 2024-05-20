@@ -22,7 +22,7 @@ export const GenerateEmail = ({
   userName,
 }: GenerateEmailProps) => {
   const { setStep } = useInviteGuestActions();
-  const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_URL}${paths.event.landing.root(eventId)}`;
+  const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(eventId)}`;
   return (
     <section className="flex flex-col items-center gap-3 px-4">
       <div className="flex w-full flex-col rounded-lg border-[1.5px] border-accent-foreground/10">
