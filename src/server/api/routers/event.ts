@@ -296,6 +296,11 @@ export const eventRouter = createTRPCRouter({
               name: true,
             },
           },
+          location: {
+            select: {
+              description: true,
+            },
+          },
         },
       });
     }),

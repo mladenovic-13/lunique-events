@@ -86,7 +86,7 @@ const EventList = () => {
     setEventGuests(event.guests.map((guest) => guest.email));
   };
   return (
-    <div className="flex-col gap-2">
+    <div className="flex flex-col gap-2">
       {isLoading &&
         Array(3)
           .fill(0)

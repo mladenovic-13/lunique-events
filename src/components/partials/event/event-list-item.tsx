@@ -1,7 +1,6 @@
 import React from "react";
 import { type Event } from "@prisma/client";
 import { format, isToday, isTomorrow, isYesterday } from "date-fns";
-import { UserIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -42,14 +41,15 @@ export const EventListItem = ({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <UserIcon
-                size={14}
-                className="rounded-full border border-accent-foreground/50 text-accent-foreground/50"
-              />
               {creator && (
-                <p className="text-sm text-accent-foreground/50">
-                  By: {creator}
-                </p>
+                <>
+                  <div className="flex size-6 items-center justify-center rounded-full border-2 border-accent-foreground/20 bg-muted text-xs text-accent-foreground/50">
+                    {creator[0]}
+                  </div>
+                  <p className="text-sm text-accent-foreground/50">
+                    By: {creator}
+                  </p>
+                </>
               )}
               {!creator && (
                 <p className="text-sm text-red-500">Creator is missing!</p>
