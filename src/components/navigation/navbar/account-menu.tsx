@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
+import { useModal } from "@/hooks/use-modal-store";
 import { useSignOut } from "@/hooks/use-sign-out";
 import placeholderImg from "@/public/images/placeholder.jpg";
 import { paths } from "@/routes/paths";
@@ -40,10 +41,13 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
 
   const { mutate } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
+  const { data: isPremiumUser } = api.billing.isPremiumUser.useQuery();
+  const { onOpen } = useModal();
   const organizationId = useOrganizationId();
   const { updateOrganizationId } = useConfigActions();
 
   useEffect(() => {
+    // TODO: Move organization fetch to store context privider
     if (!orgs) return;
 
     const personal = orgs.find((item) => item.isPersonal);
@@ -57,6 +61,11 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
       updateOrganizationId(personal?.id);
     }
   }, [organizationId, orgs, updateOrganizationId]);
+
+  const onNewOrganization = () => {
+    if (isPremiumUser) router.push(paths.organization.create);
+    if (!isPremiumUser) onOpen("get-now");
+  };
 
   const avatarUrl = organization?.isPersonal
     ? image
@@ -125,7 +134,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="justify-center gap-1.5"
-                onSelect={() => router.push(paths.organization.create)}
+                onSelect={onNewOrganization}
               >
                 <PlusIcon className="size-4" /> New organization
               </DropdownMenuItem>

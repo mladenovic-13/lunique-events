@@ -14,6 +14,7 @@ export type ModalType =
   | "invite-guests"
   | "confirm-registration"
   | "group-registration"
+  | "get-now"
   | "event-capacity";
 
 export type ModalData = {

@@ -8,8 +8,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 
 export const GetNowButton = () => {
+  // TODO: move fetch to server and pass data as props
   const { data: plan } = api.billing.getPlan.useQuery({ type: "professional" });
-  const { data: currentPlan } = api.billing.getCurrentPlan.useQuery();
+  const { data: isPremium } = api.billing.isPremiumUser.useQuery();
 
   const { mutate: getCheckoutURL, isPending } =
     api.billing.getCheckoutUrl.useMutation();
@@ -40,8 +41,6 @@ export const GetNowButton = () => {
       },
     );
   };
-
-  const isPremium = currentPlan?.productId === 207991;
 
   return (
     <Button

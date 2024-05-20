@@ -1,6 +1,7 @@
 import { CheckIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 
+import { GetNowButton } from "@/components/billing/get-now-button";
 import { MainPage } from "@/components/layout/main-page";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { paths } from "@/routes/paths";
 
-import { GetNowButton } from "./_components/get-now-button";
 import { GetStartedButton } from "./_components/get-started-button";
 
 export default function PricingPage() {
