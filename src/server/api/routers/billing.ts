@@ -63,6 +63,18 @@ export const billingRouter = createTRPCRouter({
 
     return subscription.plan;
   }),
+  isPremiumUser: protectedProcedure.query(async ({ ctx }) => {
+    const subscription = await ctx.db.subscription.findFirst({
+      where: { userId: ctx.session.user.id },
+      select: { plan: { include: { features: true } }, status: true },
+    });
+
+    if (!subscription) return false;
+
+    return (
+      subscription.plan.variantId === 281950 && subscription.status === "active"
+    );
+  }),
   getSubscription: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.subscription.findFirst({
       where: {

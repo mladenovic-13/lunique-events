@@ -9,6 +9,7 @@ import { ConfirmRegistrationModal } from "../modals/confirm-registration-modal";
 import { DeleteEventImagesModal } from "../modals/delete-images-modal";
 import { EventCapacityModal } from "../modals/event-capacity-modal";
 import { GalleryModal } from "../modals/gallery-modal";
+import { GetNowModal } from "../modals/get-premium-modal";
 import { GroupRegistrationModal } from "../modals/group-registration-modal";
 import { InviteGuestsModal } from "../modals/invite-guests-modal";
 import { ShareEventModal } from "../modals/share-event-modal";
@@ -40,6 +41,7 @@ export const ModalProvider = () => {
       <ConfirmRegistrationModal />
       <GroupRegistrationModal />
       <EventCapacityModal />
+      <GetNowModal />
     </>
   );
 };
