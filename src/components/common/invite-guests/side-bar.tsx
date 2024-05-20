@@ -2,6 +2,7 @@ import React from "react";
 import { FileTextIcon, PencilLineIcon } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   useGuestEmails,
   useInviteGuestActions,
@@ -17,16 +18,24 @@ import { Skeleton } from "../../ui/skeleton";
 
 import { EventItem } from "./event-item";
 import { InviteList } from "./invite-list";
-
-export const SideBar = () => {
+interface SideBarProps {
+  className?: string;
+}
+export const SideBar = ({ className }: SideBarProps) => {
   const step = useInviteStep();
   const selectedEmails = useGuestEmails();
   return (
-    <section className="flex h-full flex-col pt-2">
+    <section
+      className={cn(
+        "flex h-full flex-col pt-2 md:max-w-[200px]",
+        className && className,
+      )}
+    >
       {step !== "generate-email" && step !== "add-guests-directly" && (
-        <div className="flex h-full flex-col gap-4  md:w-[200px]">
+        <div className="flex h-full flex-col gap-4 md:w-full">
           <ImportActions />
-          <Label className="px-2 text-sm font-semibold uppercase  text-accent-foreground/50">
+          <Separator className="bg-accent-foreground/20" />
+          <Label className="-mb-2 px-3 pt-2 text-sm font-semibold uppercase  text-accent-foreground/50">
             Events
           </Label>
           <ScrollArea className="h-full ">
@@ -45,7 +54,7 @@ const ImportActions = () => {
   const step = useInviteStep();
   const { setStep } = useInviteGuestActions();
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2 px-1">
       <Button
         className={cn(
           "flex items-center justify-start gap-2 pl-2 font-bold text-accent-foreground hover:bg-accent-foreground/10",

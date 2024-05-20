@@ -40,6 +40,7 @@ import { AddGuestsDirectly } from "./add-guests-directly";
 import { GenerateEmail } from "./generate-email";
 import { ImportCSV } from "./import-csv";
 import { SideBar } from "./side-bar";
+import TopBar from "./top-bar";
 
 // move outside components
 const emailFormSchema = z.object({
@@ -99,14 +100,21 @@ const InviteGuests = ({
   };
   return (
     <section className="flex size-full flex-col overflow-hidden pb-4">
-      <section className="flex h-[90%] items-start gap-2">
+      {/* Desktop design */}
+      <section className="flex h-[90%] w-full flex-col gap-2 md:h-[90%]   md:flex-row md:items-start">
         {/* Side bar */}
-        <div className="size-full flex-1  flex-col pt-4">
-          <SideBar />
+        <div className="flex h-full gap-0">
+          <div className="flex-col pt-2 md:h-full">
+            <SideBar className="hidden md:flex" />
+            <TopBar className="flex md:hidden" />
+          </div>
+          <Separator
+            orientation="vertical"
+            className="hidden bg-accent-foreground/20 md:flex"
+          />
         </div>
-        <Separator orientation="vertical" className="bg-accent-foreground/20" />
         {/* Add emails */}
-        <div className="flex size-full  flex-col pt-4">
+        <div className="flex size-full  flex-col pt-2">
           {step === "add-emails" && <AddEmails emails={selectedEmails} />}
           {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
@@ -142,8 +150,9 @@ const InviteGuests = ({
           {step === "import-CSV" && <ImportCSV />}
         </div>
       </section>
+
       <Separator className="bg-white/20" />
-      <div className=" pt-6">
+      <div className=" px-2 pt-6 ">
         {step !== "generate-email" && step !== "add-guests-directly" && (
           <div className="flex h-full justify-between">
             <Button
@@ -230,6 +239,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
   });
   const { addEmail } = useInviteGuestActions();
   const onSubmit = (value: z.infer<typeof formSchema>) => {
+    console.log(value);
     addEmail(value.email);
     form.reset({ email: "" });
   };
@@ -238,7 +248,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex h-full flex-col pt-2">
+    <section className="flex size-full flex-col pt-2">
       <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>

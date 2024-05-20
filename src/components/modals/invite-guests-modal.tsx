@@ -29,7 +29,7 @@ export const InviteGuestsModal = () => {
   const userName = useSession().data?.user.name ?? "";
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="flex  max-h-[620px] min-h-[620px] min-w-[700px] flex-col gap-0  p-0">
+      <DialogContent className="flex  h-screen flex-col gap-0 p-0 md:h-[620px] md:max-h-[620px] md:min-w-[700px]">
         <div className="px-2 pb-4 pt-5">
           <DialogHeader className=" p-0 pl-2 pr-14">
             <DialogTitle className="flex items-center justify-between">
@@ -47,7 +47,7 @@ export const InviteGuestsModal = () => {
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
-        <div className="flex h-[550px] w-full px-2">
+        <div className="flex h-[95%] md:h-[550px]">
           <InviteGuests eventId={eventId} userName={userName} />
         </div>
       </DialogContent>
