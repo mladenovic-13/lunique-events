@@ -6,6 +6,7 @@ import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
 import { EventDescription } from "./_components/event-description";
+import { EventDetails } from "./_components/event-details";
 import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
@@ -59,13 +60,13 @@ export default async function EventPage({
           </div>
         </div>
         <div className="space-y-5 md:w-3/5">
-          {/* <EventDetails
+          <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
-            // TODO: fix
-            startDate={event.startDate ?? new Date()}
+            date={event.date}
+            timezone={event.timezone}
             location={event.location?.secondaryText ?? "Unknown"}
-          /> */}
+          />
           <RegisterGuest eventId={eventId} />
           <EventDescription description={event.description} />
           {/* <EventGallery /> */}
