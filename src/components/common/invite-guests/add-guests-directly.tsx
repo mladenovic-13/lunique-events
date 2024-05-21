@@ -11,7 +11,7 @@ interface AddGuestsDirectlyProps {
 export const AddGuestsDirectly = ({}: AddGuestsDirectlyProps) => {
   const { setStep } = useInviteGuestActions();
   return (
-    <section className="flex flex-col gap-4 px-4">
+    <section className="flex flex-col gap-4">
       <GuestsCardComponent />
       <div className="flex w-full items-center gap-2 pl-0">
         <div className="flex size-8 items-center justify-center rounded-md bg-green-800/20  p-1.5">

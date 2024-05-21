@@ -8,6 +8,8 @@ import { paths } from "@/routes/paths";
 import { Separator } from "../../ui/separator";
 import { Textarea } from "../../ui/textarea";
 
+import { InviteList } from "./invite-list";
+
 interface GenerateEmailProps {
   value: string;
   onChange: () => void;
@@ -24,10 +26,10 @@ export const GenerateEmail = ({
   const { setStep } = useInviteGuestActions();
   const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(eventId)}`;
   return (
-    <section className="flex flex-col items-center gap-3 px-4">
+    <section className="flex h-full flex-col items-center gap-3 text-sm md:text-base">
       <div className="flex w-full flex-col rounded-lg border-[1.5px] border-accent-foreground/10">
         <div className="p-4">
-          <p>
+          <p className="">
             Hello, <br />
             <strong>{userName}</strong> has invited you to the event.
           </p>
@@ -39,10 +41,10 @@ export const GenerateEmail = ({
           placeholder="Add a custom message here..."
         />
         <div className="p-4">
-          <p className="text-sm">
+          <p className="text-sm ">
             <strong>RVSP:</strong>
             <br />
-            {eventLandingPage}
+            <p className="line-clamp-1">{eventLandingPage}</p>
           </p>
         </div>
       </div>
@@ -67,6 +69,10 @@ export const GenerateEmail = ({
           Add Guests Directly
         </a>{" "}
       </p>
+      <div className="flex size-full flex-col gap-2 md:hidden">
+        <Separator />
+        <InviteList />
+      </div>
     </section>
   );
 };

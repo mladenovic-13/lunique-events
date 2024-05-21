@@ -1,22 +1,20 @@
 import React from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGuestEmails } from "@/hooks/use-guest-store";
 
 import { Label } from "../../ui/label";
 
-interface InviteListProps {
-  guestsEmails: Array<string>;
-}
-
-export const InviteList = ({ guestsEmails }: InviteListProps) => {
+export const InviteList = () => {
+  const guestsEmails = useGuestEmails();
   return (
-    <section className="flex flex-col gap-4 overflow-y-auto md:h-[540px] md:w-[200px]">
+    <section className="flex h-full flex-col gap-4 overflow-auto md:w-[200px]">
       <Label className="px-2 pb-2 text-sm text-accent-foreground/50">
         Inviting {guestsEmails.length}{" "}
         {guestsEmails.length === 1 ? "Person" : "People"}
       </Label>
-      <ScrollArea>
-        <div className="flex flex-col gap-3 pb-2">
+      <ScrollArea className="hidden h-full px-2 md:block">
+        <div className="flex h-full flex-col gap-2">
           {guestsEmails.map((guest, idx) => (
             <InvitedGuestItem email={guest} key={idx} />
           ))}

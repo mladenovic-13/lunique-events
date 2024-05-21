@@ -37,6 +37,7 @@ import { Separator } from "../../ui/separator";
 import { toast } from "../../ui/use-toast";
 
 import { AddGuestsDirectly } from "./add-guests-directly";
+import { EventList } from "./event-list";
 import { GenerateEmail } from "./generate-email";
 import { ImportCSV } from "./import-csv";
 import { SideBar } from "./side-bar";
@@ -99,22 +100,20 @@ const InviteGuests = ({
     console.log({ errors });
   };
   return (
-    <section className="fixed flex h-[90%] flex-col md:relative md:size-full">
+    <section className="flex h-[90%] w-full flex-col md:relative md:size-full">
       {/* Desktop&Mobile design */}
-      <section className="flex max-h-[95%] min-h-[95%] w-full  flex-col  md:min-h-[90%] md:flex-row md:items-start">
+      <section className="flex max-h-[95%] min-h-[95%] w-full  flex-col gap-4 md:min-h-[90%]  md:flex-row md:items-start md:gap-0">
         {/* Side bar */}
-        <div className="flex h-fit gap-0 md:h-full">
-          <div className="h-fit flex-col pt-2 md:h-full">
-            <SideBar className="hidden md:flex" />
-            <TopBar className="flex md:hidden" />
-          </div>
-          <Separator
-            orientation="vertical"
-            className="hidden bg-accent-foreground/20 md:flex"
-          />
-        </div>
+        {/* <div className="flex h-fit gap-0 md:h-full"> */}
+        <SideBar className="hidden md:flex" />
+        <TopBar className="flex md:hidden" />
+        <Separator
+          orientation="vertical"
+          className="hidden bg-accent-foreground/20 md:flex"
+        />
+        {/* </div> */}
         {/* Add emails */}
-        <div className="flex max-h-[92%] min-h-[92%] w-full flex-col md:h-full md:max-h-full  md:px-4 md:py-5">
+        <div className="flex max-h-[92%] min-h-[92%]  px-4 md:size-full md:max-h-full md:px-4  md:pt-5">
           {step === "add-emails" && <AddEmails />}
           {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
@@ -123,15 +122,15 @@ const InviteGuests = ({
             <Form {...emailForm}>
               <form
                 onSubmit={emailForm.handleSubmit(onSubmit, onErrors)}
-                className="flex size-full"
+                className="flex size-full p-0"
                 id="email-form"
               >
                 <FormField
                   control={emailForm.control}
                   name="customMessage"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
+                    <FormItem className="size-full">
+                      <FormControl className="size-full">
                         <GenerateEmail
                           value={field.value ?? ""}
                           onChange={field.onChange}
@@ -148,73 +147,74 @@ const InviteGuests = ({
           )}
           {step === "add-guests-directly" && <AddGuestsDirectly />}
           {step === "import-CSV" && <ImportCSV />}
+          {step === "list-events" && <EventList />}
         </div>
       </section>
       <Separator className=" bg-white/20" />
-      <div className="flex  items-center justify-center px-2 pt-4 md:size-full">
-        {step !== "generate-email" && step !== "add-guests-directly" && (
-          <div className="flex size-full items-center justify-between">
-            <Button
-              variant={"ghost"}
-              className={cn(
-                "pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary",
-                selectedEmails.length > 0 &&
-                  step === "add-emails" &&
-                  "text-primary",
-              )}
-              type="button"
-              onClick={() => {
-                if (step !== "add-emails") setStep("add-emails");
-                else if (step === "add-emails") {
-                  setStep("search-guests");
-                }
-              }}
-              disabled={selectedEmails.length === 0}
-            >
-              {selectedEmails.length} Selected
-            </Button>
-            <Button
-              variant={"default"}
-              onClick={() => setStep("generate-email")}
-              className="gap-2"
-              disabled={selectedEmails.length === 0}
-            >
-              Next
-              <ChevronRightIcon size={16} />
-            </Button>
-          </div>
-        )}
-        {(step === "generate-email" || step === "add-guests-directly") && (
-          <div className="flex size-full items-center justify-between">
-            <Button
-              variant={"secondary"}
-              onClick={() => setStep("add-emails")}
-              className="gap-2"
-            >
-              <ChevronLeftIcon size={16} />
-              Back
-            </Button>
-            <Button
-              variant={"default"}
-              className="gap-2"
-              type="submit"
-              form="email-form"
-            >
-              {!isLoading && <SendIcon size={16} />}
-              {isLoading && (
-                <svg
-                  className="size-5 animate-spin text-accent-foreground"
-                  viewBox="0 0 24 24"
-                >
-                  <LoaderCircleIcon />
-                </svg>
-              )}
-              {!isLoading && `Send Invites`}
-              {isLoading && `Sending Invites...`}
-            </Button>
-          </div>
-        )}
-      </div>
+      {/* <div className="flex  items-center justify-center px-2 pt-4 md:size-full"> */}
+      {step !== "generate-email" && step !== "add-guests-directly" && (
+        <div className="flex  size-full items-center justify-between  px-4">
+          <Button
+            variant={"ghost"}
+            className={cn(
+              "pl-2 text-sm font-semibold text-accent-foreground/50 transition-all hover:bg-transparent hover:text-primary",
+              selectedEmails.length > 0 &&
+                step === "add-emails" &&
+                "text-primary",
+            )}
+            type="button"
+            onClick={() => {
+              if (step !== "add-emails") setStep("add-emails");
+              else if (step === "add-emails") {
+                setStep("search-guests");
+              }
+            }}
+            disabled={selectedEmails.length === 0}
+          >
+            {selectedEmails.length} Selected
+          </Button>
+          <Button
+            variant={"default"}
+            onClick={() => setStep("generate-email")}
+            className="gap-2"
+            disabled={selectedEmails.length === 0}
+          >
+            Next
+            <ChevronRightIcon size={16} />
+          </Button>
+        </div>
+      )}
+      {(step === "generate-email" || step === "add-guests-directly") && (
+        <div className="flex size-full items-center justify-between  px-4">
+          <Button
+            variant={"secondary"}
+            onClick={() => setStep("add-emails")}
+            className="gap-2"
+          >
+            <ChevronLeftIcon size={16} />
+            Back
+          </Button>
+          <Button
+            variant={"default"}
+            className="gap-2"
+            type="submit"
+            form="email-form"
+          >
+            {!isLoading && <SendIcon size={16} />}
+            {isLoading && (
+              <svg
+                className="size-5 animate-spin text-accent-foreground"
+                viewBox="0 0 24 24"
+              >
+                <LoaderCircleIcon />
+              </svg>
+            )}
+            {!isLoading && `Send Invites`}
+            {isLoading && `Sending Invites...`}
+          </Button>
+        </div>
+      )}
+      {/* </div> */}
     </section>
   );
 };

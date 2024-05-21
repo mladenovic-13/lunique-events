@@ -3,27 +3,19 @@ import { FileTextIcon, PencilLineIcon } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  useGuestEmails,
-  useInviteGuestActions,
-  useInviteStep,
-} from "@/hooks/use-guest-store";
+import { useInviteGuestActions, useInviteStep } from "@/hooks/use-guest-store";
 import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/react";
 
 import { Button } from "../../ui/button";
 import { Label } from "../../ui/label";
-import { Skeleton } from "../../ui/skeleton";
 
-import { EventItem } from "./event-item";
+import { EventList } from "./event-list";
 import { InviteList } from "./invite-list";
 interface SideBarProps {
   className?: string;
 }
 export const SideBar = ({ className }: SideBarProps) => {
   const step = useInviteStep();
-  const selectedEmails = useGuestEmails();
   return (
     <section
       className={cn(
@@ -44,7 +36,7 @@ export const SideBar = ({ className }: SideBarProps) => {
         </div>
       )}
       {(step === "generate-email" || step === "add-guests-directly") && (
-        <InviteList guestsEmails={selectedEmails} />
+        <InviteList />
       )}
     </section>
   );
@@ -81,38 +73,6 @@ const ImportActions = () => {
         </div>
         <p className=" text-blue-500">Soon</p>
       </Button>
-    </div>
-  );
-};
-
-const EventList = () => {
-  const { data: userEvents, isLoading } = api.event.list.useQuery({});
-  const { setStep, setSelectedEventName, setEventGuests } =
-    useInviteGuestActions();
-  const onEventClick = (event: RouterOutputs["event"]["list"][number]) => {
-    setStep("search-guests");
-    setSelectedEventName(event.name);
-    setEventGuests(event.guests.map((guest) => guest.email));
-  };
-  return (
-    <div className="flex w-full flex-col gap-2 px-1">
-      {isLoading &&
-        Array(3)
-          .fill(0)
-          .map((_, index) => index + 1)
-          .map((idx) => (
-            <Skeleton
-              key={idx}
-              className="h-12 w-full animate-pulse bg-accent-foreground/10"
-            />
-          ))}
-      {userEvents?.map((event, idx) => (
-        <EventItem
-          event={event}
-          key={idx}
-          onClick={() => onEventClick(event)}
-        />
-      ))}
     </div>
   );
 };
