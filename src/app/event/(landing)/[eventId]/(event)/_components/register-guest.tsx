@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,8 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  const router = useRouter();
+
   const { data: rules, isLoading: isLoadingRules } =
     api.event.getRegistration.useQuery({
       eventId: eventId,
@@ -55,9 +57,18 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
     { enabled: !!inviteId },
   );
 
-  const router = useRouter();
+  const { mutate: updateStatus } = api.invite.updateStatus.useMutation();
+
+  const onGuestRegistered = () => {
+    if (inviteId) updateStatus({ id: inviteId, status: "GOING" });
+
+    setIsRegistered(true);
+    setIsOpen(false);
+    router.refresh();
+  };
 
   const isLoadingForm = isLoadingInvite || isLoadingRules;
+  const isGuestRegistered = isRegistered || invite?.status === "GOING";
 
   if (isLoadingRules || isLoadingInvite)
     return <div>TODO: Loading Skeleton...</div>;
@@ -68,12 +79,14 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
         <CardTitle className="text-sm">Registration</CardTitle>
       </CardHeader>
       <CardContent className="p-3">
-        {!isRegistered && (
+        {!isGuestRegistered && (
           <p>Welcome! To join the event, please register below.</p>
         )}
-        {isRegistered && <p>You have successfully registered for the event</p>}
+        {isGuestRegistered && (
+          <p>You have successfully registered for the event</p>
+        )}
       </CardContent>
-      {!isRegistered && (
+      {!isGuestRegistered && (
         <CardFooter className="p-3">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
@@ -87,16 +100,13 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
               {!isLoadingForm && (
                 <RegistrationForm
                   eventId={eventId}
+                  email={invite?.email}
                   fields={{
                     name: rules?.name,
                     linkedIn: rules?.linkedIn,
                     website: rules?.website,
                   }}
-                  onSuccess={() => {
-                    setIsRegistered(true);
-                    setIsOpen(false);
-                    router.refresh();
-                  }}
+                  onSuccess={onGuestRegistered}
                 />
               )}
             </DialogContent>
@@ -109,7 +119,7 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
 
 interface RegistrationFormProps {
   eventId: string;
-  onSuccess: (args: { name?: string | null; email?: string | null }) => void;
+  onSuccess: () => void;
   email?: string;
   fields?: {
     name?: boolean;
@@ -122,26 +132,51 @@ const RegistrationForm = ({
   eventId,
   fields,
   email = "",
+  onSuccess,
 }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
-    defaultValues: { ...registrationDefaultValues, email },
+    defaultValues: { ...registrationDefaultValues },
   });
 
   const { mutate: registerGuest } = api.guest.create.useMutation();
 
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (email) form.setValue("email", email);
+  }, [email, form]);
+
   const onSubmit = (values: RegistrationData) => {
+    let hasErrors = false;
+
+    if (fields) {
+      if (fields.name && !values.name) {
+        form.setError("name", { message: "Please enter your name" });
+        hasErrors = true;
+      }
+      if (fields.website && !values.website) {
+        form.setError("website", { message: "Please enter your website" });
+        hasErrors = true;
+      }
+      if (fields.linkedIn && !values.linkedIn) {
+        form.setError("linkedIn", {
+          message: "Please enter your LinkedIn profile",
+        });
+        hasErrors = true;
+      }
+    }
+
+    if (hasErrors) return;
+
     registerGuest(
       { eventId, ...values },
       {
-        onSuccess: (guest) => {
-          // onSuccess({ name: guest?.name, email: guest?.email });
+        onSuccess: () => {
+          onSuccess();
+
           toast({
-            title:
-              "You have successfully registered for the event" +
-              guest?.id.toString(),
+            title: "You have successfully registered for the event",
           });
         },
         onError: () =>
@@ -153,9 +188,16 @@ const RegistrationForm = ({
     );
   };
 
+  const onErrors = (errors: unknown) => {
+    console.log({ errors });
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onErrors)}
+        className="space-y-5"
+      >
         <div className="space-y-3">
           {fields?.name && (
             <FormField
@@ -179,7 +221,12 @@ const RegistrationForm = ({
               <FormItem className="flex flex-col">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="you@email.com" type="email" {...field} />
+                  <Input
+                    placeholder="you@email.com"
+                    type="email"
+                    {...field}
+                    value={email ? email : field.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -204,7 +251,7 @@ const RegistrationForm = ({
               )}
             />
           )}
-          {fields?.website && (
+          {fields?.linkedIn && (
             <FormField
               control={form.control}
               name="linkedIn"

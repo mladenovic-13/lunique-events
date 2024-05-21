@@ -2,10 +2,10 @@ import * as z from "zod";
 
 import { registrationSchema } from "@/validation/register-guest";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const guestsRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: publicProcedure
     .input(
       registrationSchema.extend({
         eventId: z.string(),
@@ -19,7 +19,13 @@ export const guestsRouter = createTRPCRouter({
               id: input.eventId,
             },
           },
+          user: ctx.session?.user.id
+            ? { connect: { id: ctx.session.user.id } }
+            : undefined,
           email: input.email,
+          name: input.name,
+          website: input.website,
+          linkedIn: input.linkedIn,
         },
       });
     }),
