@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -20,22 +18,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import {
-  type RegistrationData,
-  registrationDefaultValues,
-  registrationSchema,
-} from "@/validation/register-guest";
+
+import { CancelRegistration } from "./cancel-registration";
+import { RegistrationForm } from "./registration-form";
+import { UpdateRegistration } from "./update-registration";
 
 interface RegisterGuestProps {
   eventId: string;
@@ -69,6 +56,10 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
 
   const isLoadingForm = isLoadingInvite || isLoadingRules;
   const isGuestRegistered = isRegistered || invite?.status === "GOING";
+  const isCancelAvailable = invite?.id && invite?.status === "GOING";
+  const isGuestCanceled = invite?.id && invite.status === "NOT_GOING";
+  const isRegisterAvailable =
+    !isGuestRegistered && !isLoadingForm && !isGuestCanceled;
 
   if (isLoadingRules || isLoadingInvite)
     return <div>TODO: Loading Skeleton...</div>;
@@ -78,7 +69,7 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
       <CardHeader className="rounded-t-lg bg-card-foreground/5 px-3 py-2">
         <CardTitle className="text-sm">Registration</CardTitle>
       </CardHeader>
-      <CardContent className="p-3">
+      <CardContent className="p-3 text-center">
         {!isGuestRegistered && (
           <p>Welcome! To join the event, please register below.</p>
         )}
@@ -86,8 +77,8 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
           <p>You have successfully registered for the event</p>
         )}
       </CardContent>
-      {!isGuestRegistered && (
-        <CardFooter className="p-3">
+      <CardFooter className="p-3">
+        {isRegisterAvailable && (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button className="w-full">Register</Button>
@@ -97,182 +88,22 @@ export const RegisterGuest = ({ eventId, inviteId }: RegisterGuestProps) => {
                 <DialogTitle>Your info</DialogTitle>
               </DialogHeader>
 
-              {!isLoadingForm && (
-                <RegistrationForm
-                  eventId={eventId}
-                  email={invite?.email}
-                  fields={{
-                    name: rules?.name,
-                    linkedIn: rules?.linkedIn,
-                    website: rules?.website,
-                  }}
-                  onSuccess={onGuestRegistered}
-                />
-              )}
+              <RegistrationForm
+                eventId={eventId}
+                email={invite?.email}
+                fields={{
+                  name: rules?.name,
+                  linkedIn: rules?.linkedIn,
+                  website: rules?.website,
+                }}
+                onSuccess={onGuestRegistered}
+              />
             </DialogContent>
           </Dialog>
-        </CardFooter>
-      )}
+        )}
+        {isCancelAvailable && <CancelRegistration inviteId={invite.id} />}
+        {isGuestCanceled && <UpdateRegistration inviteId={invite.id} />}
+      </CardFooter>
     </Card>
-  );
-};
-
-interface RegistrationFormProps {
-  eventId: string;
-  onSuccess: () => void;
-  email?: string;
-  fields?: {
-    name?: boolean;
-    website?: boolean;
-    linkedIn?: boolean;
-  };
-}
-
-const RegistrationForm = ({
-  eventId,
-  fields,
-  email = "",
-  onSuccess,
-}: RegistrationFormProps) => {
-  const form = useForm<RegistrationData>({
-    resolver: zodResolver(registrationSchema),
-    defaultValues: { ...registrationDefaultValues },
-  });
-
-  const { mutate: registerGuest } = api.guest.create.useMutation();
-
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (email) form.setValue("email", email);
-  }, [email, form]);
-
-  const onSubmit = (values: RegistrationData) => {
-    let hasErrors = false;
-
-    if (fields) {
-      if (fields.name && !values.name) {
-        form.setError("name", { message: "Please enter your name" });
-        hasErrors = true;
-      }
-      if (fields.website && !values.website) {
-        form.setError("website", { message: "Please enter your website" });
-        hasErrors = true;
-      }
-      if (fields.linkedIn && !values.linkedIn) {
-        form.setError("linkedIn", {
-          message: "Please enter your LinkedIn profile",
-        });
-        hasErrors = true;
-      }
-    }
-
-    if (hasErrors) return;
-
-    registerGuest(
-      { eventId, ...values },
-      {
-        onSuccess: () => {
-          onSuccess();
-
-          toast({
-            title: "You have successfully registered for the event",
-          });
-        },
-        onError: () =>
-          toast({
-            variant: "destructive",
-            title: "Failed to register for event",
-          }),
-      },
-    );
-  };
-
-  const onErrors = (errors: unknown) => {
-    console.log({ errors });
-  };
-
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit, onErrors)}
-        className="space-y-5"
-      >
-        <div className="space-y-3">
-          {fields?.name && (
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="you@email.com"
-                    type="email"
-                    {...field}
-                    value={email ? email : field.value}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {fields?.website && (
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Website</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="www.website.com"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {fields?.linkedIn && (
-            <FormField
-              control={form.control}
-              name="linkedIn"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>LinkedIn</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://www.linkedin.com/in/your-id"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-        </div>
-        <Button className="w-full">Register</Button>
-      </form>
-    </Form>
   );
 };

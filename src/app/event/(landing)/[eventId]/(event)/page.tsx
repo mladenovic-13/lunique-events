@@ -62,6 +62,7 @@ export default async function EventPage({
           </div>
         </div>
         <div className="space-y-5 md:w-3/5">
+          {/* TODO: Manage event CTA */}
           <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
@@ -69,6 +70,9 @@ export default async function EventPage({
             timezone={event.timezone}
             location={event.location?.secondaryText ?? "Unknown"}
           />
+          {/* TODO: 
+              - check is event private and disable registration without valid link
+          */}
           <RegisterGuest
             eventId={eventId}
             inviteId={(searchParams.invite as string) ?? null}
