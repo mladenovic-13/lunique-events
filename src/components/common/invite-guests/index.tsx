@@ -113,7 +113,7 @@ const InviteGuests = ({
         />
         {/* </div> */}
         {/* Add emails */}
-        <div className="flex max-h-[92%] min-h-[92%]  px-4 md:size-full md:max-h-full md:px-4  md:pt-5">
+        <div className="flex max-h-[92%] min-h-[92%] flex-col px-4 md:size-full md:max-h-full md:px-4  md:pt-5">
           {step === "add-emails" && <AddEmails />}
           {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
