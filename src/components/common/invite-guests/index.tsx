@@ -99,12 +99,12 @@ const InviteGuests = ({
     console.log({ errors });
   };
   return (
-    <section className="flex size-full flex-col overflow-hidden pb-4">
-      {/* Desktop design */}
-      <section className="flex h-[90%] w-full flex-col gap-2 md:h-[90%]   md:flex-row md:items-start">
+    <section className="flex size-full flex-col">
+      {/* Desktop&Mobile design */}
+      <section className="flex size-full h-[90%] flex-col  gap-2 md:flex-row md:items-start">
         {/* Side bar */}
-        <div className="flex h-full gap-0">
-          <div className="flex-col pt-2 md:h-full">
+        <div className="flex h-fit gap-0 md:h-full">
+          <div className="h-fit flex-col pt-2 md:h-full">
             <SideBar className="hidden md:flex" />
             <TopBar className="flex md:hidden" />
           </div>
@@ -114,7 +114,7 @@ const InviteGuests = ({
           />
         </div>
         {/* Add emails */}
-        <div className="flex size-full  flex-col pt-2">
+        <div className="flex size-full grow-0 flex-col md:px-0">
           {step === "add-emails" && <AddEmails emails={selectedEmails} />}
           {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
@@ -150,11 +150,10 @@ const InviteGuests = ({
           {step === "import-CSV" && <ImportCSV />}
         </div>
       </section>
-
-      <Separator className="bg-white/20" />
-      <div className=" px-2 pt-6 ">
+      <Separator className=" bg-white/20" />
+      <div className="flex  items-center justify-center px-2 pt-4 md:size-full">
         {step !== "generate-email" && step !== "add-guests-directly" && (
-          <div className="flex h-full justify-between">
+          <div className="flex size-full items-center justify-between">
             <Button
               variant={"ghost"}
               className={cn(
@@ -186,7 +185,7 @@ const InviteGuests = ({
           </div>
         )}
         {(step === "generate-email" || step === "add-guests-directly") && (
-          <div className="flex h-full justify-between">
+          <div className="flex size-full items-center justify-between">
             <Button
               variant={"secondary"}
               onClick={() => setStep("add-emails")}
@@ -248,14 +247,14 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex size-full flex-col pt-2">
+    <section className="flex h-full flex-col md:size-full">
       <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onErrors)}
             id="add-email-form"
-            className="flex size-full"
+            className="flex "
           >
             <div className="flex size-full gap-2">
               <FormField
@@ -284,7 +283,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
           </form>
         </Form>
       </div>
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full  bg-green-500/20 md:h-full">
         {emails.map((email, idx) => (
           <InviteEmail email={email} key={idx} />
         ))}
@@ -332,18 +331,18 @@ interface InviteEmailProps {
 const InviteEmail = ({ email }: InviteEmailProps) => {
   const { removeEmail } = useInviteGuestActions();
   return (
-    <div className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all hover:cursor-pointer hover:bg-accent-foreground/10">
+    <div className="flex items-center justify-between rounded-lg p-2 text-accent-foreground/90 transition-all">
       <div className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
+        <div className="flex size-6 items-center justify-center rounded-full bg-accent-foreground/10 text-center">
           <p className="uppercase">{email[0]}</p>
         </div>
-        <p className="font-semibold">{email}</p>
+        <p className="text-sm font-semibold">{email}</p>
       </div>
       <Button
         onClick={() => {
           removeEmail(email);
         }}
-        className="flex size-fit  items-center justify-center rounded-full bg-transparent p-2 text-destructive hover:bg-destructive hover:text-accent-foreground"
+        className="flex size-fit items-center justify-center rounded-full bg-transparent p-2 text-destructive hover:bg-destructive hover:text-accent-foreground"
       >
         <XIcon size={20} className="m-0" />
       </Button>

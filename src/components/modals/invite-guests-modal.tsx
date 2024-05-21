@@ -47,7 +47,7 @@ export const InviteGuestsModal = () => {
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
-        <div className="flex h-[95%] md:h-[550px]">
+        <div className="flex h-full md:h-[550px]">
           <InviteGuests eventId={eventId} userName={userName} />
         </div>
       </DialogContent>

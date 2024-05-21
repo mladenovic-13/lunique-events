@@ -11,8 +11,8 @@ const TopBar = ({ className }: TopBarProps) => {
   const { setStep } = useInviteGuestActions();
   const step = useInviteStep();
   return (
-    <div className={cn("flex w-screen flex-col", className && className)}>
-      <section className="flex items-center gap-6 px-2">
+    <div className={cn("flex w-screen flex-col ", className && className)}>
+      <section className="flex items-center gap-6  px-2">
         <Button
           className={cn(
             "flex w-fit items-center justify-start gap-2 rounded-none px-0 py-5 text-sm font-bold text-accent-foreground/70 md:text-base",

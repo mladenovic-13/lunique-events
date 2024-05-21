@@ -32,13 +32,13 @@ export const SideBar = ({ className }: SideBarProps) => {
       )}
     >
       {step !== "generate-email" && step !== "add-guests-directly" && (
-        <div className="flex h-full flex-col gap-4 md:w-full">
+        <div className="flex h-full flex-col gap-4  md:w-full">
           <ImportActions />
           <Separator className="bg-accent-foreground/20" />
           <Label className="-mb-2 px-3 pt-2 text-sm font-semibold uppercase  text-accent-foreground/50">
             Events
           </Label>
-          <ScrollArea className="h-full ">
+          <ScrollArea className="">
             <EventList />
           </ScrollArea>
         </div>
