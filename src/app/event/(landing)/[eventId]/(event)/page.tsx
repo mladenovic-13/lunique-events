@@ -2,6 +2,7 @@ import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 
 import { EventContact } from "./_components/event-contact";
@@ -11,6 +12,7 @@ import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
 import { EventThumbnail } from "./_components/event-thumbnail";
+import { ManageEventCard } from "./_components/manage-event-card";
 import { RegisterGuest } from "./_components/register-guest";
 
 type Props = {
@@ -46,7 +48,11 @@ export default async function EventPage({
 }) {
   const event = await api.event.get({ id: eventId });
 
+  const session = await getServerAuthSession();
+
   if (!event) notFound();
+
+  const isVisitorManager = session?.user.id === event.creator.id;
 
   return (
     <MainPage>
@@ -62,7 +68,7 @@ export default async function EventPage({
           </div>
         </div>
         <div className="space-y-5 md:w-3/5">
-          {/* TODO: Manage event CTA */}
+          {isVisitorManager && <ManageEventCard eventId={eventId} />}
           <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
