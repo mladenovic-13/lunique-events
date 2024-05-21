@@ -9,8 +9,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { paths } from "@/routes/paths";
+import { getServerAuthSession } from "@/server/auth";
 
-export const ManageEventCard = ({ eventId }: { eventId: string }) => {
+export const ManageEventCard = async ({
+  eventId,
+  creatorId,
+}: {
+  eventId: string;
+  creatorId: string;
+}) => {
+  const session = await getServerAuthSession();
+
+  const isVisitorManager = session?.user.id === creatorId;
+
+  if (!isVisitorManager) return null;
+
   return (
     <Card>
       <CardHeader className="rounded-t-lg bg-card-foreground/5 px-3 py-2">

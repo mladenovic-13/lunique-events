@@ -52,7 +52,12 @@ export const inviteRouter = createTRPCRouter({
       const logo = `${env.NEXT_PUBLIC_AWS_CLOUDFRONT_DOMAIN}/assets/logo.png`;
 
       const res = await ctx.db.invite.createMany({
-        data: emails.map((email) => ({ eventId, email, status: "PENDING" })),
+        data: emails.map((email) => ({
+          eventId,
+          email,
+          message: customMessage,
+          status: "PENDING",
+        })),
       });
 
       if (!res.count) {
