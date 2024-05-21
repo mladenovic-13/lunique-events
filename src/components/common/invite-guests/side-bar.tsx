@@ -27,7 +27,7 @@ export const SideBar = ({ className }: SideBarProps) => {
   return (
     <section
       className={cn(
-        "flex h-full flex-col pt-2 md:max-w-[200px]",
+        "flex h-full min-w-[210px] max-w-[210px] flex-col pt-2",
         className && className,
       )}
     >
@@ -38,7 +38,7 @@ export const SideBar = ({ className }: SideBarProps) => {
           <Label className="-mb-2 px-3 pt-2 text-sm font-semibold uppercase  text-accent-foreground/50">
             Events
           </Label>
-          <ScrollArea className="">
+          <ScrollArea className="w-full">
             <EventList />
           </ScrollArea>
         </div>
@@ -95,7 +95,7 @@ const EventList = () => {
     setEventGuests(event.guests.map((guest) => guest.email));
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2 px-1">
       {isLoading &&
         Array(3)
           .fill(0)

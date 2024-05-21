@@ -16,29 +16,25 @@ export const EventItem = ({ event, onClick }: EventItemProprs) => {
   return (
     <div
       className={cn(
-        "flex w-[210px] flex-col rounded-lg p-1  px-2 transition-all hover:cursor-pointer hover:bg-accent-foreground/10",
+        "flex w-full flex-1 flex-col rounded-lg p-1  px-2 transition-all hover:cursor-pointer hover:bg-accent-foreground/10",
         selected && "bg-accent-foreground/10",
       )}
       onClick={onClick}
     >
-      <h1 className="line-clamp-1 text-base font-semibold text-accent-foreground">
+      <h1 className="text-base font-semibold text-accent-foreground">
         {event?.name ?? ""}
       </h1>
-      <div className="flex w-full items-center justify-between gap-2 text-xs text-accent-foreground/50">
-        <p className="line-clamp-1 w-full">
-          {format(event?.date ?? new Date(), "PPP")}
+      <div className="flex w-full items-center justify-start gap-2 text-xs text-accent-foreground/50">
+        <p className="w-fit">{format(event?.date ?? new Date(), "PP")}</p>
+        <CircleIcon size={3} className="rounded-full bg-accent-foreground/50" />
+        <p className="">
+          {(event?.guests.length > 0 && event?.guests.length) ?? -1}{" "}
+          {event?.guests.length === 1
+            ? "Guest"
+            : event?.guests.length ?? -1 > 0
+              ? "Guests"
+              : "No Guests"}
         </p>
-        <div className="flex w-full items-center justify-start gap-4">
-          <CircleIcon size={5} />
-          <p className="line-clamp-1 ">
-            {(event?.guests.length > 0 && event?.guests.length) ?? -1}{" "}
-            {event?.guests.length === 1
-              ? "Guest"
-              : event?.guests.length ?? -1 > 0
-                ? "Guests"
-                : "No Guests"}
-          </p>
-        </div>
       </div>
     </div>
   );

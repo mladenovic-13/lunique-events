@@ -26,10 +26,10 @@ export const EventInviteGuestsStep = () => {
     <StepContainer>
       <StepHeader>
         <StepTitle>Invite Guests</StepTitle>
-        <StepDescription>Invite your guestdsdss</StepDescription>
+        <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
-      <StepContent className="border-t">
-        <div className="flex h-[500px] w-full px-2">
+      <StepContent className="border-t md:px-2">
+        <div className="flex h-[500px] w-full px-0">
           <InviteGuests
             eventId={eventId}
             userName={username}

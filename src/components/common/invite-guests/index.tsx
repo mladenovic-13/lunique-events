@@ -99,9 +99,9 @@ const InviteGuests = ({
     console.log({ errors });
   };
   return (
-    <section className="flex size-full flex-col">
+    <section className="fixed flex h-[90%] flex-col md:relative md:size-full">
       {/* Desktop&Mobile design */}
-      <section className="flex size-full h-[90%] flex-col  gap-2 md:flex-row md:items-start">
+      <section className="flex max-h-[95%] min-h-[95%] w-full  flex-col  md:min-h-[90%] md:flex-row md:items-start">
         {/* Side bar */}
         <div className="flex h-fit gap-0 md:h-full">
           <div className="h-fit flex-col pt-2 md:h-full">
@@ -114,8 +114,8 @@ const InviteGuests = ({
           />
         </div>
         {/* Add emails */}
-        <div className="flex size-full grow-0 flex-col md:px-0">
-          {step === "add-emails" && <AddEmails emails={selectedEmails} />}
+        <div className="flex max-h-[92%] min-h-[92%] w-full flex-col md:h-full md:max-h-full  md:px-4 md:py-5">
+          {step === "add-emails" && <AddEmails />}
           {step === "search-guests" && (
             <SearchGuests eventGuests={eventGuests} />
           )}
@@ -226,17 +226,15 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-interface AddEmailsProps {
-  emails: Array<string>;
-}
-const AddEmails = ({ emails }: AddEmailsProps) => {
+const AddEmails = () => {
+  const emails = useGuestEmails();
+  const { addEmail } = useInviteGuestActions();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
     },
   });
-  const { addEmail } = useInviteGuestActions();
   const onSubmit = (value: z.infer<typeof formSchema>) => {
     console.log(value);
     addEmail(value.email);
@@ -247,7 +245,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
     console.log({ errors });
   };
   return (
-    <section className="flex h-full flex-col md:size-full">
+    <section className="flex max-h-full flex-col md:size-full">
       <div className="flex flex-col gap-2">
         <Label className="font-semibold capitalize">Add Emails</Label>
         <Form {...form}>
@@ -283,7 +281,7 @@ const AddEmails = ({ emails }: AddEmailsProps) => {
           </form>
         </Form>
       </div>
-      <ScrollArea className="h-full  bg-green-500/20 md:h-full">
+      <ScrollArea className="flex h-full flex-col-reverse md:h-full">
         {emails.map((email, idx) => (
           <InviteEmail email={email} key={idx} />
         ))}
@@ -310,10 +308,10 @@ const GuestEmail = ({ email }: GuestEmailProps) => {
       onClick={onClick}
     >
       <div className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-full bg-accent-foreground/10 text-center ">
+        <div className="flex size-6 items-center justify-center rounded-full bg-accent-foreground/10 text-center">
           <p className="uppercase">{email[0]}</p>
         </div>
-        <p className="font-semibold">{email}</p>
+        <p className="text-sm font-medium">{email}</p>
       </div>
       <div className="flex items-center gap-4">
         {emailExists(email) && <CircleCheckIcon size={20} />}
@@ -336,7 +334,7 @@ const InviteEmail = ({ email }: InviteEmailProps) => {
         <div className="flex size-6 items-center justify-center rounded-full bg-accent-foreground/10 text-center">
           <p className="uppercase">{email[0]}</p>
         </div>
-        <p className="text-sm font-semibold">{email}</p>
+        <p className="text-sm font-medium">{email}</p>
       </div>
       <Button
         onClick={() => {
@@ -353,15 +351,25 @@ interface SearchGuestsProps {
   eventGuests: Array<string>;
 }
 const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
-  const { addEmails } = useInviteGuestActions();
+  const [select, setSelect] = useState<"select" | "deselect">("select");
+
+  const { addEmails, removeEmails } = useInviteGuestActions();
   const eventName = useGuestSelectedEvent();
   const selectAllGuestsHandler = () => {
-    addEmails(eventGuests);
+    if (select === "select") {
+      addEmails(eventGuests);
+      setSelect("deselect");
+    }
+    if (select === "deselect") {
+      removeEmails(eventGuests);
+      setSelect("select");
+    }
   };
 
   return (
-    <section className="flex w-full  flex-col">
-      <div className="px-2">
+    <section className="flex w-full  flex-col gap-2">
+      <Label className="font-semibold capitalize">Search Guests</Label>
+      <div className="">
         <Input
           type="search"
           placeholder={`Search in "${eventName}"`}
@@ -371,10 +379,13 @@ const SearchGuests = ({ eventGuests }: SearchGuestsProps) => {
       <div className="flex justify-end px-2">
         <Button
           variant={"ghost"}
-          className="bg-none p-0 text-accent-foreground/50 transition-all hover:bg-transparent hover:text-accent-foreground"
+          className="bg-none p-0 capitalize text-accent-foreground/50 transition-all hover:bg-transparent hover:text-accent-foreground"
           onClick={() => selectAllGuestsHandler()}
         >
-          Select All
+          <p>
+            {select === "select" && "select all"}
+            {select === "deselect" && "deselect all"}
+          </p>
         </Button>
       </div>
       <div className="flex w-full flex-col gap-2">
