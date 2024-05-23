@@ -6,8 +6,9 @@ type GuestStore = {
   emails: string[];
   step: InviteGuestStep;
   guestCapacity: number;
-  selectedEventName: string | null;
+  selectedEventId: string | null;
   eventGuests: string[];
+  emailSending: boolean;
   actions: {
     addEmail: (email: string) => void;
     removeEmail: (email: string) => void;
@@ -17,8 +18,9 @@ type GuestStore = {
     emailExists: (email: string) => boolean;
     setStep: (step: InviteGuestStep) => void;
     setGuestCapacity: () => void;
-    setSelectedEventName: (eventName: string) => void;
+    setSelectedEventId: (eventName: string) => void;
     setEventGuests: (guests: string[]) => void;
+    setEmailSending: (sending: boolean) => void;
   };
 };
 
@@ -27,9 +29,10 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
     emails: [],
     step: "add-emails",
     guestCapacity: 30,
-    selectedEventName: null,
+    selectedEventId: null,
     eventGuests: [],
     userEvents: [],
+    emailSending: false,
     actions: {
       addEmail: (email) => {
         if (get().guestCapacity > 0 && !get().actions.emailExists(email)) {
@@ -83,7 +86,8 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
           emails: [],
           step: "add-emails",
           guestCapacity: state.guestCapacity + state.emails.length,
-          selectedEventName: null,
+          selectedEventId: null,
+          emailSending: false,
         }));
       },
       setStep: (step) => {
@@ -102,14 +106,19 @@ const useGuestStore = create<GuestStore, [["zustand/persist", unknown]]>(
       emailExists: (email) => {
         return get().emails.includes(email);
       },
-      setSelectedEventName: (eventName) => {
+      setSelectedEventId: (eventName) => {
         set(() => ({
-          selectedEventName: eventName,
+          selectedEventId: eventName,
         }));
       },
       setEventGuests: (guests) => {
         set(() => ({
           eventGuests: guests,
+        }));
+      },
+      setEmailSending: (sending) => {
+        set(() => ({
+          emailSending: sending,
         }));
       },
     },
@@ -121,7 +130,9 @@ export const useInviteStep = () => useGuestStore((state) => state.step);
 export const useGuestCapacity = () =>
   useGuestStore((state) => state.guestCapacity);
 export const useGuestSelectedEvent = () =>
-  useGuestStore((state) => state.selectedEventName);
+  useGuestStore((state) => state.selectedEventId);
 export const useEventGuests = () => useGuestStore((state) => state.eventGuests);
+export const useGuestEmailSending = () =>
+  useGuestStore((state) => state.emailSending);
 export const useInviteGuestActions = () =>
   useGuestStore((state) => state.actions);

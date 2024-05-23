@@ -1,9 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 
-import InviteGuests from "@/components/common/invite-guests/index";
+import InviteGuestPartial from "@/components/common/invite-guests";
 import { Button } from "@/components/ui/button";
 import { useGuestCapacity } from "@/hooks/use-guest-store";
 import { cn } from "@/lib/utils";
@@ -21,7 +20,6 @@ export const EventInviteGuestsStep = () => {
   const searchParams = useSearchParams();
   const eventId = searchParams.get("id") ?? "";
 
-  const username = useSession().data?.user.name ?? "";
   const guestCapacity = useGuestCapacity();
   const router = useRouter();
 
@@ -45,10 +43,10 @@ export const EventInviteGuestsStep = () => {
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
       <StepContent className="size-full border-t px-0 md:px-2 ">
-        <div className="h-[500px] justify-center  px-0 md:h-[500px] md:w-full">
-          <InviteGuests
+        <div className="h-[550px] justify-center  px-0 md:h-[500px] md:w-full">
+          <InviteGuestPartial
             eventId={eventId}
-            userName={username}
+            className="size-full"
             onInviteComplete={() =>
               router.push(paths.event.manage.overview(eventId))
             }
