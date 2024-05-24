@@ -13,9 +13,14 @@ import { cn } from "@/lib/utils";
 interface EventDateInputProps {
   value: Date | undefined;
   onChange: (value: Date | undefined) => void;
+  className?: string;
 }
 
-export const EventDateInput = ({ value, onChange }: EventDateInputProps) => {
+export const EventDateInput = ({
+  value,
+  onChange,
+  className,
+}: EventDateInputProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -24,6 +29,7 @@ export const EventDateInput = ({ value, onChange }: EventDateInputProps) => {
           className={cn(
             "w-full justify-start text-left font-normal md:w-fit",
             !value && "text-muted-foreground",
+            className && className,
           )}
         >
           <CalendarIcon className="mr-2 size-4" />

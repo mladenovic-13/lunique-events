@@ -62,3 +62,28 @@ export const eventRegistrationSchema = z.object({
 });
 
 export type EventRegistration = z.infer<typeof eventRegistrationSchema>;
+
+export const updateEventSchema = z.object({
+  public: z.boolean(),
+  organization: z.string(),
+  name: z.string(),
+  date: z.string(),
+  timezone: z.string(),
+  location: locationSchema.nullable(),
+  description: z.string(),
+
+  requireApproval: z.boolean(), // @TODO => add this to database
+  capacity: z.boolean(),
+  capacityValue: z.number().optional(),
+  capacityWaitlist: z.boolean(),
+  userName: z.boolean(),
+  userEmail: z.boolean(),
+  userWebsite: z.boolean(),
+  userLinkedIn: z.boolean(),
+  questions: z
+    .string()
+    .max(50, "Question can contain max 50 characters")
+    .array()
+    .max(3, "You can have maximum of 3 custom questions"),
+});
+export type UpdateEvent = z.infer<typeof updateEventSchema>;

@@ -5,9 +5,12 @@ import { TRPCError } from "@trpc/server";
 // import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
-import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
-import { createEventSchema, eventRegistrationSchema } from "@/lib/validation";
+import {
+  createEventSchema,
+  eventRegistrationSchema,
+  updateEventSchema,
+} from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -187,7 +190,7 @@ export const eventRouter = createTRPCRouter({
       z.object({
         eventId: z.string(),
         // eventUpdateSchema: eventSchema,
-        eventSchema: eventSchema,
+        eventSchema: updateEventSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
