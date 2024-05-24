@@ -197,7 +197,7 @@ export const NewEditEventForm = ({
                             //   field.onChange(date?.toISOString())
                             // }
                             value={new Date()}
-                            onChange={(date) => field.onChange(field.value)}
+                            onChange={() => field.onChange(field.value)}
                             className="bg-background"
                           />
                         </FormControl>
