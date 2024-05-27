@@ -1,16 +1,21 @@
+import { Suspense } from "react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { MainPage } from "@/components/layout/main-page";
 import { api } from "@/trpc/server";
 
+import { CardSkeleton } from "./_components/card-skeleton";
 import { EventContact } from "./_components/event-contact";
 import { EventDescription } from "./_components/event-description";
+import { EventDetails } from "./_components/event-details";
 import { EventGuests } from "./_components/event-guests";
 import { EventHostedBy } from "./_components/event-hosted-by";
 import { EventLocation } from "./_components/event-location";
 import { EventThumbnail } from "./_components/event-thumbnail";
-import { RegisterGuest } from "./_components/register-guest";
+import { ManageEventCard } from "./_components/manage-event-card";
+// import { RegisterGuest } from "./_components/register-guest";
+import { RegisterInvitedGuest } from "./_components/register-invited-guest";
 
 type Props = {
   params: { eventId: string };
@@ -19,10 +24,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // read route params
   const id = params.eventId;
 
-  // fetch data
   const event = await api.event.get({ id });
 
   return {
@@ -36,10 +39,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EventPage({
   params: { eventId },
+  searchParams,
 }: {
   params: {
     eventId: string;
   };
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
   const event = await api.event.get({ id: eventId });
 
@@ -59,14 +64,31 @@ export default async function EventPage({
           </div>
         </div>
         <div className="space-y-5 md:w-3/5">
-          {/* <EventDetails
+          <Suspense>
+            <ManageEventCard eventId={eventId} creatorId={event.creator.id} />
+          </Suspense>
+          <EventDetails
             name={event.name}
             host={event.creator.name ?? "Unknown"}
-            // TODO: fix
-            startDate={event.startDate ?? new Date()}
+            date={event.date}
+            timezone={event.timezone}
             location={event.location?.secondaryText ?? "Unknown"}
+          />
+          {/* TODO: 
+              - check is event private and disable registration without valid link
+          */}
+          {/* <RegisterGuest
+            eventId={eventId}
+            inviteId={(searchParams.invite as string) ?? null}
           /> */}
-          <RegisterGuest eventId={eventId} />
+          {searchParams.invite && (
+            <Suspense fallback={<CardSkeleton />}>
+              <RegisterInvitedGuest
+                eventId={eventId}
+                inviteId={searchParams.invite as string}
+              />
+            </Suspense>
+          )}
           <EventDescription description={event.description} />
           {/* <EventGallery /> */}
           <EventLocation

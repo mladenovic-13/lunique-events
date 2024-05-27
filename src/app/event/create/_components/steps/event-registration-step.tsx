@@ -66,8 +66,6 @@ export const EventRegistrationStep = () => {
 
   const { mutate: createRules } =
     api.event.createRegisrationRules.useMutation();
-  const { mutate: createDefaultRules } =
-    api.event.createDefaultRegistrationRules.useMutation();
 
   const onSubmit = (values: EventRegistration) => {
     if (!id) return;
@@ -95,19 +93,10 @@ export const EventRegistrationStep = () => {
   const onSkip = () => {
     if (!id) return;
 
-    createDefaultRules(
-      { eventId: id },
-      {
-        onSuccess: () => {
-          const params = new URLSearchParams();
-          params.set("id", id);
-          params.set("step", "guests");
-          router.push(paths.event.create + "?" + params.toString());
-        },
-        onError: () =>
-          toast({ title: "Something went wrong", variant: "destructive" }),
-      },
-    );
+    const params = new URLSearchParams();
+    params.set("id", id);
+    params.set("step", "guests");
+    router.push(paths.event.create + "?" + params.toString());
   };
 
   const capacity = form.watch("capacity");

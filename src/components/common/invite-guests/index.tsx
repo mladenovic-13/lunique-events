@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -62,22 +61,21 @@ const InviteGuests = ({
   const selectedEmails = useGuestEmails();
   const eventGuests = useEventGuests();
   const { setStep, resetStore } = useInviteGuestActions();
-  const { mutate: sendInvites } = api.guest.invite.useMutation();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { mutate: sendInvites, isPending: sendingEmails } =
+    api.invite.send.useMutation();
+
   const sendInvitationEmails = (emails: string[], customMessage: string) => {
-    setIsLoading(true);
     sendInvites(
       { emails, customMessage, eventId },
       {
         onSuccess: () => {
           toast({ title: "Emails are succesfully sent!" });
-          setIsLoading(false);
           resetStore();
           onInviteComplete && onInviteComplete();
         },
         onError: () => {
           toast({ title: "Sending emails failed.", variant: "destructive" });
-          setIsLoading(false);
         },
       },
     );
@@ -90,13 +88,16 @@ const InviteGuests = ({
       customMessage: "",
     },
   });
+
   const onSubmit = (values: z.infer<typeof emailFormSchema>) => {
     sendInvitationEmails(selectedEmails, values.customMessage);
   };
+
   const onErrors = (errors: unknown) => {
     toast({ title: "Frontend error, check console. Send email form" });
     console.log({ errors });
   };
+
   return (
     <section className="flex size-full flex-col overflow-hidden pb-4">
       <section className="flex h-[90%] items-start gap-2">
@@ -192,8 +193,8 @@ const InviteGuests = ({
               type="submit"
               form="email-form"
             >
-              {!isLoading && <SendIcon size={16} />}
-              {isLoading && (
+              {!sendingEmails && <SendIcon size={16} />}
+              {sendingEmails && (
                 <svg
                   className="size-5 animate-spin text-accent-foreground"
                   viewBox="0 0 24 24"
@@ -201,8 +202,8 @@ const InviteGuests = ({
                   <LoaderCircleIcon />
                 </svg>
               )}
-              {!isLoading && `Send Invites`}
-              {isLoading && `Sending Invites...`}
+              {!sendingEmails && `Send Invites`}
+              {sendingEmails && `Sending Invites...`}
             </Button>
           </div>
         )}

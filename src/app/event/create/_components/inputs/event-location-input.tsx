@@ -78,7 +78,7 @@ export const EventLocationInput = (props: {
         />
         {field.error && (
           <p className="text-[0.8rem] font-medium text-destructive">
-            {field.error.message}
+            {field.error.message?.toString()}
           </p>
         )}
 
