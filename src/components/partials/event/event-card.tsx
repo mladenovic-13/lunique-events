@@ -1,5 +1,6 @@
 import React from "react";
-import { type Event, type Location } from "@prisma/client";
+import { type Event } from "@prisma/client";
+import { format } from "date-fns";
 import {
   AlertTriangleIcon,
   ArrowRightIcon,
@@ -8,15 +9,20 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import eventImg from "@/public/images/you-are-invited.jpeg";
 import { paths } from "@/routes/paths";
 
+interface LocationInterface {
+  description: string;
+}
 interface EventCardProps {
   event: Event;
-  location?: Location | null;
+  location?: LocationInterface | null;
   guests?: number | null;
   onClick: () => void;
 }
@@ -27,6 +33,7 @@ export const EventCard = ({
   guests,
   onClick,
 }: EventCardProps) => {
+  const { theme } = useTheme();
   return (
     <Card
       onClick={onClick}
@@ -40,19 +47,29 @@ export const EventCard = ({
               {/* <p className="hidden text-accent-foreground/50 md:flex">
                 {event.startTime}
               </p> */}
+              <p className="hidden text-sm md:block">
+                {format(event.date, "HH:mm")}
+              </p>
               <h1 className="text-lg font-semibold md:text-xl">{event.name}</h1>
-              <div>
+              <div className="capitalize">
                 {location && (
                   <div className="flex items-center space-x-2 text-accent-foreground/50">
                     <MapPinIcon size={15} />
-                    <p>{location.mainText}</p>
-                    <p>{location.secondaryText}</p>
+                    <p className="line-clamp-1 transition-all hover:line-clamp-none">
+                      {location.description}
+                    </p>
                   </div>
                 )}
                 {!location && (
-                  <div className="flex items-center space-x-2 text-yellow-300">
+                  <div
+                    className={cn(
+                      "flex items-center space-x-2",
+                      theme === "light" && "text-amber-600/90",
+                      theme === "dark" && "text-yellow-400",
+                    )}
+                  >
                     <AlertTriangleIcon size={15} />
-                    <p className="">Location missing</p>
+                    <p className="drop-shadow-sm">Location missing</p>
                   </div>
                 )}
                 {guests !== null && guests !== undefined && (

@@ -26,7 +26,7 @@ export const InvitationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Preview text, change this</Preview>
+      <Preview>Register Now! 🎉🎉🎉</Preview>
       <Tailwind>
         <Body className="m-auto bg-white px-2 font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
@@ -68,12 +68,12 @@ export const InvitationEmail = ({
             </Text>
             <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
             <Text className="text-[12px] leading-[24px] text-[#666666]">
-              This invitation was intended for{" "}
-              <span className="text-black">{userName}</span>. This invite was
-              sent from <span className="text-black">Lunique Events.</span>
-              If you were not expecting this invitation, you can ignore this
-              email. If you are concerned about your account s safety, please
-              reply to this email to get in touch with us.
+              This invitation, sent by{" "}
+              <span className="text-black">{userName}</span>, comes to you from{" "}
+              <span className="text-black">Lunique Events App.</span> If you
+              were not expecting this invitation, you can ignore this email. If
+              you are concerned about your account s safety, please reply to
+              this email to get in touch with us.
             </Text>
           </Container>
         </Body>

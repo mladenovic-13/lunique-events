@@ -8,7 +8,7 @@ export default function ExploreLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-4xl p-3 md:p-0">
+    <div className="mx-auto max-w-4xl p-4 md:p-0">
       <Suspense>
         <StepIndicator />
       </Suspense>

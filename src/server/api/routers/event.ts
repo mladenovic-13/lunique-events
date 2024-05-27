@@ -147,13 +147,11 @@ export const eventRouter = createTRPCRouter({
   createRegisrationRules: protectedProcedure
     .input(eventRegistrationSchema.extend({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.registrationSettings.create({
+      return await ctx.db.registrationSettings.update({
+        where: {
+          eventId: input.eventId,
+        },
         data: {
-          event: {
-            connect: {
-              id: input.eventId,
-            },
-          },
           questions: {
             createMany: {
               data: input.questions.map((q) => ({ question: q })),
@@ -280,6 +278,11 @@ export const eventRouter = createTRPCRouter({
           creator: {
             select: {
               name: true,
+            },
+          },
+          location: {
+            select: {
+              description: true,
             },
           },
         },

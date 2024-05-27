@@ -43,7 +43,8 @@ type InviteGuestStep =
   | "add-emails"
   | "import-CSV"
   | "generate-email"
-  | "add-guests-directly";
+  | "add-guests-directly"
+  | "list-events";
 
 export type QA = {
   question: string;
