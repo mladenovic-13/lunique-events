@@ -36,7 +36,7 @@ function GenerateEmail({
   const { setStep, setEmailSending, resetStore } = useInviteGuestActions();
   const eventLandingPage = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(eventId)}`;
 
-  const { mutate: sendInvites } = api.guest.invite.useMutation();
+  const { mutate: sendInvites } = api.invite.send.useMutation();
   const sendInvitationEmails = (emails: string[], customMessage: string) => {
     setEmailSending(true);
     sendInvites(
