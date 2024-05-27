@@ -1,14 +1,11 @@
 import * as z from "zod";
 
-import { InvitationEmail } from "@/components/email/invitation-email";
-import { env } from "@/env.mjs";
-import { paths } from "@/routes/paths";
 import { registrationSchema } from "@/validation/register-guest";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const guestsRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: publicProcedure
     .input(
       registrationSchema.extend({
         eventId: z.string(),
@@ -22,11 +19,15 @@ export const guestsRouter = createTRPCRouter({
               id: input.eventId,
             },
           },
+          user: ctx.session?.user.id
+            ? { connect: { id: ctx.session.user.id } }
+            : undefined,
           email: input.email,
+          name: input.name,
+          website: input.website,
+          linkedIn: input.linkedIn,
         },
       });
-
-      return null;
     }),
   list: protectedProcedure
     .input(
@@ -41,27 +42,19 @@ export const guestsRouter = createTRPCRouter({
         },
       });
     }),
-  invite: protectedProcedure
+  getByEmail: publicProcedure
     .input(
       z.object({
-        emails: z.string().array(),
-        customMessage: z.string(),
+        email: z.string(),
         eventId: z.string(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
-      const eventLadingPage = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(input.eventId)}`;
-      const logo = `${env.NEXT_PUBLIC_AWS_CLOUDFRONT_DOMAIN}/assets/logo.png`;
-      return await ctx.resend.emails.send({
-        from: `Lunique Events <${env.EMAIL_FROM}>`,
-        to: input.emails,
-        subject: "You Are Invited",
-        react: InvitationEmail({
-          customMessage: input.customMessage,
-          eventLandingPage: eventLadingPage,
-          userName: ctx.session.user.name,
-          logo: logo,
-        }),
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.guest.findFirst({
+        where: {
+          eventId: input.eventId,
+          email: input.email,
+        },
       });
     }),
 });

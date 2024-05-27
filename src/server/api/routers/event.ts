@@ -74,8 +74,6 @@ export const eventRouter = createTRPCRouter({
           message: "Organization not found",
         });
 
-      console.log({ lat: input.location?.position.lat });
-
       const queryString = `
         INSERT INTO "Location" ("id", "placeId", "description", "secondaryText", "geom", "mainText", "lat", "lng")
         VALUES (uuid_generate_v4(), $1, $2, $3, st_point($4,$5), $6, $7, $8)
@@ -124,6 +122,7 @@ export const eventRouter = createTRPCRouter({
               id: locationId,
             },
           },
+          registrationSettings: { create: {} },
           thumbnailUrl: input.thumbnailUrl ?? "",
           name: input.name,
           description: input.description,
@@ -142,19 +141,6 @@ export const eventRouter = createTRPCRouter({
         },
         include: {
           questions: true,
-        },
-      });
-    }),
-  createDefaultRegistrationRules: protectedProcedure
-    .input(z.object({ eventId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.registrationSettings.create({
-        data: {
-          event: {
-            connect: {
-              id: input.eventId,
-            },
-          },
         },
       });
     }),
