@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { type Invite } from "@prisma/client";
+import {
+  type Guest,
+  type Invite,
+  type RegistrationSettings,
+} from "@prisma/client";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -9,10 +13,24 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 
-export const GoingOptionButtons = ({ invite }: { invite: Invite }) => {
+import { RegisterGuestModal } from "./register-guest-modal";
+
+interface GoingOptionButtons {
+  invite: Invite;
+  guest?: Guest | null;
+  rules: RegistrationSettings;
+}
+
+export const GoingOptionButtons = ({
+  invite,
+  guest,
+  rules,
+}: GoingOptionButtons) => {
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isUserDecided, setIsUserDecided] = useState(
     () => invite.status !== "PENDING",
   );
+  const [isGuestCreated, setIsGuestCreated] = useState(() => !!guest);
 
   const { mutate: updateStatus, isPending: isUpdatingStatus } =
     api.invite.updateStatus.useMutation();
@@ -34,8 +52,15 @@ export const GoingOptionButtons = ({ invite }: { invite: Invite }) => {
     [toast],
   );
 
+  console.log({ isGuestCreated });
+
   const onGoingClick = () => {
-    updateStatus({ id: invite.id, status: "GOING" }, { onSuccess, onError });
+    if (!isGuestCreated) {
+      setIsRegistrationOpen(true);
+    }
+    if (isGuestCreated) {
+      updateStatus({ id: invite.id, status: "GOING" }, { onSuccess, onError });
+    }
   };
   const onMaybeClick = () => {
     updateStatus({ id: invite.id, status: "MAYBE" }, { onSuccess, onError });
@@ -45,6 +70,11 @@ export const GoingOptionButtons = ({ invite }: { invite: Invite }) => {
       { id: invite.id, status: "NOT_GOING" },
       { onSuccess, onError },
     );
+  };
+
+  const onGuestCreated = () => {
+    updateStatus({ id: invite.id, status: "GOING" }, { onSuccess, onError });
+    setIsGuestCreated(true);
   };
 
   const isGoingDisabled = invite.status === "GOING";
@@ -72,6 +102,7 @@ export const GoingOptionButtons = ({ invite }: { invite: Invite }) => {
 
         <Button
           onClick={() => setIsUserDecided(false)}
+          type="button"
           variant="ghost"
           className="w-full"
         >
@@ -82,6 +113,15 @@ export const GoingOptionButtons = ({ invite }: { invite: Invite }) => {
 
   return (
     <div className="flex w-full gap-3">
+      <RegisterGuestModal
+        open={isRegistrationOpen}
+        onOpenChange={setIsRegistrationOpen}
+        eventId={invite.eventId}
+        email={invite.email}
+        rules={rules}
+        onSuccess={onGuestCreated}
+      />
+
       {!isGoingDisabled && (
         <Button
           disabled={isUpdatingStatus}

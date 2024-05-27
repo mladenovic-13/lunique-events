@@ -22,8 +22,11 @@ export const RegisterInvitedGuest = async ({
   eventId,
 }: RegisterInvitedGuestProps) => {
   const invite = await api.invite.get({ id: inviteId });
+  const rules = await api.event.getRegistration({ eventId: eventId });
 
-  if (!invite) redirect(paths.event.landing.root(eventId));
+  if (!rules || !invite) redirect(paths.event.landing.root(eventId));
+
+  const guest = await api.guest.getByEmail({ email: invite.email, eventId });
 
   return (
     <div className="space-y-3">
@@ -44,7 +47,7 @@ export const RegisterInvitedGuest = async ({
           )}
         </CardContent>
         <CardFooter>
-          <GoingOptionButtons invite={invite} />
+          <GoingOptionButtons rules={rules} invite={invite} guest={guest} />
         </CardFooter>
       </Card>
     </div>

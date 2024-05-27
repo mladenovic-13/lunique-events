@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type Guest } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +23,9 @@ import {
 
 interface RegistrationFormProps {
   eventId: string;
-  onSuccess: () => void;
+  onSuccess: (guest: Guest) => void;
   email?: string;
+  isInvited: boolean;
   fields?: {
     name?: boolean;
     website?: boolean;
@@ -36,6 +38,7 @@ export const RegistrationForm = ({
   fields,
   email = "",
   onSuccess,
+  isInvited,
 }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
@@ -75,11 +78,11 @@ export const RegistrationForm = ({
     if (hasErrors) return;
 
     registerGuest(
-      { eventId, ...values },
+      { eventId, ...values, isInvited },
       {
-        onSuccess: () => {
+        onSuccess: (guest) => {
           utils.invalidate().catch(() => ({}));
-          onSuccess();
+          onSuccess(guest);
 
           toast({
             title: "You have successfully registered for the event",

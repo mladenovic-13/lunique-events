@@ -42,4 +42,19 @@ export const guestsRouter = createTRPCRouter({
         },
       });
     }),
+  getByEmail: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        eventId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.guest.findFirst({
+        where: {
+          eventId: input.eventId,
+          email: input.email,
+        },
+      });
+    }),
 });
