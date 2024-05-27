@@ -91,7 +91,8 @@ const SearchGuests = ({ className }: SearchGuestsProps) => {
         </Button>
       </div>
       <ScrollArea className="flex h-[83%] flex-col md:h-[85%]">
-        {guestsEmails.length > 0 &&
+        {initialGuestMails.length > 0 &&
+          guestsEmails.length > 0 &&
           guestsEmails.map((email, idx) => (
             <GuestEmail
               email={email}
