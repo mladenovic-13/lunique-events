@@ -25,7 +25,7 @@ interface RegistrationFormProps {
   eventId: string;
   onSuccess: (guest: Guest) => void;
   email?: string;
-  isInvited: boolean;
+  isInvited?: boolean;
   fields?: {
     name?: boolean;
     website?: boolean;
@@ -38,7 +38,7 @@ export const RegistrationForm = ({
   fields,
   email = "",
   onSuccess,
-  isInvited,
+  isInvited = false,
 }: RegistrationFormProps) => {
   const form = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
