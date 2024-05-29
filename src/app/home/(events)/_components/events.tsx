@@ -59,7 +59,7 @@ export const Events = () => {
               <EventCard
                 onClick={() => router.push(paths.event.landing.root(event.id))}
                 event={event}
-                location={null}
+                location={event.location}
                 guests={event.guests?.length ?? 0}
               />
             </Timeline>
@@ -70,7 +70,7 @@ export const Events = () => {
               key={idx}
               date={event.date ?? new Date()}
               event={event}
-              creator={null}
+              creator={event.creator.name}
               onClick={() => router.push(paths.event.landing.root(event.id))}
             />
           ))}

@@ -1,17 +1,19 @@
 import React from "react";
 import { UserRoundPlusIcon } from "lucide-react";
 
+import { Separator } from "@/components/ui/separator";
 import { useInviteGuestActions } from "@/hooks/use-guest-store";
-
-import { Separator } from "../../ui/separator";
+import { cn } from "@/lib/utils";
 
 interface AddGuestsDirectlyProps {
-  onChangeMode?: () => void;
+  className?: string;
 }
-export const AddGuestsDirectly = ({}: AddGuestsDirectlyProps) => {
+
+function AddGuestsDirectly({ className }: AddGuestsDirectlyProps) {
   const { setStep } = useInviteGuestActions();
+
   return (
-    <section className="flex flex-col gap-4 px-4">
+    <div className={cn("flex flex-col gap-4", className && className)}>
       <GuestsCardComponent />
       <div className="flex w-full items-center gap-2 pl-0">
         <div className="flex size-8 items-center justify-center rounded-md bg-green-800/20  p-1.5">
@@ -33,9 +35,11 @@ export const AddGuestsDirectly = ({}: AddGuestsDirectlyProps) => {
         </a>{" "}
         Please only add guests who have already consented to joining this event.
       </p>
-    </section>
+    </div>
   );
-};
+}
+
+export default AddGuestsDirectly;
 
 const GuestsCardComponent = () => {
   return (

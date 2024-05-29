@@ -112,6 +112,8 @@ const DisplayDate = ({ date }: { date: Date }) => (
     <p className="text-sm text-muted-foreground md:text-base">
       {format(date, "EEEE")}
     </p>
-    <p className="text-sm text-muted-foreground md:hidden">15:00 PM</p>
+    <p className="text-sm text-muted-foreground md:hidden">
+      {format(date.getTime(), "HH:mm")}
+    </p>
   </div>
 );

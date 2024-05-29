@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 import {
   useGuestCapacity,
@@ -11,7 +10,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 
-import InviteGuests from "../common/invite-guests/index";
+import InviteGuestPartial from "../common/invite-guests";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Separator } from "../ui/separator";
@@ -26,10 +25,9 @@ export const InviteGuestsModal = () => {
     if (isModalOpen) resetStore();
   }, [isModalOpen, resetStore]);
   const eventId = useParams().eventId as string;
-  const userName = useSession().data?.user.name ?? "";
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="flex  max-h-[620px] min-h-[620px] min-w-[700px] flex-col gap-0  p-0">
+      <DialogContent className="flex  h-screen flex-col gap-0 p-0 md:h-[620px] md:max-h-[620px] md:min-w-[700px]">
         <div className="px-2 pb-4 pt-5">
           <DialogHeader className=" p-0 pl-2 pr-14">
             <DialogTitle className="flex items-center justify-between">
@@ -47,8 +45,12 @@ export const InviteGuestsModal = () => {
           </DialogHeader>
         </div>
         <Separator className="h-px bg-white/20" />
-        <div className="flex h-[550px] w-full px-2">
-          <InviteGuests eventId={eventId} userName={userName} />
+        <div className="flex h-[90%]  md:h-[550px]">
+          <InviteGuestPartial
+            eventId={eventId}
+            className="w-full"
+            onInviteComplete={onClose}
+          />
         </div>
       </DialogContent>
     </Dialog>
