@@ -147,7 +147,7 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  createRegisrationRules: protectedProcedure
+  updateRegisrationRules: protectedProcedure
     .input(eventRegistrationSchema.extend({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.registrationSettings.update({
@@ -163,7 +163,7 @@ export const eventRouter = createTRPCRouter({
 
           capacity: input.capacity ? input.capacityValue : undefined,
           name: input.name,
-          linkedIn: input.name,
+          linkedIn: input.linkedIn,
           waitlist: input.capacityWaitlist,
           website: input.website,
         },
@@ -212,13 +212,12 @@ export const eventRouter = createTRPCRouter({
           id: input.eventId,
         },
         data: {
-          name: input.eventSchema.name,
-          // date: input.eventSchema.endDate,
-          description: input.eventSchema.description,
-          // capacityValue: input.eventSchema.capacity.value,
-          // capacityWaitlist: input.eventSchema.capacity.waitlist,
           isPublic: input.eventSchema.public,
-          // requireApproval: input.eventSchema.requireApproval,
+          name: input.eventSchema.name,
+          date: input.eventSchema.date,
+          timezone: input.eventSchema.timezone,
+          description: input.eventSchema.description,
+
           organization: {
             connect: {
               id: organization.id,
@@ -231,8 +230,19 @@ export const eventRouter = createTRPCRouter({
                 mainText: input.eventSchema.location?.mainText,
                 secondaryText: input.eventSchema.location?.secondaryText,
                 placeId: input.eventSchema.location?.placeId,
-                // lng: input.eventSchema.location?.position.lng,
-                // lat: input.eventSchema.location?.position.lat,
+                lng: input.eventSchema.location?.position.lng,
+                lat: input.eventSchema.location?.position.lat,
+              },
+            },
+          },
+          registrationSettings: {
+            update: {
+              data: {
+                capacity: input.eventSchema.capacityValue,
+                waitlist: input.eventSchema.capacityWaitlist,
+                name: input.eventSchema.userName,
+                linkedIn: input.eventSchema.userLinkedIn,
+                website: input.eventSchema.userWebsite,
               },
             },
           },

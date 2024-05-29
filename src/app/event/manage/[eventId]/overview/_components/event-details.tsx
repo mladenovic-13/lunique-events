@@ -8,6 +8,7 @@ import Image from "next/image";
 // import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
+import { type UpdateEvent } from "@/lib/validation";
 import placeHolderImg from "@/public/images/you-are-invited.jpeg";
 import { type RouterOutputs } from "@/trpc/react";
 
@@ -15,11 +16,45 @@ import { type RouterOutputs } from "@/trpc/react";
 import { NewEditEventForm } from "./new-edit-event-form";
 
 interface EventDetailsProps {
-  event: RouterOutputs["event"]["get"];
+  event: NonNullable<RouterOutputs["event"]["get"]>;
+  registrationSettings: NonNullable<RouterOutputs["event"]["getRegistration"]>;
 }
 
-export const EventDetails = ({ event }: EventDetailsProps) => {
+export const EventDetails = ({
+  event,
+  registrationSettings,
+}: EventDetailsProps) => {
   const [isEditable, setIsEditable] = useState(false);
+
+  const defaultValues: UpdateEvent = {
+    public: event.isPublic,
+    organization: event.organization.id,
+    name: event.name,
+    date: event.date.toISOString() ?? new Date().toISOString(),
+    timezone: event.timezone,
+    location: event.location
+      ? {
+          placeId: event.location.placeId,
+          mainText: event.location.mainText,
+          secondaryText: event.location.secondaryText,
+          description: event.location.description,
+          position: {
+            lat: event.location.lat,
+            lng: event.location.lng,
+          },
+        }
+      : null,
+    description: event.description,
+    requireApproval: false,
+    capacity: !!registrationSettings.capacity,
+    capacityValue: registrationSettings.capacity ?? 100,
+    capacityWaitlist: registrationSettings.waitlist,
+    userName: registrationSettings.name,
+    userEmail: true,
+    userWebsite: registrationSettings.website,
+    userLinkedIn: registrationSettings.linkedIn,
+    questions: registrationSettings.questions.map((q) => q.question),
+  };
 
   return (
     <>
@@ -105,6 +140,7 @@ export const EventDetails = ({ event }: EventDetailsProps) => {
       {isEditable && (
         <NewEditEventForm
           event={event}
+          defaultValues={defaultValues}
           onEventUpdate={() => setIsEditable(false)}
         />
       )}

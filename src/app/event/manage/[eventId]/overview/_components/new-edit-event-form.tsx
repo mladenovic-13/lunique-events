@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { EventDateInput } from "@/app/event/create/_components/inputs/event-date-input";
 import { EventLocationInput } from "@/app/event/create/_components/inputs/event-location-input";
 import { EventTimeInput } from "@/app/event/create/_components/inputs/event-time-input";
+import { EventTimezoneInput } from "@/app/event/create/_components/inputs/event-timezone-input";
 import { EventVisibilityInput } from "@/app/event/create/_components/inputs/event-visibility-input";
 import { OrganizationSelect } from "@/app/home/(events)/_components/organization-select";
 import {
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
@@ -35,57 +37,22 @@ import { type RouterOutputs } from "@/trpc/react";
 
 interface EditEventFormProps {
   event: RouterOutputs["event"]["get"];
+  defaultValues: UpdateEvent;
   onEventUpdate: () => void;
 }
 export const NewEditEventForm = ({
   event,
+  defaultValues,
   onEventUpdate,
 }: EditEventFormProps) => {
   const updateForm = useForm<UpdateEvent>({
     resolver: zodResolver(updateEventSchema),
+    defaultValues: defaultValues,
   });
   const { mutate: updateEvent } = api.event.update.useMutation();
   const { data: organizations } = api.organization.list.useQuery();
-  const { data: registrationSettings } = api.event.getRegistration.useQuery({
-    eventId: event?.id ?? "",
-  });
+
   const router = useRouter();
-
-  useEffect(() => {
-    if (event && registrationSettings && !updateForm.formState.isDirty) {
-      updateForm.reset({
-        public: event.isPublic,
-        organization: event.organization.name,
-        name: event.name,
-        date: event.date.toISOString() ?? new Date().toISOString(),
-        timezone: event.timezone,
-        location:
-          {
-            description: event.location?.description,
-            mainText: event.location?.mainText,
-            secondaryText: event.location?.secondaryText,
-            placeId: event.location?.placeId,
-            position: {
-              lat: event.location?.lat,
-              lng: event.location?.lng,
-            },
-          } ?? null,
-        description: event.description,
-
-        requireApproval: false,
-        capacity: registrationSettings.capacity === null,
-        capacityValue: registrationSettings.capacity
-          ? registrationSettings.capacity
-          : undefined,
-        capacityWaitlist: registrationSettings.waitlist,
-        userName: registrationSettings.name,
-        userEmail: true,
-        userWebsite: registrationSettings.website,
-        userLinkedIn: registrationSettings.linkedIn,
-        questions: registrationSettings.questions.map((q) => q.question),
-      });
-    }
-  }, [updateForm, event, registrationSettings]);
 
   const libraries: Libraries = ["places"];
 
@@ -96,11 +63,11 @@ export const NewEditEventForm = ({
   const capacity = updateForm.watch("capacity");
   const onSubmit = (data: UpdateEvent) => {
     if (event) {
+      console.log(data);
       updateEvent(
         { eventId: event.id, eventSchema: data },
         {
-          onSuccess: (event) => {
-            console.log({ event });
+          onSuccess: () => {
             toast({ title: "Event updated" });
             onEventUpdate();
             router.refresh();
@@ -113,8 +80,17 @@ export const NewEditEventForm = ({
   };
   const onErrors = (errors: unknown) => {
     toast({ title: "Frontend error, check console" });
-    console.log({ errors });
+    console.log("ERROS", { errors });
+    console.log(defaultValues);
   };
+
+  useEffect(() => {
+    if (!updateForm.formState.isDirty) {
+      updateForm.reset({
+        ...defaultValues,
+      });
+    }
+  }, [updateForm, defaultValues]);
 
   return (
     <div className="">
@@ -175,7 +151,6 @@ export const NewEditEventForm = ({
                         <Input
                           placeholder="Ex. Lunique Hackathon, Conference, etc.."
                           {...field}
-                          value={field.value}
                           className="bg-background"
                         />
                       </FormControl>
@@ -221,6 +196,22 @@ export const NewEditEventForm = ({
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={updateForm.control}
+                    name="timezone"
+                    render={({ field, fieldState }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EventTimezoneInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            isDirty={fieldState.isDirty}
+                            className="bg-background"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 {isLoaded && (
                   <FormField
@@ -240,6 +231,23 @@ export const NewEditEventForm = ({
                     )}
                   />
                 )}
+                <FormField
+                  control={updateForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          rows={5}
+                          placeholder="Enter your event short description..."
+                          className="resize-none bg-background"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
               <div className="flex w-full flex-col gap-4 md:pl-2">
                 <h1 className="text-base font-semibold md:pb-4 md:text-xl">
@@ -323,7 +331,8 @@ export const NewEditEventForm = ({
                       </div>
                       <FormControl>
                         <Switch
-                          checked={field.value}
+                          disabled={!capacity}
+                          checked={!capacity ? false : field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
@@ -436,6 +445,20 @@ export const NewEditEventForm = ({
                   )}
                 />
               </div>
+              {/* <FormField
+                control={updateForm.control}
+                name="questions"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between gap-3 space-y-0 rounded-lg bg-background p-2 md:justify-start md:rounded-none md:bg-transparent md:p-0">
+                    <FormControl>
+                      <EventQuestionsInput
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              /> */}
             </div>
           </form>
         </Form>

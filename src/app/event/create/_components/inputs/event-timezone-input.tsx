@@ -17,21 +17,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface EventTimezoneProps {
   value: string;
   onChange: (value: string) => void;
   isDirty: boolean;
+  className?: string;
 }
 
-export const EventTimezoneInput = ({ value, onChange }: EventTimezoneProps) => {
+export const EventTimezoneInput = ({
+  value,
+  onChange,
+  className,
+}: EventTimezoneProps) => {
   const [commandValue, setCommandValue] = useState("");
   const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className=" justify-between">
+        <Button
+          variant="outline"
+          className={cn("justify-between", className && className)}
+        >
           <span className="flex items-center gap-3">
             <span className="text-sm">
               {Object.entries(timezones)
