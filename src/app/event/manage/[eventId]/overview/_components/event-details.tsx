@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-// import { format } from "date-fns";
-import { ChevronLeftIcon, CircleCheckBigIcon, MapPinIcon } from "lucide-react";
+import { format } from "date-fns";
+import { AlarmClockIcon, ChevronLeftIcon, MapPinIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-// import { CalendarIcon } from "@/components/icons/calendar-icon";
+import { CalendarIcon } from "@/components/icons/calendar-icon";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { useImageUpload } from "@/hooks/use-image-upload";
+import { getThumbnailImagePath } from "@/lib/get-path";
 import { type UpdateEvent } from "@/lib/validation";
 import placeHolderImg from "@/public/images/you-are-invited.jpeg";
-import { type RouterOutputs } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 
-// import { EditEventForm } from "./edit-event-form";
 import { NewEditEventForm } from "./new-edit-event-form";
 
 interface EventDetailsProps {
@@ -25,6 +28,8 @@ export const EventDetails = ({
   registrationSettings,
 }: EventDetailsProps) => {
   const [isEditable, setIsEditable] = useState(false);
+  const { mutate: updateThumbnail } = api.event.updateThumbnail.useMutation();
+  const router = useRouter();
 
   const defaultValues: UpdateEvent = {
     public: event.isPublic,
@@ -56,6 +61,33 @@ export const EventDetails = ({
     questions: registrationSettings.questions.map((q) => q.question),
   };
 
+  const defaultThumbnail = event.thumbnailUrl;
+
+  // useEffect(() => {
+  //   onChange(defaultValue);
+  // }, [defaultValue, onChange]);
+
+  const { getInputProps, getRootProps } = useImageUpload({
+    pathFormatter: getThumbnailImagePath,
+    onSuccess: (url) => {
+      updateThumbnail(
+        { eventId: event.id, thumbnailURL: url },
+        {
+          onSuccess: () => {
+            toast({ title: "Thumbnail updated" });
+            router.refresh();
+          },
+          onError: () => {
+            toast({ title: "Update failed", variant: "destructive" });
+          },
+        },
+      );
+    },
+    onError: () => {
+      toast({ title: "Thumbnail error", variant: "destructive" });
+    },
+  });
+
   return (
     <>
       <div className="flex items-center justify-between "></div>
@@ -72,10 +104,6 @@ export const EventDetails = ({
               <ChevronLeftIcon size={16} />
               Discard
             </Button>
-            <Button className="gap-2" form="edit-event-form">
-              <CircleCheckBigIcon size={16} />
-              Save Changes
-            </Button>
           </div>
         </div>
       )}
@@ -84,7 +112,7 @@ export const EventDetails = ({
           <div className="md:w-1/2">
             <AspectRatio ratio={5 / 4} className="">
               <Image
-                src={event?.thumbnailUrl ?? placeHolderImg}
+                src={defaultThumbnail ?? placeHolderImg}
                 width={400}
                 height={400}
                 alt=""
@@ -92,22 +120,17 @@ export const EventDetails = ({
               />
             </AspectRatio>
           </div>
-          <div className="space-y-3 md:w-1/2 md:space-y-5">
+          <div className="space-y-3 text-lg font-medium md:w-1/2 md:space-y-5">
             <h2 className="text-2xl font-semibold">When & Where</h2>
 
             <div className="flex items-center gap-3">
-              {/* <CalendarIcon
-                date={event?.startDate ? event.startDate : new Date()}
-              /> */}
-              {/* <DisplayDate
-                startDate={event?.startDate ? event.startDate : new Date()}
-                endDate={event?.endDate ? event.endDate : new Date()}
-              /> */}
+              <CalendarIcon date={event.date} size="base" />
+              <DisplayDate date={event.date} />
             </div>
-            <div className="flex items-center gap-3">
-              <MapPinIcon className="size-11 rounded-md border border-muted-foreground/20 p-2" />
+            <div className="flex items-center gap-3 ">
+              <MapPinIcon className="size-11 rounded-md border border-muted-foreground/20 p-2.5 text-muted-foreground" />
               <div className="flex flex-col gap-1">
-                <p className="text-lg font-medium leading-5">
+                <p className="leading-5">
                   {event?.location
                     ? event.location.mainText
                     : "Location is missing"}
@@ -117,17 +140,16 @@ export const EventDetails = ({
                 </p>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-normal text-muted-foreground">
               This address is shown publicly on the event page.
             </p>
             {!isEditable && (
               <div className="flex gap-2 md:pt-20">
-                <Button
-                  variant={"secondary"}
-                  onClick={() => setIsEditable(true)}
-                  className="w-full"
-                >
-                  Change Photo
+                <Button variant={"secondary"} className="w-full">
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    Change Photo
+                  </div>
                 </Button>
                 <Button onClick={() => setIsEditable(true)} className="w-full">
                   Edit Event
@@ -139,32 +161,28 @@ export const EventDetails = ({
       )}
       {isEditable && (
         <NewEditEventForm
-          event={event}
           defaultValues={defaultValues}
-          onEventUpdate={() => setIsEditable(false)}
+          onEventUpdate={() => console.log("mrk")}
         />
       )}
     </>
   );
 };
+interface DisplayDateProps {
+  date: Date;
+}
 
-// interface DisplayDateProps {
-//   startDate: Date;
-//   endDate: Date;
-// }
-
-// const DisplayDate = ({ startDate }: DisplayDateProps) => {
-//   return (
-//     <div className="flex flex-col">
-//       <p className="font-semibold">
-//         {format(startDate, "EEEE")}, {format(startDate, "LLL")}{" "}
-//         {/* TODO: fix */}
-//         {/* {format(startDate, "do")} - {startTime} */}
-//       </p>
-//       <p className="text-sm text-accent-foreground/50">
-//         {/* TODO: fix */}
-//         {/* Ends: {format(endDate, "LLL")} {format(endDate, "d")}, {endTime} */}
-//       </p>
-//     </div>
-//   );
-// };
+const DisplayDate = ({ date }: DisplayDateProps) => {
+  return (
+    <div className="flex flex-col">
+      <p className="">
+        {format(date, "EEEE")}, {format(date, "LLL")} {/* TODO: fix */}
+        {format(date, "do")}
+      </p>
+      <div className="flex items-center justify-start gap-2 text-accent-foreground/50">
+        <AlarmClockIcon className="size-3" />
+        <p className="text-sm ">{format(date, "H:mm")}</p>
+      </div>
+    </div>
+  );
+};

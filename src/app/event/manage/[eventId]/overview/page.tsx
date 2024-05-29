@@ -21,26 +21,18 @@ export default async function EventOverviewPage({
     eventId: params.eventId,
   });
 
-  console.log({ event });
-  console.log({ registrationSettings });
   if (!event || !registrationSettings) notFound();
 
   return (
     <div className="space-y-3 md:space-y-5">
       <ActionButtons />
       <Card className="rounded-lg  bg-muted-foreground/10 px-3 md:grid md:grid-cols-1 md:gap-5 md:px-5">
-        <div className="space-y-3  md:flex md:flex-col md:justify-between">
-          <div className="space-y-3 md:space-y-5">
-            <EventDetails
-              event={event}
-              registrationSettings={registrationSettings}
-            />
-          </div>
-
-          <div className="flex"></div>
-          <div className="space-y-3 md:flex md:flex-col md:justify-between">
-            <SocialButtons />
-          </div>
+        <div className="flex space-y-3  md:flex md:flex-col ">
+          <EventDetails
+            event={event}
+            registrationSettings={registrationSettings}
+          />
+          <SocialButtons />
         </div>
       </Card>
     </div>

@@ -1,28 +1,21 @@
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
-export const EditButtons = () => {
+interface EditButtonsProps {
+  onClick: () => void;
+}
+export const EditButtons = ({ onClick }: EditButtonsProps) => {
   return (
-    <div className="flex ">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            size="sm"
-            className="flex-1 bg-muted-foreground/30 text-primary hover:bg-muted-foreground/40"
-          >
-            Edit Event
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetTitle>Edit Event</SheetTitle>
-          {/* <EditEventForm eventId={"test"} /> */}
-        </SheetContent>
-      </Sheet>
+    <div className="flex w-1/2  items-center justify-between pl-2">
+      <Button
+        variant={"secondary"}
+        // onClick={() => setIsEditable(true)}
+        className="w-[49%]"
+      >
+        Change Photo
+      </Button>
+      <Button onClick={onClick} className="w-[49%]">
+        Edit Event
+      </Button>
     </div>
   );
 };

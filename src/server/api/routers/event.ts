@@ -174,17 +174,17 @@ export const eventRouter = createTRPCRouter({
       z.object({
         eventId: z.string(),
         // eventUpdateSchema: eventSchema,
-        eventSchema: updateEventSchema,
+        data: updateEventSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
       let organization = null;
 
-      if (input.eventSchema.organization) {
+      if (input.data.organization) {
         organization = await ctx.db.organization.findFirst({
           where: {
             ownerId: ctx.session.user.id,
-            id: input.eventSchema.organization,
+            id: input.data.organization,
           },
         });
       } else {
@@ -212,11 +212,11 @@ export const eventRouter = createTRPCRouter({
           id: input.eventId,
         },
         data: {
-          isPublic: input.eventSchema.public,
-          name: input.eventSchema.name,
-          date: input.eventSchema.date,
-          timezone: input.eventSchema.timezone,
-          description: input.eventSchema.description,
+          isPublic: input.data.public,
+          name: input.data.name,
+          date: input.data.date,
+          timezone: input.data.timezone,
+          description: input.data.description,
 
           organization: {
             connect: {
@@ -226,26 +226,43 @@ export const eventRouter = createTRPCRouter({
           location: {
             update: {
               data: {
-                description: input.eventSchema.location?.description,
-                mainText: input.eventSchema.location?.mainText,
-                secondaryText: input.eventSchema.location?.secondaryText,
-                placeId: input.eventSchema.location?.placeId,
-                lng: input.eventSchema.location?.position.lng,
-                lat: input.eventSchema.location?.position.lat,
+                description: input.data.location?.description,
+                mainText: input.data.location?.mainText,
+                secondaryText: input.data.location?.secondaryText,
+                placeId: input.data.location?.placeId,
+                lng: input.data.location?.position.lng,
+                lat: input.data.location?.position.lat,
               },
             },
           },
           registrationSettings: {
             update: {
               data: {
-                capacity: input.eventSchema.capacityValue,
-                waitlist: input.eventSchema.capacityWaitlist,
-                name: input.eventSchema.userName,
-                linkedIn: input.eventSchema.userLinkedIn,
-                website: input.eventSchema.userWebsite,
+                capacity: input.data.capacity ? input.data.capacityValue : null,
+                waitlist: input.data.capacityWaitlist,
+                name: input.data.userName,
+                linkedIn: input.data.userLinkedIn,
+                website: input.data.userWebsite,
               },
             },
           },
+        },
+      });
+    }),
+  updateThumbnail: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        thumbnailURL: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          thumbnailUrl: input.thumbnailURL,
         },
       });
     }),

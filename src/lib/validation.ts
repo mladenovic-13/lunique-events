@@ -74,7 +74,7 @@ export const updateEventSchema = z.object({
 
   requireApproval: z.boolean(), // @TODO => add this to database
   capacity: z.boolean(),
-  capacityValue: z.number().optional(),
+  capacityValue: z.number(),
   capacityWaitlist: z.boolean(),
   userName: z.boolean(),
   userEmail: z.boolean(),

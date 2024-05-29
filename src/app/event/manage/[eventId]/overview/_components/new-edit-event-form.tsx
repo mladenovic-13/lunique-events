@@ -1,10 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Libraries, useLoadScript } from "@react-google-maps/api";
-import { GlobeIcon, LinkedinIcon, MailIcon, User2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {
+  CircleCheckBigIcon,
+  GlobeIcon,
+  LinkedinIcon,
+  MailIcon,
+  User2Icon,
+} from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 import { EventDateInput } from "@/app/event/create/_components/inputs/event-date-input";
 import { EventLocationInput } from "@/app/event/create/_components/inputs/event-location-input";
@@ -12,6 +18,7 @@ import { EventTimeInput } from "@/app/event/create/_components/inputs/event-time
 import { EventTimezoneInput } from "@/app/event/create/_components/inputs/event-timezone-input";
 import { EventVisibilityInput } from "@/app/event/create/_components/inputs/event-visibility-input";
 import { OrganizationSelect } from "@/app/home/(events)/_components/organization-select";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -28,20 +35,12 @@ import { env } from "@/env.mjs";
 import { cn } from "@/lib/utils";
 import { type UpdateEvent, updateEventSchema } from "@/lib/validation";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/react";
-
-// import { PickLocation } from "./update-form/pick-location";
-// import { SelectOrganization } from "./update-form/select-organization";
-// import { TimePicker } from "./update-form/time-picker";
-// import { DatePickerDemo } from "./date-picker-demo";
 
 interface EditEventFormProps {
-  event: RouterOutputs["event"]["get"];
   defaultValues: UpdateEvent;
   onEventUpdate: () => void;
 }
 export const NewEditEventForm = ({
-  event,
   defaultValues,
   onEventUpdate,
 }: EditEventFormProps) => {
@@ -54,51 +53,39 @@ export const NewEditEventForm = ({
 
   const router = useRouter();
 
-  const libraries: Libraries = ["places"];
+  const libraries = useMemo<Libraries>(() => ["places"], []);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
   });
+  const { eventId } = useParams();
   const capacity = updateForm.watch("capacity");
   const onSubmit = (data: UpdateEvent) => {
-    if (event) {
-      console.log(data);
-      updateEvent(
-        { eventId: event.id, eventSchema: data },
-        {
-          onSuccess: () => {
-            toast({ title: "Event updated" });
-            onEventUpdate();
-            router.refresh();
-          },
-          onError: () =>
-            toast({ variant: "destructive", title: "Failed to update event" }),
+    updateEvent(
+      { eventId: eventId as string, data },
+      {
+        onSuccess: () => {
+          toast({ title: "Event updated" });
+          onEventUpdate();
+          router.refresh();
         },
-      );
-    }
+        onError: () =>
+          toast({ variant: "destructive", title: "Failed to update event" }),
+      },
+    );
   };
   const onErrors = (errors: unknown) => {
     toast({ title: "Frontend error, check console" });
-    console.log("ERROS", { errors });
-    console.log(defaultValues);
+    console.log({ errors });
   };
-
-  useEffect(() => {
-    if (!updateForm.formState.isDirty) {
-      updateForm.reset({
-        ...defaultValues,
-      });
-    }
-  }, [updateForm, defaultValues]);
 
   return (
     <div className="">
-      {event && organizations && (
+      {organizations && (
         <Form {...updateForm}>
           <form
             onSubmit={updateForm.handleSubmit(onSubmit, onErrors)}
-            id="edit-event-form"
             className="flex flex-col gap-6"
           >
             <div className="flex flex-col gap-6 px-0 md:flex-row md:justify-between md:px-4">
@@ -167,12 +154,10 @@ export const NewEditEventForm = ({
 
                         <FormControl>
                           <EventDateInput
-                            // value={new Date(field.value)}
-                            // onChange={(date) =>
-                            //   field.onChange(date?.toISOString())
-                            // }
-                            value={new Date()}
-                            onChange={() => field.onChange(field.value)}
+                            value={new Date(field.value)}
+                            onChange={(date) =>
+                              field.onChange(date?.toISOString())
+                            }
                             className="bg-background"
                           />
                         </FormControl>
@@ -196,6 +181,8 @@ export const NewEditEventForm = ({
                       </FormItem>
                     )}
                   />
+                </div>
+                <div className="w-full">
                   <FormField
                     control={updateForm.control}
                     name="timezone"
@@ -262,11 +249,9 @@ export const NewEditEventForm = ({
                         <div className="flex flex-col items-start justify-start gap-1">
                           <FormLabel>Capacity</FormLabel>
                           <FormDescription>
-                            <p>
-                              Turn ON to enable Maximum Capacity input,
-                              <br />
-                              otherwise, capacity is unlimited.
-                            </p>
+                            Turn ON to enable Maximum Capacity input,
+                            <br />
+                            otherwise, capacity is unlimited.
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -281,7 +266,6 @@ export const NewEditEventForm = ({
                   <FormField
                     control={updateForm.control}
                     name="capacityValue"
-                    disabled={!capacity}
                     render={({ field }) => (
                       <FormItem className="flex h-9 items-center justify-between  gap-3 space-y-0">
                         <FormLabel
@@ -297,8 +281,12 @@ export const NewEditEventForm = ({
                             {capacity && (
                               <Input
                                 className="w-20 text-right"
-                                type="number"
                                 {...field}
+                                disabled={!capacity}
+                                type="number"
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
                               />
                             )}
                             {!capacity && (
@@ -318,7 +306,6 @@ export const NewEditEventForm = ({
                 <FormField
                   control={updateForm.control}
                   name="capacityWaitlist"
-                  disabled={!capacity}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border bg-background p-4">
                       <div className="space-y-0.5">
@@ -332,7 +319,7 @@ export const NewEditEventForm = ({
                       <FormControl>
                         <Switch
                           disabled={!capacity}
-                          checked={!capacity ? false : field.value}
+                          checked={capacity ? field.value : false}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
@@ -342,7 +329,6 @@ export const NewEditEventForm = ({
                 <FormField
                   control={updateForm.control}
                   name="requireApproval"
-                  disabled={!capacity}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border bg-background p-4">
                       <div className="space-y-0.5">
@@ -460,6 +446,10 @@ export const NewEditEventForm = ({
                 )}
               /> */}
             </div>
+            <Button className="gap-2" type="submit">
+              <CircleCheckBigIcon size={16} />
+              Save Changes
+            </Button>
           </form>
         </Form>
       )}
