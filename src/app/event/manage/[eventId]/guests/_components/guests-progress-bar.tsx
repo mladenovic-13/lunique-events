@@ -4,18 +4,23 @@ const StatusProgressBar = ({ guestStatuses }: GuestsProgressBarProps) => {
   const data = [
     {
       name: "Going",
-      counts: guestStatuses.filter((s) => s === "going").length,
+      counts: guestStatuses.filter((s) => s === "GOING").length,
       color: "#3DC45D",
     },
     {
-      name: "Invited",
-      counts: guestStatuses.filter((s) => s === "invited").length,
-      color: "#2963EA",
+      name: "Not going",
+      counts: guestStatuses.filter((s) => s === "NOT_GOING").length,
+      color: "#64758A",
     },
     {
-      name: "Not going",
-      counts: guestStatuses.filter((s) => s === "not going").length,
-      color: "#64758A",
+      name: "Maybe",
+      counts: guestStatuses.filter((s) => s === "MAYBE").length,
+      color: "#eab308",
+    },
+    {
+      name: "Pending",
+      counts: guestStatuses.filter((s) => s === "PENDING").length,
+      color: "#2963EA",
     },
   ];
 

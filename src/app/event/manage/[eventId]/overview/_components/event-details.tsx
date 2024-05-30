@@ -94,7 +94,6 @@ export const EventDetails = ({
       {isEditable && (
         <div className="flex flex-col justify-between gap-2 py-1 pb-10 md:flex-row md:px-4">
           <h1 className="pb-2 text-3xl font-semibold">Update Event</h1>
-
           <div className="flex justify-between gap-2 md:justify-normal">
             <Button
               variant={"secondary"}

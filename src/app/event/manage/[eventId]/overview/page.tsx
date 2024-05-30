@@ -27,7 +27,7 @@ export default async function EventOverviewPage({
     <div className="space-y-3 md:space-y-5">
       <ActionButtons />
       <Card className="rounded-lg  bg-muted-foreground/10 px-3 md:grid md:grid-cols-1 md:gap-5 md:px-5">
-        <div className="flex space-y-3  md:flex md:flex-col ">
+        <div className="flex flex-col gap-4 md:gap-0 md:pt-5">
           <EventDetails
             event={event}
             registrationSettings={registrationSettings}
