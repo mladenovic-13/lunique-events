@@ -1,16 +1,25 @@
 import { z } from "zod";
 
 import { organizationSchema } from "@/app/organization/create/_components/validation";
+import { env } from "@/env.mjs";
+import { getIpAddress } from "@/lib/get-ip-address";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 
+import { ratelimit } from "../ratelimiters/ratelimiter";
+
 export const organizationRouter = createTRPCRouter({
   create: protectedProcedure
     .input(organizationSchema)
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       return await ctx.db.organization.create({
         data: {
           isPersonal: false,
@@ -28,6 +37,11 @@ export const organizationRouter = createTRPCRouter({
       });
     }),
   list: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
     return await ctx.db.organization.findMany({
       where: {
         ownerId: ctx.session.user.id,
@@ -49,6 +63,11 @@ export const organizationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       return await ctx.db.organization.findFirst({
         where: {
           AND: {
@@ -78,6 +97,11 @@ export const organizationRouter = createTRPCRouter({
   getName: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.organization.findFirst({
         where: {
           id: input.id,
