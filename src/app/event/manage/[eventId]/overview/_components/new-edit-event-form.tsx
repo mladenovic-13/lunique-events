@@ -1,16 +1,23 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Libraries, useLoadScript } from "@react-google-maps/api";
-import { CircleCheckBigIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-
 import {
-  defaultValues,
-  type EventSchema,
-  eventSchema,
-} from "@/app/event/create/_components/validation";
+  CircleCheckBigIcon,
+  GlobeIcon,
+  LinkedinIcon,
+  MailIcon,
+  User2Icon,
+} from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+
+import { EventDateInput } from "@/app/event/create/_components/inputs/event-date-input";
+import { EventLocationInput } from "@/app/event/create/_components/inputs/event-location-input";
+import { EventTimeInput } from "@/app/event/create/_components/inputs/event-time-input";
+import { EventTimezoneInput } from "@/app/event/create/_components/inputs/event-timezone-input";
+import { EventVisibilityInput } from "@/app/event/create/_components/inputs/event-visibility-input";
+import { OrganizationSelect } from "@/app/home/(events)/_components/organization-select";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,79 +32,48 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { env } from "@/env.mjs";
+import { cn } from "@/lib/utils";
+import { type UpdateEvent, updateEventSchema } from "@/lib/validation";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/react";
-
-import { PickLocation } from "./update-form/pick-location";
-import { SelectOrganization } from "./update-form/select-organization";
 
 interface EditEventFormProps {
-  event: RouterOutputs["event"]["get"];
+  defaultValues: UpdateEvent;
   onEventUpdate: () => void;
 }
 export const NewEditEventForm = ({
-  event,
+  defaultValues,
   onEventUpdate,
 }: EditEventFormProps) => {
-  const updateForm = useForm({
-    resolver: zodResolver(eventSchema),
+  const updateForm = useForm<UpdateEvent>({
+    resolver: zodResolver(updateEventSchema),
     defaultValues: defaultValues,
   });
   const { mutate: updateEvent } = api.event.update.useMutation();
   const { data: organizations } = api.organization.list.useQuery();
+
   const router = useRouter();
 
-  useEffect(() => {
-    if (event && !updateForm.formState.isDirty) {
-      updateForm.reset({
-        name: event.name ?? undefined,
-        // capacity: {
-        //   value: event.capacityValue,
-        //   waitlist: event.capacityWaitlist ?? undefined,
-        // },
-        // TODO: fix
-        // startDate: event.startDate,
-        // endDate: event.endDate,
-        description: event.description ?? undefined,
-        public: event.isPublic,
-        // requireApproval: event.requireApproval,
-        thumbnailUrl: event.thumbnailUrl ?? "testUrl",
-        location: {
-          ...event.location,
-          description: event.location?.description ?? "null",
-          position: {
-            lat: event.location?.lat ?? undefined,
-            lng: event.location?.lng ?? undefined,
-          },
-        },
-        organization: event.organization.name,
-      });
-    }
-  }, [updateForm, event]);
-
-  const libraries: Libraries = ["places"];
+  const libraries = useMemo<Libraries>(() => ["places"], []);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-
-  const onSubmit = (data: EventSchema) => {
-    if (event) {
-      updateEvent(
-        { eventId: event.id, eventSchema: data },
-        {
-          onSuccess: (event) => {
-            console.log({ event });
-            toast({ title: "Event updated" });
-            onEventUpdate();
-            router.refresh();
-          },
-          onError: () =>
-            toast({ variant: "destructive", title: "Failed to update event" }),
+  const { eventId } = useParams();
+  const capacity = updateForm.watch("capacity");
+  const onSubmit = (data: UpdateEvent) => {
+    updateEvent(
+      { eventId: eventId as string, data },
+      {
+        onSuccess: () => {
+          toast({ title: "Event updated" });
+          onEventUpdate();
+          router.refresh();
         },
-      );
-    }
+        onError: () =>
+          toast({ variant: "destructive", title: "Failed to update event" }),
+      },
+    );
   };
   const onErrors = (errors: unknown) => {
     toast({ title: "Frontend error, check console" });
@@ -106,182 +82,244 @@ export const NewEditEventForm = ({
 
   return (
     <div className="">
-      {event && organizations && (
+      {organizations && (
         <Form {...updateForm}>
           <form
             onSubmit={updateForm.handleSubmit(onSubmit, onErrors)}
-            className="space-y-5 px-0 md:px-4"
-            id="edit-event-form"
+            className="flex flex-col gap-6"
           >
-            <div className="flex flex-col gap-4  md:flex md:flex-row md:justify-between">
-              <div className="w-full space-y-4 p-0">
-                <h1 className="text-lg font-bold">Basic Info</h1>
+            <div className="flex flex-col gap-6 px-0 md:flex-row md:justify-between md:px-4">
+              <div className="flex w-full flex-col gap-4 md:pr-2">
+                <h1 className="text-base font-semibold md:pb-4 md:text-xl">
+                  Basic Details
+                </h1>
+                <div className="flex w-full justify-between md:flex-row">
+                  <FormField
+                    control={updateForm.control}
+                    name="organization"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Organization</FormLabel>
+                        <FormControl>
+                          <OrganizationSelect
+                            className="bg-background"
+
+                            // value={field.value}
+                            // onChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={updateForm.control}
+                    name="public"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Visibility</FormLabel>
+                        <FormControl>
+                          <EventVisibilityInput
+                            className="bg-background"
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={updateForm.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem className="">
+                    <FormItem>
                       <FormLabel>Event name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Event name" {...field} />
+                        <Input
+                          placeholder="Ex. Lunique Hackathon, Conference, etc.."
+                          {...field}
+                          className="bg-background"
+                        />
                       </FormControl>
                     </FormItem>
                   )}
                 />
+                <div className="flex w-full items-end justify-start gap-4 md:flex-row">
+                  <FormField
+                    control={updateForm.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Date & Time</FormLabel>
+
+                        <FormControl>
+                          <EventDateInput
+                            value={new Date(field.value)}
+                            onChange={(date) =>
+                              field.onChange(date?.toISOString())
+                            }
+                            className="bg-background"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={updateForm.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EventTimeInput
+                            value={new Date(field.value)}
+                            onChange={(date) =>
+                              field.onChange(date?.toISOString())
+                            }
+                            className="bg-background"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="w-full">
+                  <FormField
+                    control={updateForm.control}
+                    name="timezone"
+                    render={({ field, fieldState }) => (
+                      <FormItem>
+                        <FormControl>
+                          <EventTimezoneInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            isDirty={fieldState.isDirty}
+                            className="bg-background"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {isLoaded && (
+                  <FormField
+                    control={updateForm.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <EventLocationInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="bg-background"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={updateForm.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem className="">
+                    <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Description" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={updateForm.control}
-                  name="capacity.value"
-                  render={({ field }) => (
-                    <FormItem className="">
-                      <FormLabel>Capacity</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="How many people can register"
-                          {...updateForm.register("capacity.value", {
-                            valueAsNumber: true,
-                          })}
-                          value={field.value ?? 0}
+                        <Textarea
+                          rows={5}
+                          placeholder="Enter your event short description..."
+                          className="resize-none bg-background"
+                          {...field}
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
-                {/* TODO: fix */}
-                {/* <Card className="flex items-center justify-between bg-background/50">
-                  <div className="w-1/2">
-                    <FormField
-                      control={updateForm.control}
-                      name="startDateTime.date"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormControl>
-                            <DatePickerDemo
-                              value={field.value}
-                              onChange={field.onChange}
-                              className="justify-start"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={updateForm.control}
-                      name="startDateTime.time"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormControl>
-                            <TimePicker
-                              onChange={field.onChange}
-                              value={field.value}
-                              className="justify-start"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <ArrowRightIcon />
-                  <div className="w-1/2">
-                    <FormField
-                      control={updateForm.control}
-                      name="endDateTime.date"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormControl>
-                            <DatePickerDemo
-                              value={field.value}
-                              onChange={field.onChange}
-                              className="justify-end"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={updateForm.control}
-                      name="endDateTime.time"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormControl>
-                            <TimePicker
-                              onChange={field.onChange}
-                              value={field.value}
-                              className="justify-end"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </Card> */}
-                <div className="w-full space-y-4">
-                  {isLoaded && (
-                    <FormField
-                      control={updateForm.control}
-                      name="location"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormControl>
-                            <PickLocation
-                              defaultValue={field.value?.description}
-                              onChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  )}
-                </div>
               </div>
-
-              {/* ------------------------------------------ */}
-
-              <div className="w-full space-y-4   px-0">
-                <h1 className="text-lg font-bold">Organization</h1>
+              <div className="flex w-full flex-col gap-4 md:pl-2">
+                <h1 className="text-base font-semibold md:pb-4 md:text-xl">
+                  Registration Settings
+                </h1>
+                <div className="flex w-full flex-col gap-1 rounded-lg border bg-background p-4">
+                  <FormField
+                    control={updateForm.control}
+                    name="capacity"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full items-start justify-between">
+                        <div className="flex flex-col items-start justify-start gap-1">
+                          <FormLabel>Capacity</FormLabel>
+                          <FormDescription>
+                            Turn ON to enable Maximum Capacity input,
+                            <br />
+                            otherwise, capacity is unlimited.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={updateForm.control}
+                    name="capacityValue"
+                    render={({ field }) => (
+                      <FormItem className="flex h-9 items-center justify-between  gap-3 space-y-0">
+                        <FormLabel
+                          className={cn(
+                            !capacity && "text-accent-foreground/40",
+                            capacity && "text-accent-foreground",
+                          )}
+                        >
+                          Max Capacity
+                        </FormLabel>
+                        <FormControl className="w-16">
+                          <>
+                            {capacity && (
+                              <Input
+                                className="w-20 text-right"
+                                {...field}
+                                disabled={!capacity}
+                                type="number"
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            )}
+                            {!capacity && (
+                              <Input
+                                className="w-20 text-xs"
+                                type="text"
+                                value="Unlimited"
+                                disabled
+                              />
+                            )}
+                          </>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={updateForm.control}
-                  name="organization"
+                  name="capacityWaitlist"
                   render={({ field }) => (
-                    <FormItem className="">
-                      <FormControl>
-                        <SelectOrganization
-                          organizations={organizations}
-                          value={field.value ?? ""}
-                          onChangeValue={field.onChange}
-                          organizationId={event.organizationId}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <h1 className="text-lg font-bold">Event Options</h1>
-                <FormField
-                  control={updateForm.control}
-                  name="capacity.waitlist"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border bg-background p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Waitlist</FormLabel>
+                        <FormLabel className="text-base">
+                          Over-Capacity Waitlist
+                        </FormLabel>
                         <FormDescription className=" ">
                           Toggle Waitlist for Overflow Guests
                         </FormDescription>
                       </div>
                       <FormControl>
                         <Switch
-                          checked={field.value}
+                          disabled={!capacity}
+                          checked={capacity ? field.value : false}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
@@ -289,53 +327,10 @@ export const NewEditEventForm = ({
                   )}
                 />
                 <FormField
-                  control={updateForm.control}
-                  name="public"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Public Visibility
-                        </FormLabel>
-                        <FormDescription className=" ">
-                          Switch to Set Event Visibility: Public/Private
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={updateForm.control}
-                  name="tickets"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">Tickets</FormLabel>
-                        <FormDescription className=" ">
-                          Toggle to Set Ticket Pricing: Free/Paid
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                {/* TODO: fix */}
-                {/* <FormField
                   control={updateForm.control}
                   name="requireApproval"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between gap-4 rounded-lg border bg-background p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
                           Required Approval
@@ -352,12 +347,108 @@ export const NewEditEventForm = ({
                       </FormControl>
                     </FormItem>
                   )}
-                /> */}
+                />
               </div>
             </div>
-            <Button className="flex w-full gap-2">
-              <CircleCheckBigIcon size={20} />
-              Update Event
+            <div className="flex flex-col gap-2 p-0 md:mx-4 md:rounded-lg md:bg-background md:p-4">
+              <div className="flex flex-col gap-0 md:pb-4">
+                <h1 className="text-base font-semibold  md:text-xl">
+                  Registration Questions
+                </h1>
+                <p className="text-sm text-accent-foreground/60">
+                  We will ask guests the following questions when they register
+                  for the event.
+                </p>
+              </div>
+              <div className="grid gap-1.5 rounded-lg bg-background p-4 md:grid-cols-4 md:gap-5 md:rounded-none md:bg-transparent md:p-0">
+                <FormField
+                  control={updateForm.control}
+                  name="userName"
+                  render={({ field }) => (
+                    <FormItem className="flex h-9 items-center justify-between gap-3 space-y-0 md:justify-start">
+                      <div className="inline-flex items-center gap-1.5">
+                        <User2Icon className="size-4" />
+                        <FormLabel>Name</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={updateForm.control}
+                  name="userEmail"
+                  render={() => (
+                    <FormItem className="flex h-9 items-center justify-between gap-3 space-y-0 md:justify-start">
+                      <div className="inline-flex items-center gap-1.5">
+                        <MailIcon className="size-4" />
+                        <FormLabel>Email</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch checked={true} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={updateForm.control}
+                  name="userWebsite"
+                  render={({ field }) => (
+                    <FormItem className="flex h-9 items-center justify-between gap-3 space-y-0 md:justify-start">
+                      <div className="inline-flex items-center gap-1.5">
+                        <GlobeIcon className="size-4" />
+                        <FormLabel>Website</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={updateForm.control}
+                  name="userLinkedIn"
+                  render={({ field }) => (
+                    <FormItem className="flex h-9 items-center justify-between gap-3 space-y-0 md:justify-start">
+                      <div className="inline-flex items-center gap-1.5">
+                        <LinkedinIcon className="size-4" />
+                        <FormLabel>LinkedIn</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              {/* <FormField
+                control={updateForm.control}
+                name="questions"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between gap-3 space-y-0 rounded-lg bg-background p-2 md:justify-start md:rounded-none md:bg-transparent md:p-0">
+                    <FormControl>
+                      <EventQuestionsInput
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              /> */}
+            </div>
+            <Button className="gap-2" type="submit">
+              <CircleCheckBigIcon size={16} />
+              Save Changes
             </Button>
           </form>
         </Form>

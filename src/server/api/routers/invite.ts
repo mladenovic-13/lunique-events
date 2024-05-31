@@ -25,6 +25,22 @@ export const inviteRouter = createTRPCRouter({
         },
       });
     }),
+  list: publicProcedure
+    .input(z.object({ eventId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!input.eventId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Event ID required",
+        });
+      }
+
+      return await ctx.db.invite.findMany({
+        where: {
+          eventId: input.eventId,
+        },
+      });
+    }),
   updateStatus: publicProcedure
     .input(z.object({ id: z.string(), status: z.nativeEnum(InviteStatus) }))
     .mutation(async ({ ctx, input }) => {

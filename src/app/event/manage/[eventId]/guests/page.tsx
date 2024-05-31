@@ -1,11 +1,14 @@
+import { notFound } from "next/navigation";
+
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/server";
 
 import { GuestListActions } from "./_components/guest-list-actions";
 import GuestsActionButtons from "./_components/guests-action-buttons";
 import { GuestsStatus } from "./_components/guests-status";
 import GuestsTable from "./_components/guests-table";
 
-export type GuestStatus = "going" | "not going" | "invited";
+export type GuestStatus = "PENDING" | "MAYBE" | "GOING" | "NOT_GOING";
 export type GuestsArray = Array<Guest>;
 export interface Guest {
   name: string;
@@ -14,38 +17,15 @@ export interface Guest {
   dateRegistered: string;
 }
 
-export default function EventGuestsPage({}: {
+export default async function EventGuestsPage({
+  params,
+}: {
   params: {
     eventId: string;
   };
 }) {
-  const guests: GuestsArray = [
-    {
-      name: "Luka Stojadinovic",
-      email: "luka@lunique.tech",
-      status: "going",
-      dateRegistered: "Mar 14",
-    },
-    {
-      name: "Nikola Mladenovic",
-      email: "nikola@lunique.tech",
-      status: "going",
-      dateRegistered: "Mar 15",
-    },
-    {
-      name: "Petar Petrovic",
-      email: "petar@lunique.tech",
-      status: "invited",
-      dateRegistered: "Mar 13",
-    },
-    {
-      name: "Janko Jankovic",
-      email: "janko@lunique.tech",
-      status: "not going",
-      dateRegistered: "Mar 13",
-    },
-  ];
-
+  const guests = await api.invite.list({ eventId: params.eventId });
+  if (!guests) notFound();
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-semibold">At a Glance</h1>
@@ -54,7 +34,7 @@ export default function EventGuestsPage({}: {
       <Separator />
       <div>
         <GuestListActions />
-        <GuestsTable />
+        <GuestsTable guests={guests.map((g) => ({ ...g, date: new Date() }))} />
       </div>
     </div>
   );

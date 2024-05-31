@@ -5,9 +5,12 @@ import { TRPCError } from "@trpc/server";
 // import { Redis } from "@upstash/redis";
 import { z } from "zod";
 
-import { eventSchema } from "@/app/event/create/_components/validation";
 import { env } from "@/env.mjs";
-import { createEventSchema, eventRegistrationSchema } from "@/lib/validation";
+import {
+  createEventSchema,
+  eventRegistrationSchema,
+  updateEventSchema,
+} from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -144,7 +147,7 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  createRegisrationRules: protectedProcedure
+  updateRegisrationRules: protectedProcedure
     .input(eventRegistrationSchema.extend({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.registrationSettings.update({
@@ -160,7 +163,7 @@ export const eventRouter = createTRPCRouter({
 
           capacity: input.capacity ? input.capacityValue : undefined,
           name: input.name,
-          linkedIn: input.name,
+          linkedIn: input.linkedIn,
           waitlist: input.capacityWaitlist,
           website: input.website,
         },
@@ -171,17 +174,17 @@ export const eventRouter = createTRPCRouter({
       z.object({
         eventId: z.string(),
         // eventUpdateSchema: eventSchema,
-        eventSchema: eventSchema,
+        data: updateEventSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
       let organization = null;
 
-      if (input.eventSchema.organization) {
+      if (input.data.organization) {
         organization = await ctx.db.organization.findFirst({
           where: {
             ownerId: ctx.session.user.id,
-            id: input.eventSchema.organization,
+            id: input.data.organization,
           },
         });
       } else {
@@ -209,13 +212,12 @@ export const eventRouter = createTRPCRouter({
           id: input.eventId,
         },
         data: {
-          name: input.eventSchema.name,
-          // date: input.eventSchema.endDate,
-          description: input.eventSchema.description,
-          // capacityValue: input.eventSchema.capacity.value,
-          // capacityWaitlist: input.eventSchema.capacity.waitlist,
-          isPublic: input.eventSchema.public,
-          // requireApproval: input.eventSchema.requireApproval,
+          isPublic: input.data.public,
+          name: input.data.name,
+          date: input.data.date,
+          timezone: input.data.timezone,
+          description: input.data.description,
+
           organization: {
             connect: {
               id: organization.id,
@@ -224,15 +226,43 @@ export const eventRouter = createTRPCRouter({
           location: {
             update: {
               data: {
-                description: input.eventSchema.location?.description,
-                mainText: input.eventSchema.location?.mainText,
-                secondaryText: input.eventSchema.location?.secondaryText,
-                placeId: input.eventSchema.location?.placeId,
-                // lng: input.eventSchema.location?.position.lng,
-                // lat: input.eventSchema.location?.position.lat,
+                description: input.data.location?.description,
+                mainText: input.data.location?.mainText,
+                secondaryText: input.data.location?.secondaryText,
+                placeId: input.data.location?.placeId,
+                lng: input.data.location?.position.lng,
+                lat: input.data.location?.position.lat,
               },
             },
           },
+          registrationSettings: {
+            update: {
+              data: {
+                capacity: input.data.capacity ? input.data.capacityValue : null,
+                waitlist: input.data.capacityWaitlist,
+                name: input.data.userName,
+                linkedIn: input.data.userLinkedIn,
+                website: input.data.userWebsite,
+              },
+            },
+          },
+        },
+      });
+    }),
+  updateThumbnail: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        thumbnailURL: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          thumbnailUrl: input.thumbnailURL,
         },
       });
     }),

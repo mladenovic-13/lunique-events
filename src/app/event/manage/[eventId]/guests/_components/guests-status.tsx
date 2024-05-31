@@ -11,14 +11,16 @@ export interface GuestsProgressBarProps {
 }
 
 export const GuestsStatus = ({ guestStatuses }: GuestsProgressBarProps) => {
-  const goingGuests = guestStatuses.filter((g) => g === "going").length;
-  const notGoingGuests = guestStatuses.filter((g) => g === "not going").length;
-  const invitedGuests = guestStatuses.filter((g) => g === "invited").length;
+  const goingGuests = guestStatuses.filter((g) => g === "GOING").length;
+  const notGoingGuests = guestStatuses.filter((g) => g === "NOT_GOING").length;
+  const maybeGuests = guestStatuses.filter((g) => g === "MAYBE").length;
+  const pendingGuests = guestStatuses.filter((g) => g === "PENDING").length;
 
   const status_array = [
     { status: "going", counts: goingGuests, color: "#3DC45D" },
     { status: "not going", counts: notGoingGuests, color: "#64758A" },
-    { status: "invited", counts: invitedGuests, color: "#2963EA" },
+    { status: "maybe", counts: maybeGuests, color: "#EAB308" },
+    { status: "pending", counts: pendingGuests, color: "#2963EA" },
   ];
 
   return (
@@ -31,7 +33,7 @@ export const GuestsStatus = ({ guestStatuses }: GuestsProgressBarProps) => {
         }}
       >
         <div>
-          <p>{status_array.find((el) => el.status === "going")?.counts}</p>
+          <p>{status_array.find((el) => el.status === "GOING")?.counts}</p>
         </div>
         <div className="flex flex-col-reverse">
           <p
@@ -40,7 +42,11 @@ export const GuestsStatus = ({ guestStatuses }: GuestsProgressBarProps) => {
               fontSize: 16,
             }}
           >
-            {goingGuests === 1 ? "guest" : "guests"}
+            {goingGuests === 0
+              ? "No Guests"
+              : goingGuests === 1
+                ? "guest"
+                : "guests"}
           </p>
         </div>
       </div>
