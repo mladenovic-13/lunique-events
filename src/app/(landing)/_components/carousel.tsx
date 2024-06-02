@@ -2,19 +2,17 @@ import * as React from "react";
 import { type Event } from "@prisma/client";
 import Autoplay from "embla-carousel-autoplay";
 
-import { EventCard } from "@/app/explore/_components/event-card";
 import { Card, CardContent } from "@/components/ui/card";
-// import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { api } from "@/trpc/react";
 
-export function CarouselPlugin() {
+import EventCardCarousel from "./event-card-carousel";
+
+export function CarouselEvents() {
   const plugin = React.useRef(
     Autoplay({
       delay: 2000,
@@ -41,9 +39,9 @@ export function CarouselPlugin() {
   return (
     <Carousel
       plugins={[plugin.current]}
-      className="w-[1280px] rounded-lg bg-gradient-to-r from-gray-50/20 via-background/20 to-gray-50/20"
+      className="w-full rounded-lg  bg-gradient-to-r from-gray-50/20 via-background/20 to-gray-50/20 md:w-[1280px]"
       opts={{
-        align: "start",
+        align: "center",
         loop: true,
       }}
     >
@@ -52,7 +50,7 @@ export function CarouselPlugin() {
           Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center  md:basis-1/2 lg:basis-1/4"
+              className="items-center justify-center  md:w-[350px] md:basis-1/4"
             >
               <div className="p-1">
                 <Card className="">
@@ -67,16 +65,16 @@ export function CarouselPlugin() {
           events?.map((event, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center  md:basis-1/2 lg:basis-1/4"
+              className="w-[300px] items-center  justify-center md:w-[350px] md:basis-1/4"
             >
               <div className="p-1">
-                <EventCard {...event} />
+                <EventCardCarousel {...event} />
               </div>
             </CarouselItem>
           ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      {/* <CarouselPrevious /> */}
+      {/* <CarouselNext className="hidden" /> */}
     </Carousel>
   );
 }
