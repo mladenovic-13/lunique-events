@@ -39,13 +39,18 @@ export function CarouselEvents() {
   return (
     <Carousel
       plugins={[plugin.current]}
-      className="w-full rounded-lg  bg-gradient-to-r from-gray-50/20 via-background/20 to-gray-50/20 px-4 md:w-[1280px]"
+      className="flex size-full items-start justify-center rounded-lg md:w-[1280px]"
       opts={{
         align: "start",
         loop: true,
         duration: 15000,
       }}
     >
+      {/* <div className="absolute z-10 flex size-full items-center justify-between py-1">
+        <div className="-ml-10 flex h-[120%] w-[120px] bg-gradient-to-r from-background via-background to-background/95 blur-lg"></div>
+        <div className="-mr-10 flex h-[120%] w-[120px] bg-gradient-to-l from-background via-background to-background/95 blur-lg"></div>
+      </div> */}
+      <div className="absolute -top-10 left-0 z-10 -ml-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-r from-background via-background to-background/95 blur-lg md:w-[150px]"></div>
       <CarouselContent className="w-full">
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (
@@ -74,6 +79,8 @@ export function CarouselEvents() {
             </CarouselItem>
           ))}
       </CarouselContent>
+      <div className="absolute -top-10 right-0 z-10 -mr-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-l from-background via-background to-background/95 blur-lg md:w-[150px]"></div>
+
       {/* <CarouselPrevious /> */}
       {/* <CarouselNext className="hidden" /> */}
     </Carousel>
