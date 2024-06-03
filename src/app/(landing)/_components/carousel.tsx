@@ -2,7 +2,6 @@ import * as React from "react";
 import { type Event } from "@prisma/client";
 import Autoplay from "embla-carousel-autoplay";
 
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -46,24 +45,16 @@ export function CarouselEvents() {
         duration: 15000,
       }}
     >
-      {/* <div className="absolute z-10 flex size-full items-center justify-between py-1">
-        <div className="-ml-10 flex h-[120%] w-[120px] bg-gradient-to-r from-background via-background to-background/95 blur-lg"></div>
-        <div className="-mr-10 flex h-[120%] w-[120px] bg-gradient-to-l from-background via-background to-background/95 blur-lg"></div>
-      </div> */}
       <div className="absolute -top-10 left-0 z-10 -ml-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-r from-background via-background to-background/95 blur-lg md:w-[150px]"></div>
       <CarouselContent className="w-full">
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center  md:w-[350px] md:basis-1/4"
+              className="items-center justify-center px-1  md:basis-1/4"
             >
-              <div className="p-1">
-                <Card className="">
-                  <CardContent className="flex aspect-square items-center justify-center p-6">
-                    <span className="text-4xl font-semibold">{index + 1}</span>
-                  </CardContent>
-                </Card>
+              <div className="py-1">
+                <EventCardCarousel key={index} />
               </div>
             </CarouselItem>
           ))}
@@ -71,7 +62,7 @@ export function CarouselEvents() {
           events?.map((event, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center  px-1  md:basis-1/4"
+              className="items-center justify-center px-1  md:basis-1/4"
             >
               <div className="py-1">
                 <EventCardCarousel {...event} key={index} />

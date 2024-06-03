@@ -70,11 +70,12 @@ export const Footer = () => {
           href={paths.event.create}
           className={buttonVariants({
             variant: "link",
-            className: "font-semibold text-primary",
+            className:
+              "bg-gradient-to-r from-primary  to-rose-800 bg-clip-text font-semibold text-transparent",
           })}
         >
           Host your event with Lunique Events
-          <ArrowUpRightIcon className="ml-1.5 size-4" />
+          <ArrowUpRightIcon className="ml-1.5 size-4 text-primary" />
         </Link>
       </div>
     </footer>
