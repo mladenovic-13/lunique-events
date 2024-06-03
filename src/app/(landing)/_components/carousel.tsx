@@ -15,17 +15,17 @@ import EventCardCarousel from "./event-card-carousel";
 export function CarouselEvents() {
   const plugin = React.useRef(
     Autoplay({
-      delay: 2000,
-      stopOnInteraction: false,
-      stopOnMouseEnter: false,
+      delay: 0,
+      stopOnMouseEnter: true,
       stopOnFocusIn: false,
-      stopOnLastSnap: false,
+      stopOnInteraction: false,
     }),
   );
+
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     api.explore.list.useInfiniteQuery(
       {
-        limit: 6,
+        limit: 12,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -39,15 +39,16 @@ export function CarouselEvents() {
   return (
     <Carousel
       plugins={[plugin.current]}
-      className="w-full rounded-lg  bg-gradient-to-r from-gray-50/20 via-background/20 to-gray-50/20 md:w-[1280px]"
+      className="w-full rounded-lg  bg-gradient-to-r from-gray-50/20 via-background/20 to-gray-50/20 px-4 md:w-[1280px]"
       opts={{
-        align: "center",
+        align: "start",
         loop: true,
+        duration: 15000,
       }}
     >
       <CarouselContent className="w-full">
         {isLoading &&
-          Array.from({ length: 5 }).map((_, index) => (
+          Array.from({ length: 6 }).map((_, index) => (
             <CarouselItem
               key={index}
               className="items-center justify-center  md:w-[350px] md:basis-1/4"
@@ -65,10 +66,10 @@ export function CarouselEvents() {
           events?.map((event, index) => (
             <CarouselItem
               key={index}
-              className="w-[300px] items-center  justify-center md:w-[350px] md:basis-1/4"
+              className="items-center justify-center  px-1  md:basis-1/4"
             >
-              <div className="p-1">
-                <EventCardCarousel {...event} />
+              <div className="py-1">
+                <EventCardCarousel {...event} key={index} />
               </div>
             </CarouselItem>
           ))}

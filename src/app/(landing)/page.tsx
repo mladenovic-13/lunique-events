@@ -8,7 +8,7 @@ import { Heading } from "./_components/heading";
 export default function Home() {
   return (
     <div className="flex w-full flex-col items-center justify-center">
-      <div className="gradient flex w-full flex-col items-center justify-start  pt-10  md:gap-4 md:px-0 md:pt-12 ">
+      <div className="flex w-full flex-col items-center justify-start pt-10  md:gap-4 md:px-0 md:pt-12 ">
         <Link
           className="w-fit animate-pulse rounded-lg bg-muted px-4 py-1 text-sm transition-all md:text-base md:hover:bg-accent-foreground/20"
           href={"https://lunique.tech"}
