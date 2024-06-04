@@ -43,7 +43,7 @@ export const EventInviteGuestsStep = () => {
         </StepTitle>
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
-      <StepContent className="flex size-full border-t px-0 md:px-2">
+      <StepContent className="size-full flex-none border-t px-0 md:flex md:px-2">
         <div className="h-[550px] justify-center  px-0 md:h-[500px] md:w-full">
           <InviteGuestPartial
             eventId={eventId}
@@ -53,7 +53,7 @@ export const EventInviteGuestsStep = () => {
             }
           />
         </div>
-        <div className="flex h-[490px] items-end">
+        <div className="hidden h-[490px] items-end md:flex">
           <Button
             type="button"
             size="sm"
@@ -64,17 +64,17 @@ export const EventInviteGuestsStep = () => {
           </Button>
         </div>
       </StepContent>
-      {/* <StepFooter className="-mt-6 flex items-center justify-end">
+      <StepFooter className="-mt-6 flex items-center justify-end md:hidden">
         <Button
           type="button"
           size="sm"
-          className="px-4"
+          className="pr-0 hover:bg-transparent"
           onClick={() => router.push(paths.event.manage.overview(eventId))}
-          variant="secondary"
+          variant="ghost"
         >
-          Later
+          Skip for now
         </Button>
-      </StepFooter> */}
+      </StepFooter>
     </StepContainer>
   );
 };
