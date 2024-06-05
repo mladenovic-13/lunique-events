@@ -20,13 +20,17 @@ const StepCard = ({
   return (
     <div
       className={cn(
-        "flex size-full flex-row items-center justify-center  gap-4 rounded-2xl bg-muted p-8 py-12",
+        "flex size-full flex-row items-start justify-center rounded-2xl bg-muted p-8 py-8 md:py-12 ",
         className && className,
+        className &&
+          className.includes("flex-col") &&
+          !className.includes("flex-row") &&
+          "gap-12",
       )}
     >
       <div
         className={cn(
-          "flex w-full flex-col gap-2 md:w-1/2 ",
+          "flex w-full flex-col gap-6 md:w-1/2 md:gap-2 ",
           className &&
             className.includes("flex-col") &&
             !className.includes("flex-row") &&
@@ -42,7 +46,28 @@ const StepCard = ({
       {image && (
         <div
           className={cn(
-            "flex w-1/2 items-center justify-center",
+            "flex w-1/2 items-center justify-center md:hidden",
+            className &&
+              className.includes("flex-col") &&
+              !className.includes(" flex-row ") &&
+              "w-full",
+          )}
+        >
+          <Image
+            src={image}
+            alt={image}
+            width={800}
+            height={800}
+            className={cn(
+              "w-full rounded-lg object-cover drop-shadow-lg transition-all",
+            )}
+          />
+        </div>
+      )}
+      {image && (
+        <div
+          className={cn(
+            "hidden w-1/2 items-center justify-center md:flex",
             className &&
               className.includes("flex-col") &&
               !className.includes("flex-row") &&
@@ -52,14 +77,10 @@ const StepCard = ({
           <Image
             src={image}
             alt={image}
-            width={420}
-            height={420}
+            width={800}
+            height={800}
             className={cn(
-              "w-1/2 rounded-lg object-cover drop-shadow-lg transition-all md:hover:-skew-y-2",
-              className &&
-                className.includes("flex-col") &&
-                !className.includes("flex-row") &&
-                "w-full",
+              "w-full rounded-lg object-cover drop-shadow-lg transition-all",
             )}
           />
         </div>
