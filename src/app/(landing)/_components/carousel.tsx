@@ -21,15 +21,14 @@ export function CarouselEvents() {
     }),
   );
 
-  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    api.explore.list.useInfiniteQuery(
-      {
-        limit: 12,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      },
-    );
+  const { data, isLoading } = api.explore.list.useInfiniteQuery(
+    {
+      limit: 12,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
 
   const events = data?.pages
     .map((page) => page.events)

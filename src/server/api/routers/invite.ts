@@ -4,14 +4,21 @@ import * as z from "zod";
 
 import { InvitationEmail } from "@/components/email/invitation-email";
 import { env } from "@/env.mjs";
+import { getIpAddress } from "@/lib/get-ip-address";
 import { paths } from "@/routes/paths";
 
+import { ratelimit } from "../ratelimiters/ratelimiter";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const inviteRouter = createTRPCRouter({
   get: publicProcedure
     .input(z.object({ id: z.string().nullable() }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       if (!input.id) {
         throw new TRPCError({
           code: "BAD_REQUEST",
@@ -44,6 +51,11 @@ export const inviteRouter = createTRPCRouter({
   updateStatus: publicProcedure
     .input(z.object({ id: z.string(), status: z.nativeEnum(InviteStatus) }))
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.invite.update({
         where: {
           id: input.id,
@@ -62,6 +74,11 @@ export const inviteRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       const { eventId, emails, customMessage } = input;
 
       const baseUrl = `${env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}${paths.event.landing.root(input.eventId)}`;

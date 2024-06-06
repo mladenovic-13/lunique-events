@@ -1,7 +1,10 @@
 import * as z from "zod";
 
+import { env } from "@/env.mjs";
+import { getIpAddress } from "@/lib/get-ip-address";
 import { registrationSchema } from "@/validation/register-guest";
 
+import { ratelimit } from "../ratelimiters/ratelimiter";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const guestsRouter = createTRPCRouter({
@@ -12,6 +15,11 @@ export const guestsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.guest.create({
         data: {
           event: {
@@ -36,6 +44,11 @@ export const guestsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       return await ctx.db.guest.findMany({
         where: {
           eventId: input.eventId,
@@ -50,6 +63,11 @@ export const guestsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.guest.findFirst({
         where: {
           eventId: input.eventId,

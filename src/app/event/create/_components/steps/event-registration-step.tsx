@@ -70,6 +70,8 @@ export const EventRegistrationStep = () => {
   const onSubmit = (values: EventRegistration) => {
     if (!id) return;
 
+    console.log({ values });
+
     createRules(
       { ...values, eventId: id },
       {
