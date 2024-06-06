@@ -24,8 +24,109 @@ Event creators can manage their events and view a table of all invited guests al
 
 Users who want to create events under the name of an organization (e.g., club, agency) can subscribe to the premium package.
 
-## Instalation
-## Usage
+# Project Setup
+
+## Prerequisites
+
+Before starting, ensure you have the following software installed on your machine:
+- Node.js (>=14.x)
+- pnpm (>=6.x)
+- PostgreSQL
+- AWS CLI (for AWS credentials setup)
+- Upstash Redis account
+- LemonSqueezy account
+- Google Maps API key
+
+## Environment Variables
+
+Create a `.env.local` file in the root of your project and add the following environment variables:
+
+### PostgreSQL
+
+- `DATABASE_URL`: URL for your PostgreSQL database
+- `DIRECT_URL`: Direct URL for connecting to your PostgreSQL database
+
+### Next.js
+
+- `NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL=localhost`: Set the production URL to localhost
+- `NEXTAUTH_URL=localhost`: Set the authentication URL to localhost
+- `NEXTAUTH_SECRET`: Generate a secret key (instructions below)
+
+### Email Provider
+
+- `EMAIL_SERVER_USER`: Your email server user
+- `EMAIL_SERVER_PASSWORD`: Your email server password
+- `EMAIL_SERVER_HOST`: Your email server host
+- `EMAIL_SERVER_PORT`: Your email server port
+- `EMAIL_FROM`: The email address from which emails will be sent
+
+### AWS
+
+- `REGION`: Your AWS region
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
+- `BUCKET_NAME`: Your S3 bucket name
+- `NEXT_PUBLIC_AWS_CLOUDFRONT_DOMAIN`: Your AWS CloudFront domain
+
+### Upstash Redis
+
+- `UPSTASH_REDIS_REST_URL`: Your Upstash Redis REST URL
+- `UPSTASH_REDIS_REST_TOKEN`: Your Upstash Redis REST token
+
+### LemonSqueezy
+
+- `LEMONSQUEEZY_API_KEY`: Your LemonSqueezy API key
+- `LEMONSQUEEZY_PRODUCT_ID`: Your LemonSqueezy product ID
+- `LEMONSQUEEZY_STORE_ID`: Your LemonSqueezy store ID
+- `LEMONSQUEEZY_WEBHOOK_SECRET`: Your LemonSqueezy webhook secret
+- `LEMONSQUEEZY_WEBHOOK_URL`: Your LemonSqueezy webhook URL
+
+### Google Maps
+
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
+- `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`: Your Google Maps map ID
+
+## Generating a Secret Key
+
+To generate a secret key for `NEXTAUTH_SECRET` on macOS, use the following command in your terminal:
+
+```sh
+openssl rand -base64 32
+```
+
+## Installation
+1. Clone the repository:
+```sh
+git clone <repository-url>
+cd <repository-directory>
+```
+2. Install the dependencies:
+```sh
+pnpm install
+```
+3. Set up your PostgreSQL database and ensure it is running.
+4. Ensure all required environment variables are added to your `.env.local` file.
+
+## Running the Project
+
+To start the development server, run:
+```sh
+pnpm run dev
+```
+This will start the server at `http://localhost:3000`.
+
+## Additional Setup
+
+### Upstash Redis
+Sign up for an Upstash account and create a Redis database. Copy the REST URL and REST token to your `.env.local` file.
+
+### LemonSqueezy
+Sign up for a LemonSqueezy account, create a product, and set up your store. Obtain the API key, product ID, store ID, webhook secret, and webhook URL, and add them to your `.env.local` file.
+
+### Google Maps
+Obtain a Google Maps API key and map ID from the Google Cloud Console. Add these to your `.env.local` file.
+
+**You're all set! Your project should now be properly configured and ready for development.**
 
 ## License
 This project is licensed under the MIT License
