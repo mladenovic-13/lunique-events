@@ -30,9 +30,6 @@ export const eventRouter = createTRPCRouter({
         key: ctx.session.user.id,
       });
 
-      // TODO: implement rekognition
-      // await createCollection(ctx.rekognition, event.id);
-
       let organization = null;
 
       if (input.organization) {
