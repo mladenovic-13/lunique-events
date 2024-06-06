@@ -20,9 +20,9 @@ export function CarouselEvents() {
     }),
   );
 
-  const { data: events, isPending: isLoading } = api.explore.featured.useQuery(
-    {},
-  );
+  const { data: events, isLoading } = api.explore.featured.useQuery({
+    limit: 10,
+  });
 
   return (
     <Carousel
@@ -64,9 +64,6 @@ export function CarouselEvents() {
       <div className="hidden md:block">
         <div className="-top-10 right-0 z-10 -mr-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-l from-background via-background to-background/95 blur-lg md:absolute md:w-[150px]"></div>
       </div>
-
-      {/* <CarouselPrevious /> */}
-      {/* <CarouselNext className="hidden" /> */}
     </Carousel>
   );
 }

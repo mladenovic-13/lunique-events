@@ -1,6 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { env } from "@/env.mjs";
+import { getIpAddress } from "@/lib/get-ip-address";
+
+import { ratelimit } from "../ratelimiters/ratelimiter";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const exploreRouter = createTRPCRouter({
@@ -12,6 +16,11 @@ export const exploreRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       const limit = input.limit ?? 50;
       const { cursor } = input;
       const events = await ctx.db.event.findMany({

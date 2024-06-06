@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
+import { getIpAddress } from "@/lib/get-ip-address";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -15,6 +16,8 @@ import {
 import { configureLemonSqueezy } from "@/server/billing/lemon-squeeze";
 import { syncPlans } from "@/server/billing/sync";
 
+import { ratelimit } from "../ratelimiters/ratelimiter";
+
 const PROFESSIONAL_PLAN_ID = 281950 as const;
 const PERSONAL_PLAN_ID = 281951 as const;
 
@@ -22,6 +25,11 @@ export const billingRouter = createTRPCRouter({
   getPlan: publicProcedure
     .input(z.object({ type: z.enum(["personal", "professional"]) }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       const variantId =
         input.type === "personal" ? PERSONAL_PLAN_ID : PROFESSIONAL_PLAN_ID;
 
@@ -49,6 +57,11 @@ export const billingRouter = createTRPCRouter({
       return plan;
     }),
   getCurrentPlan: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
     const subscription = await ctx.db.subscription.findFirst({
       where: { userId: ctx.session.user.id },
       select: { plan: { include: { features: true } } },
@@ -64,6 +77,11 @@ export const billingRouter = createTRPCRouter({
     return subscription.plan;
   }),
   isPremiumUser: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
     const subscription = await ctx.db.subscription.findFirst({
       where: { userId: ctx.session.user.id },
       select: { plan: { include: { features: true } }, status: true },
@@ -76,6 +94,11 @@ export const billingRouter = createTRPCRouter({
     );
   }),
   getSubscription: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
     return await ctx.db.subscription.findFirst({
       where: {
         userId: ctx.session.user.id,
@@ -92,6 +115,11 @@ export const billingRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       const { lemonSqueezyId } = input;
 
       configureLemonSqueezy();
@@ -138,6 +166,11 @@ export const billingRouter = createTRPCRouter({
   getCheckoutUrl: protectedProcedure
     .input(z.object({ variantId: z.number(), embed: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       const { variantId, embed } = input;
 
       configureLemonSqueezy();

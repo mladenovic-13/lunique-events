@@ -1,9 +1,16 @@
+import { env } from "@/env.mjs";
 import { accountInfoSchema } from "@/validation/account-info";
 
+import { ratelimit } from "../ratelimiters/ratelimiter";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const accountRouter = createTRPCRouter({
   get: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
     return await ctx.db.user.findFirst({
       where: {
         id: ctx.session.user.id,
@@ -19,6 +26,11 @@ export const accountRouter = createTRPCRouter({
   update: protectedProcedure
     .input(accountInfoSchema)
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       return await ctx.db.user.update({
         where: {
           id: ctx.session.user.id,

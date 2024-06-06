@@ -1,7 +1,9 @@
 import { type Location } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { env } from "process";
 import { z } from "zod";
 
+import { getIpAddress } from "@/lib/get-ip-address";
 import {
   createEventSchema,
   eventRegistrationSchema,
@@ -13,30 +15,16 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 
-// const searchRatelimit = new Ratelimit({
-//   redis: Redis.fromEnv(),
-//   limiter: Ratelimit.slidingWindow(1, "2 m"),
-//   analytics: true,
-// });
-
-// const uploadRatelimit = new Ratelimit({
-//   redis: Redis.fromEnv(),
-//   limiter: Ratelimit.slidingWindow(1000, "1 m"),
-//   analytics: true,
-// });
-
-// const ratelimit = new Ratelimit({
-//   redis: Redis.fromEnv(),
-//   limiter: Ratelimit.slidingWindow(50, "1 m"),
-//   analytics: true,
-// });
+import { ratelimit } from "../ratelimiters/ratelimiter";
 
 export const eventRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createEventSchema)
     .mutation(async ({ ctx, input }) => {
-      // TODO: implement rekognition
-      // await createCollection(ctx.rekognition, event.id);
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
 
       let organization = null;
 
@@ -128,6 +116,11 @@ export const eventRouter = createTRPCRouter({
   getRegistration: publicProcedure
     .input(z.object({ eventId: z.string() }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.registrationSettings.findUnique({
         where: {
           eventId: input.eventId,
@@ -140,6 +133,11 @@ export const eventRouter = createTRPCRouter({
   updateRegisrationRules: protectedProcedure
     .input(eventRegistrationSchema.extend({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       return await ctx.db.registrationSettings.update({
         where: {
           eventId: input.eventId,
@@ -168,6 +166,11 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
       let organization = null;
 
       if (input.data.organization) {
@@ -264,10 +267,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // const { success } = await ratelimit.limit(ctx.session.user.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
 
       return await ctx.db.event.findMany({
         where: {
@@ -315,10 +318,10 @@ export const eventRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // const { success } = await ratelimit.limit(input.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
 
       return await ctx.db.event.findFirst({
         where: {
@@ -335,6 +338,11 @@ export const eventRouter = createTRPCRouter({
   getName: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.event.findFirst({
         where: {
           id: input.id,
@@ -347,6 +355,11 @@ export const eventRouter = createTRPCRouter({
   getOverview: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: getIpAddress(ctx.headers),
+      });
+
       return await ctx.db.event.findFirst({
         where: {
           id: input.id,

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    VERCEL_ENV: z.enum(["production", "preview", "development"]),
     DATABASE_URL: z
       .string()
       .url()
@@ -57,6 +58,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    VERCEL_ENV: process.env.VERCEL_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
     NODE_ENV: process.env.NODE_ENV,
