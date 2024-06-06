@@ -10,9 +10,14 @@ import {
 } from "@/components/ui/select";
 import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { selectPrevendDefault } from "@/lib/select-ref";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
-export const OrganizationSelect = () => {
+interface OrganizationSelectProps {
+  className?: string;
+}
+
+export const OrganizationSelect = ({ className }: OrganizationSelectProps) => {
   const organizationId = useOrganizationId();
   const { updateOrganizationId } = useConfigActions();
 
@@ -27,7 +32,9 @@ export const OrganizationSelect = () => {
 
   return (
     <Select value={organizationId} onValueChange={updateOrganizationId}>
-      <SelectTrigger className="h-8 w-full md:w-fit">
+      <SelectTrigger
+        className={cn("h-8 w-full md:w-fit", className && className)}
+      >
         <div className="flex items-center gap-1.5">
           {organization?.isPersonal && <User2Icon className="size-4" />}
           {!organization?.isPersonal && <Building2Icon className="size-4" />}

@@ -1,23 +1,19 @@
-import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
-import { ImageType, type Location } from "@prisma/client";
+import { type Location } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { env } from "process";
 import { z } from "zod";
 
-import { eventSchema } from "@/app/event/create/_components/validation";
-import { env } from "@/env.mjs";
 import { getIpAddress } from "@/lib/get-ip-address";
-import { createEventSchema, eventRegistrationSchema } from "@/lib/validation";
+import {
+  createEventSchema,
+  eventRegistrationSchema,
+  updateEventSchema,
+} from "@/lib/validation";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import {
-  deleteCollection,
-  findImages,
-  indexImage,
-} from "@/server/aws/rekognition-utils";
-import { deleteS3EventFolder } from "@/server/aws/s3-utils";
 
 import { ratelimit } from "../ratelimiters/ratelimiter";
 
@@ -134,7 +130,7 @@ export const eventRouter = createTRPCRouter({
         },
       });
     }),
-  createRegisrationRules: protectedProcedure
+  updateRegisrationRules: protectedProcedure
     .input(eventRegistrationSchema.extend({ eventId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ratelimit({
@@ -155,7 +151,7 @@ export const eventRouter = createTRPCRouter({
 
           capacity: input.capacity ? input.capacityValue : undefined,
           name: input.name,
-          linkedIn: input.name,
+          linkedIn: input.linkedIn,
           waitlist: input.capacityWaitlist,
           website: input.website,
         },
@@ -166,7 +162,7 @@ export const eventRouter = createTRPCRouter({
       z.object({
         eventId: z.string(),
         // eventUpdateSchema: eventSchema,
-        eventSchema: eventSchema,
+        data: updateEventSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -177,11 +173,11 @@ export const eventRouter = createTRPCRouter({
 
       let organization = null;
 
-      if (input.eventSchema.organization) {
+      if (input.data.organization) {
         organization = await ctx.db.organization.findFirst({
           where: {
             ownerId: ctx.session.user.id,
-            id: input.eventSchema.organization,
+            id: input.data.organization,
           },
         });
       } else {
@@ -209,13 +205,12 @@ export const eventRouter = createTRPCRouter({
           id: input.eventId,
         },
         data: {
-          name: input.eventSchema.name,
-          // date: input.eventSchema.endDate,
-          description: input.eventSchema.description,
-          // capacityValue: input.eventSchema.capacity.value,
-          // capacityWaitlist: input.eventSchema.capacity.waitlist,
-          isPublic: input.eventSchema.public,
-          // requireApproval: input.eventSchema.requireApproval,
+          isPublic: input.data.public,
+          name: input.data.name,
+          date: input.data.date,
+          timezone: input.data.timezone,
+          description: input.data.description,
+
           organization: {
             connect: {
               id: organization.id,
@@ -224,15 +219,43 @@ export const eventRouter = createTRPCRouter({
           location: {
             update: {
               data: {
-                description: input.eventSchema.location?.description,
-                mainText: input.eventSchema.location?.mainText,
-                secondaryText: input.eventSchema.location?.secondaryText,
-                placeId: input.eventSchema.location?.placeId,
-                // lng: input.eventSchema.location?.position.lng,
-                // lat: input.eventSchema.location?.position.lat,
+                description: input.data.location?.description,
+                mainText: input.data.location?.mainText,
+                secondaryText: input.data.location?.secondaryText,
+                placeId: input.data.location?.placeId,
+                lng: input.data.location?.position.lng,
+                lat: input.data.location?.position.lat,
               },
             },
           },
+          registrationSettings: {
+            update: {
+              data: {
+                capacity: input.data.capacity ? input.data.capacityValue : null,
+                waitlist: input.data.capacityWaitlist,
+                name: input.data.userName,
+                linkedIn: input.data.userLinkedIn,
+                website: input.data.userWebsite,
+              },
+            },
+          },
+        },
+      });
+    }),
+  updateThumbnail: protectedProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+        thumbnailURL: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          thumbnailUrl: input.thumbnailURL,
         },
       });
     }),
@@ -349,251 +372,6 @@ export const eventRouter = createTRPCRouter({
               secondaryText: true,
             },
           },
-        },
-      });
-    }),
-
-  // settings: protectedProcedure
-  //   .input(z.object({ id: z.string() }))
-  //   .query(async ({ ctx, input }) => {
-  //     const { success } = await ratelimit.limit(ctx.session.user.id);
-  //     if (!success) {
-  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-  //     }
-
-  //     return await ctx.db.eventSettings.findUnique({
-  //       where: { eventId: input.id },
-  //       include: { event: true },
-  //     });
-  //   }),
-  // updateSettings: protectedProcedure
-  //   .input(
-  //     eventSettingsSchema.partial().extend({
-  //       id: z.string(),
-  //     }),
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     const { success } = await ratelimit.limit(ctx.session.user.id);
-  //     if (!success) {
-  //       throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-  //     }
-
-  //     return await ctx.db.event.update({
-  //       where: {
-  //         id: input.id,
-  //         ownerId: ctx.session.user.id,
-  //       },
-  //       data: {
-  //         eventSettings: {
-  //           update: {
-  //             isPublic: input.isPublic,
-  //             isWatermarkHidden: input.isWatermarkHidden,
-  //           },
-  //         },
-  //       },
-  //     });
-  //   }),
-
-  getImages: publicProcedure
-    .input(
-      z.object({
-        eventId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { eventId } = input;
-
-      // const { success } = await ratelimit.limit(eventId);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      const images = await ctx.db.image.findMany({
-        where: {
-          eventId: eventId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-
-      return images;
-    }),
-  addImages: protectedProcedure
-    .input(
-      z.object({
-        eventId: z.string(),
-        images: z.array(
-          z.object({
-            key: z.string(),
-            name: z.string(),
-            type: z.enum([ImageType.JPG, ImageType.PNG]),
-          }),
-        ),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      // const { success } = await ratelimit.limit(ctx.session.user.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      const { images, eventId } = input;
-
-      const data = images.map((image) => ({
-        key: image.key,
-        eventId,
-        name: image.name,
-        url: `${env.NEXT_PUBLIC_AWS_CLOUDFRONT_DOMAIN}/${image.key}`,
-        type: image.type,
-      }));
-
-      return await ctx.db.image.createMany({
-        data,
-      });
-    }),
-  deleteImages: protectedProcedure
-    .input(
-      z.object({
-        images: z
-          .object({
-            id: z.string(),
-            key: z.string(),
-          })
-          .array(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      // const { success } = await ratelimit.limit(ctx.session.user.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      const { images } = input;
-
-      if (images.length === 0)
-        throw new TRPCError({ message: "No image IDs", code: "BAD_REQUEST" });
-
-      return await ctx.db.$transaction(async (tx) => {
-        const deleteObjectsCommand = new DeleteObjectsCommand({
-          Bucket: env.BUCKET_NAME,
-          Delete: { Objects: images.map((img) => ({ Key: img.key })) },
-        });
-
-        const res = await tx.image.deleteMany({
-          where: {
-            id: {
-              in: images.map((img) => img.id),
-            },
-          },
-        });
-
-        const s3Res = await ctx.s3.send(deleteObjectsCommand);
-
-        if (s3Res.$metadata.httpStatusCode !== 200) {
-          throw new TRPCError({
-            message: "Failed to delete S3 objects",
-            code: "INTERNAL_SERVER_ERROR",
-          });
-        }
-
-        return res;
-      });
-    }),
-  // TODO:
-  // Move to addImages procedure because it's
-  // easier to undu S3 upload if image indexing fails
-  indexImage: protectedProcedure
-    .input(
-      z.object({
-        eventId: z.string(),
-        imageKey: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { imageKey, eventId } = input;
-
-      const data = await indexImage(ctx.rekognition, eventId, imageKey);
-
-      return await ctx.db.face.createMany({
-        data,
-      });
-    }),
-  checkAndUpdateLimit: protectedProcedure
-    .input(z.object({ count: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      // const { success } = await uploadRatelimit.limit(ctx.session.user.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      const user = await ctx.db.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
-        select: {
-          limit: true,
-        },
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          message: "User not found",
-          code: "NOT_FOUND",
-        });
-      }
-
-      if (user.limit < input.count) {
-        return false;
-      }
-
-      const limit = await ctx.db.user.update({
-        where: {
-          id: ctx.session.user.id,
-        },
-        data: { limit: user.limit - input.count },
-      });
-
-      if (!limit) {
-        throw new TRPCError({
-          message: "Failed to update limit",
-          code: "INTERNAL_SERVER_ERROR",
-        });
-      }
-
-      return true;
-    }),
-  findImages: protectedProcedure
-    .input(z.object({ eventId: z.string(), imageKey: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { imageKey, eventId } = input;
-
-      // const { success } = await searchRatelimit.limit(eventId);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      return await findImages(ctx.db, ctx.rekognition, eventId, imageKey);
-    }),
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      // const { success } = await ratelimit.limit(ctx.session.user.id);
-      // if (!success) {
-      //   throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      // }
-
-      const { id } = input;
-
-      await deleteCollection(ctx.rekognition, id);
-      await deleteS3EventFolder(ctx.s3, ctx.session.user.id, id);
-
-      return await ctx.db.event.delete({
-        where: {
-          organization: {
-            ownerId: ctx.session.user.id,
-          },
-          id: input.id,
         },
       });
     }),

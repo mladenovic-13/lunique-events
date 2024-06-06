@@ -55,9 +55,7 @@ export default function RootLayout({
               <NextAuthProvider>
                 <ModalProvider />
                 <Toaster />
-                {/* <Suspense> */}
                 {children}
-                {/* </Suspense> */}
               </NextAuthProvider>
             </TRPCReactProvider>
           </ThemeProvider>

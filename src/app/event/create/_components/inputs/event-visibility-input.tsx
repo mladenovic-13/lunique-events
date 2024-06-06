@@ -1,6 +1,6 @@
 "use client";
 
-import { GlobeIcon, KeyIcon } from "lucide-react";
+import { GlobeIcon, KeyIcon, LinkIcon } from "lucide-react";
 
 import {
   Select,
@@ -10,17 +10,20 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { selectPrevendDefault } from "@/lib/select-ref";
+import { cn } from "@/lib/utils";
 
 type EventVisibility = "public" | "private";
 
 interface EventVisibilityInputProps {
   value: boolean;
   onChange: (value: boolean) => void;
+  className?: string;
 }
 
 export function EventVisibilityInput({
   value,
   onChange,
+  className,
 }: EventVisibilityInputProps) {
   const icon: Record<EventVisibility, JSX.Element> = {
     public: <GlobeIcon className="size-4 text-muted-foreground" />,
@@ -40,7 +43,12 @@ export function EventVisibilityInput({
   return (
     <div>
       <Select value={innerValue} onValueChange={handleOnChange}>
-        <SelectTrigger className="h-8 border-muted-foreground/10 capitalize md:w-32">
+        <SelectTrigger
+          className={cn(
+            "h-8 border-muted-foreground/10 capitalize md:w-32",
+            className && className,
+          )}
+        >
           {icon[innerValue]}
           {innerValue}
         </SelectTrigger>
@@ -59,7 +67,7 @@ export function EventVisibilityInput({
             </SelectItem>
             <SelectItem value="private" className="px-0">
               <div className="flex items-center gap-3 p-3">
-                <GlobeIcon className="size-5 text-muted-foreground" />
+                <LinkIcon className="size-5 text-muted-foreground" />
                 <div className="flex flex-col gap-0.5">
                   <p>Private</p>
                   <p className="max-w-[300px] text-muted-foreground">

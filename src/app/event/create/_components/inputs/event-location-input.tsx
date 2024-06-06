@@ -17,8 +17,9 @@ import { type Place } from "@/types";
 export const EventLocationInput = (props: {
   value: Place | null | undefined;
   onChange: (place: Place | null) => void;
+  className?: string;
 }) => {
-  const { onChange } = props;
+  const { onChange, className } = props;
 
   const field = useFormField();
   const form = useFormContext();
@@ -74,7 +75,7 @@ export const EventLocationInput = (props: {
           disabled={!ready || !!props.value}
           placeholder="Enter location..."
           error={!!field.error}
-          className="w-full"
+          className={cn("w-full", className && className)}
         />
         {field.error && (
           <p className="text-[0.8rem] font-medium text-destructive">

@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/table";
 import { selectPrevendDefault } from "@/lib/select-ref";
 
-import { type GuestStatus } from "./columns";
+import { type GuestStatus } from "../../page";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -68,9 +68,9 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col items-start space-y-4 py-4">
         <Input
           placeholder="Search"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="h-10 transition-all"
         />
@@ -98,14 +98,17 @@ export function DataTable<TData, TValue>({
               </SelectGroup>
               <Separator />
               <SelectGroup>
-                <SelectItem value="going" className="px-0">
+                <SelectItem value="GOING" className="px-0">
                   <div className="flex items-start px-2">Going</div>
                 </SelectItem>
-                <SelectItem value="invited" className="px-0">
-                  <div className="flex items-start px-2">Invited</div>
-                </SelectItem>
-                <SelectItem value="not going" className="px-0">
+                <SelectItem value="NOT_GOING" className="px-0">
                   <div className="flex items-start px-2">Not Going</div>
+                </SelectItem>
+                <SelectItem value="MAYBE" className="px-0">
+                  <div className="flex items-start px-2">Maybe</div>
+                </SelectItem>
+                <SelectItem value="PENDING" className="px-0">
+                  <div className="flex items-start px-2">Pending</div>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 
 export const SocialButtons = () => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex w-full items-center justify-between md:w-1/2">
       <p className="text-sm font-medium text-muted-foreground">Share Event</p>
-      <div className="-mr-2 space-x-0.5">
+      <div>
         <Button variant="ghost" size="icon">
           <FacebookIcon className="size-4" />
         </Button>

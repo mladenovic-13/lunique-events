@@ -4,9 +4,10 @@
 
 
 
+
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -53,6 +54,7 @@
 
 
 
+
 @layer base {
   * {
     @apply border-border;
@@ -74,3 +76,10 @@
     margin: 0;
   }
 }
+
+.gradient {
+  background-color:hsla(20,14%,4%,1);
+  background-image:
+  radial-gradient(at 100% 50%, hsla(346,74%,23%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 51%, hsla(346,76%,23%,1) 0px, transparent 50%);
+  }

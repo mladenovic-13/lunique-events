@@ -1,12 +1,9 @@
-import { type Image } from "@prisma/client";
 import { create } from "zustand";
 
 import { type RouterOutputs } from "@/trpc/react";
 
 export type ModalType =
   | "share-event"
-  | "upload-event-images"
-  | "delete-event-images"
   | "cancel-subscription"
   | "choose-event-thumbnail"
   | "show-guest-list"
@@ -19,10 +16,6 @@ export type ModalType =
 
 export type ModalData = {
   eventId?: string;
-  images?: string[];
-  galleryImages?: Image[];
-  galleryId?: string;
-  currentImage?: number;
   subscription?: RouterOutputs["billing"]["getSubscription"];
 };
 

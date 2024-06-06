@@ -12,6 +12,7 @@ import {
   StepContainer,
   StepContent,
   StepDescription,
+  StepFooter,
   StepHeader,
   StepTitle,
 } from "./common";
@@ -42,7 +43,7 @@ export const EventInviteGuestsStep = () => {
         </StepTitle>
         <StepDescription>Invite your guests</StepDescription>
       </StepHeader>
-      <StepContent className="size-full border-t px-0 md:px-2 ">
+      <StepContent className="size-full flex-none border-t px-0 md:flex md:px-2">
         <div className="h-[550px] justify-center  px-0 md:h-[500px] md:w-full">
           <InviteGuestPartial
             eventId={eventId}
@@ -52,7 +53,28 @@ export const EventInviteGuestsStep = () => {
             }
           />
         </div>
+        <div className="hidden h-[490px] items-end md:flex">
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => router.push(paths.event.manage.overview(eventId))}
+            variant="ghost"
+          >
+            Skip for now
+          </Button>
+        </div>
       </StepContent>
+      <StepFooter className="-mt-6 flex items-center justify-end md:hidden">
+        <Button
+          type="button"
+          size="sm"
+          className="pr-0 hover:bg-transparent"
+          onClick={() => router.push(paths.event.manage.overview(eventId))}
+          variant="ghost"
+        >
+          Skip for now
+        </Button>
+      </StepFooter>
     </StepContainer>
   );
 };

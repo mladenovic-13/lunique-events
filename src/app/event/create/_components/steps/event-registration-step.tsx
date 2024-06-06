@@ -65,7 +65,7 @@ export const EventRegistrationStep = () => {
   const { toast } = useToast();
 
   const { mutate: createRules } =
-    api.event.createRegisrationRules.useMutation();
+    api.event.updateRegisrationRules.useMutation();
 
   const onSubmit = (values: EventRegistration) => {
     if (!id) return;
