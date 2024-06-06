@@ -43,6 +43,7 @@ const StepCard = ({
         <h1 className="text-2xl font-semibold md:pt-6 md:text-4xl">{title}</h1>
         <p className="text-accent-foreground/60">{description}</p>
       </div>
+      {/* mobile view */}
       {image && (
         <div
           className={cn(
@@ -64,6 +65,7 @@ const StepCard = ({
           />
         </div>
       )}
+      {/* desktop view */}
       {image && (
         <div
           className={cn(

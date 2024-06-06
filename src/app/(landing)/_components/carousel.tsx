@@ -1,5 +1,4 @@
 import * as React from "react";
-import { type Event } from "@prisma/client";
 import Autoplay from "embla-carousel-autoplay";
 
 import {
@@ -21,19 +20,9 @@ export function CarouselEvents() {
     }),
   );
 
-  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    api.explore.list.useInfiniteQuery(
-      {
-        limit: 12,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      },
-    );
-
-  const events = data?.pages
-    .map((page) => page.events)
-    .reduce((acc: Event[], events) => [...acc, ...events], []);
+  const { data: events, isPending: isLoading } = api.explore.featured.useQuery(
+    {},
+  );
 
   return (
     <Carousel
@@ -53,7 +42,7 @@ export function CarouselEvents() {
           Array.from({ length: 6 }).map((_, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center px-1  md:basis-1/4"
+              className="basis-[70%] items-center justify-center px-1  md:basis-1/4"
             >
               <div className="py-1">
                 <EventCardCarousel key={index} />

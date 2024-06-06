@@ -208,6 +208,7 @@ model Organization {
 
 model Event {
   id                   String                @id @default(cuid())
+  featured             Boolean               @default(false)
   isPublic             Boolean
   name                 String
   description          String
