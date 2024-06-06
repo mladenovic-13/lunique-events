@@ -4,6 +4,7 @@ import { LoaderCircleIcon, UsersIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
 import { awsImageLoader } from "@/lib/image-loader";
 import { isAwsImage } from "@/lib/is-aws-image";
 import { cn } from "@/lib/utils";
@@ -37,17 +38,27 @@ const EventCardCarousel = ({
     >
       <div>
         {thumbnailUrl && (
-          <Image
-            loader={isAwsImage(thumbnailUrl) ? awsImageLoader : undefined}
-            src={thumbnailUrl}
-            alt={`${name} thumbnail`}
-            width={240}
-            height={240}
-            className={cn(
-              "h-[220px] w-full object-cover brightness-100 transition-all dark:brightness-75",
-              hover && "brightness-110 dark:brightness-100",
-            )}
-          />
+          <div className="relative">
+            <Image
+              loader={isAwsImage(thumbnailUrl) ? awsImageLoader : undefined}
+              src={thumbnailUrl}
+              alt={`${name} thumbnail`}
+              width={480}
+              height={480}
+              className={cn(
+                "h-[220px] w-full object-cover brightness-100 transition-all ",
+                hover && "brightness-50 ",
+              )}
+            />
+            <Button
+              className={cn(
+                "duration-2000 absolute inset-0 m-auto hidden w-fit scale-100 transition-all  hover:bg-primary",
+                hover && "md:flex md:hover:scale-110",
+              )}
+            >
+              See Details
+            </Button>
+          </div>
         )}
         {!thumbnailUrl && (
           <div
@@ -61,7 +72,7 @@ const EventCardCarousel = ({
       </div>
       <div
         className={cn(
-          "flex  h-[140px] flex-col gap-4 px-8 pt-6",
+          "flex  h-[180px] flex-col  gap-4 px-8 pt-6",
           !date && "animate-pulse",
         )}
       >
@@ -74,13 +85,22 @@ const EventCardCarousel = ({
             <p className="text-xs">40</p>
           </div>
         </div>
-        <div className="w-full overflow-hidden text-left text-sm font-normal text-accent-foreground/40">
-          <p>{description ? description : "Loading..."}</p>
+        <div className="size-full text-left text-sm font-normal text-accent-foreground/40">
+          <p className="line-clamp-5">
+            {description ? description : "Loading..."}
+          </p>
         </div>
       </div>
       <div className="flex items-center justify-between px-8">
         <p className="text-xs">{format(date ? date : new Date(), "dd MMMM")}</p>
-        <p>{format(date ? date : new Date(), "yyyy")}</p>
+        <p
+          className={cn(
+            "-rotate-8 bg-gradient-to-tl from-primary to-rose-700 bg-clip-text text-xl font-bold text-transparent transition-all",
+            hover && "rotate-0",
+          )}
+        >
+          {format(date ? date : new Date(), "yyyy")}
+        </p>
       </div>
     </div>
   );

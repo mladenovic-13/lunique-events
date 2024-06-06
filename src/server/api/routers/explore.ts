@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
@@ -43,5 +44,33 @@ export const exploreRouter = createTRPCRouter({
         events,
         nextCursor,
       };
+    }),
+  featured: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(20).nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const limit = input.limit ?? 20;
+      const events = await ctx.db.event.findMany({
+        take: limit + 1,
+        where: {
+          AND: {
+            isPublic: true,
+            featured: true,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      if (!events)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Events not found",
+        });
+
+      return events;
     }),
 });

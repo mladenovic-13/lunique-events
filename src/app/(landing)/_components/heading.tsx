@@ -16,7 +16,7 @@ export const Heading = () => {
         </strong>
       </h1>
       <div className="flex flex-col items-center justify-center  md:w-[400px]">
-        <p className="pt-4 font-extralight md:pt-2 md:text-xl">
+        <p className="pt-4 font-light md:pt-2 md:text-xl">
           Tailor every detail to impress your guests and make each occasion
           unforgettable.
         </p>

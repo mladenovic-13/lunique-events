@@ -1,5 +1,4 @@
 import * as React from "react";
-import { type Event } from "@prisma/client";
 import Autoplay from "embla-carousel-autoplay";
 
 import {
@@ -21,18 +20,9 @@ export function CarouselEvents() {
     }),
   );
 
-  const { data, isLoading } = api.explore.list.useInfiniteQuery(
-    {
-      limit: 12,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  );
-
-  const events = data?.pages
-    .map((page) => page.events)
-    .reduce((acc: Event[], events) => [...acc, ...events], []);
+  const { data: events, isLoading } = api.explore.featured.useQuery({
+    limit: 10,
+  });
 
   return (
     <Carousel
@@ -44,13 +34,15 @@ export function CarouselEvents() {
         duration: 15000,
       }}
     >
-      <div className="absolute -top-10 left-0 z-10 -ml-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-r from-background via-background to-background/95 blur-lg md:w-[150px]"></div>
+      <div className="hidden md:block">
+        <div className="-top-10 left-0 z-10 -ml-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-r from-background via-background to-background/95 blur-lg md:absolute md:w-[150px]"></div>
+      </div>
       <CarouselContent className="w-full">
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center px-1  md:basis-1/4"
+              className="basis-[70%] items-center justify-center px-1  md:basis-1/4"
             >
               <div className="py-1">
                 <EventCardCarousel key={index} />
@@ -61,7 +53,7 @@ export function CarouselEvents() {
           events?.map((event, index) => (
             <CarouselItem
               key={index}
-              className="items-center justify-center px-1  md:basis-1/4"
+              className="basis-[70%] items-center justify-center px-1  md:basis-1/4"
             >
               <div className="py-1">
                 <EventCardCarousel {...event} key={index} />
@@ -69,10 +61,9 @@ export function CarouselEvents() {
             </CarouselItem>
           ))}
       </CarouselContent>
-      <div className="absolute -top-10 right-0 z-10 -mr-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-l from-background via-background to-background/95 blur-lg md:w-[150px]"></div>
-
-      {/* <CarouselPrevious /> */}
-      {/* <CarouselNext className="hidden" /> */}
+      <div className="hidden md:block">
+        <div className="-top-10 right-0 z-10 -mr-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-l from-background via-background to-background/95 blur-lg md:absolute md:w-[150px]"></div>
+      </div>
     </Carousel>
   );
 }
