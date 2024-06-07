@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 
 import AvatarsGroup from "./avatars-group";
 import CarouselTestimonials from "./carousel-testimonial";
-interface TestimonialsProps {
+interface TestimonialsDeprecatedProps {
   props?: string;
 }
 
-const Testimonials = ({}: TestimonialsProps) => {
+const TestimonialsDeprecated = ({}: TestimonialsDeprecatedProps) => {
   return (
     <section className="flex w-full flex-col items-center justify-center gap-6">
       <AvatarsGroup />
@@ -31,4 +31,4 @@ const Testimonials = ({}: TestimonialsProps) => {
   );
 };
 
-export default Testimonials;
+export default TestimonialsDeprecated;

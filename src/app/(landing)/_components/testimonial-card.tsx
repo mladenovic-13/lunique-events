@@ -25,31 +25,35 @@ const TestimonialCard = ({
   className,
 }: TestimonialCardProps) => {
   return (
-    <Card
-      className={cn("h-52 rounded-sm rounded-tl-2xl", className && className)}
+    <figure
+      className={cn(
+        "relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
+        // light styles
+        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        // dark styles
+        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+      )}
     >
-      <CardHeader className="flex w-full  flex-row items-center justify-start gap-2 space-y-0 pb-4">
-        <div className="flex size-12 items-center justify-center p-0">
-          <Avatar className="size-full bg-secondary p-0.5 hover:ring-0">
-            <AvatarImage
-              src={image}
-              className=" rounded-full"
-              alt="avatar image"
-            />
-            <AvatarFallback>{name?.slice(0, 2)}</AvatarFallback>
-          </Avatar>
+      <div className="flex flex-row items-center gap-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="rounded-full"
+          width="32"
+          height="32"
+          alt=""
+          src={image}
+        />
+        <div className="flex flex-col">
+          <figcaption className="text-sm font-medium dark:text-white">
+            {name}
+          </figcaption>
+          <p className="text-xs font-medium dark:text-white/40">{email}</p>
         </div>
-        <div className="flex h-full flex-col ">
-          <h1 className="font-semibold">{name}</h1>
-          <h1 className=" text-xs font-light text-accent-foreground/70">
-            {email}
-          </h1>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="line-clamp-5">{impression}</CardDescription>
-      </CardContent>
-    </Card>
+      </div>
+      <blockquote className="mt-2 line-clamp-2 text-sm">
+        {impression}
+      </blockquote>
+    </figure>
   );
 };
 

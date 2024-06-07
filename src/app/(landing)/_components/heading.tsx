@@ -1,6 +1,8 @@
 import React from "react";
+import { first } from "lodash";
 import { useRouter } from "next/navigation";
 
+import SparklesText from "@/components/magicui/sparkles-text";
 import { Button } from "@/components/ui/button";
 import { paths } from "@/routes/paths";
 
@@ -8,14 +10,14 @@ export const Heading = () => {
   const router = useRouter();
   return (
     <div className="flex flex-col items-center px-4  pt-6 text-center md:px-0 md:pt-0">
-      <h1 className="text-4xl font-semibold md:text-6xl md:leading-[70px] ">
-        Need to Impress? <br />
-        Personalize <br className="md: block md:hidden" /> Your{" "}
-        <strong className="bg-gradient-to-r from-rose-800 to-red-500 bg-clip-text font-semibold capitalize text-transparent">
-          Event Pages
-        </strong>
+      <h1 className="text-5xl font-semibold md:text-6xl md:leading-[70px] ">
+        Need to Impress? Personalize Your{" "}
+        <SparklesText
+          text="Event Pages"
+          colors={{ first: "#E32C54", second: "#E32C54" }}
+        />
       </h1>
-      <div className="flex flex-col items-center justify-center  md:w-[400px]">
+      <div className="flex flex-col items-center justify-center md:w-[400px]  md:pt-6">
         <p className="pt-4 font-light md:pt-2 md:text-xl">
           Tailor every detail to impress your guests and make each occasion
           unforgettable.

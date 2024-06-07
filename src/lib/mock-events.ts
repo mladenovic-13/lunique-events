@@ -368,139 +368,139 @@ export const testimonials = [
     email: "john.smith@example.com",
     impression:
       "Fantastic app! It has made organizing business events so much easier. The interface is very user-friendly, and the features are exactly what we needed. Highly recommend it!",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/John",
   },
   {
     name: "Emma Johnson",
     email: "emma.johnson@example.com",
     impression:
       "Very intuitive and easy to use. It simplified the entire process of event planning. The customer support is excellent, and I always get quick responses. This app is a game-changer!",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Emma",
   },
   {
     name: "Michael Brown",
     email: "michael.brown@example.com",
     impression:
       "Everything I needed for successful event organization was found in this app. It has all the tools to manage events efficiently. The design is sleek and modern. I couldn't ask for more.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Michael",
   },
   {
     name: "Emily Davis",
     email: "emily.davis@example.com",
     impression:
       "Exceptional support and user experience. The app saved my wedding planning! It covered every detail, making the whole process stress-free. I'm beyond satisfied.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Emily",
   },
   {
     name: "William Wilson",
     email: "william.wilson@example.com",
     impression:
       "Outstanding application! It helped me keep everything organized and on track. The event went off without a hitch thanks to this app. I highly recommend it to anyone organizing an event.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/William",
   },
   {
     name: "Olivia Martinez",
     email: "olivia.martinez@example.com",
     impression:
       "This app is a lifesaver for event planning. It offers so many features that are incredibly useful. The calendar integration is seamless. It made my event planning experience wonderful.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Olivia",
   },
   {
     name: "James Anderson",
     email: "james.anderson@example.com",
     impression:
       "The best app for event management I've ever used. It keeps all my events in order and ensures nothing is forgotten. The reminders and notifications are very helpful. I love it!",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/James",
   },
   {
     name: "Sophia Thomas",
     email: "sophia.thomas@example.com",
     impression:
       "A brilliant tool for organizing events. It made everything run so smoothly. I particularly appreciate the ability to customize details. Definitely a must-have for planners.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Sophia",
   },
   {
     name: "Benjamin Jackson",
     email: "benjamin.jackson@example.com",
     impression:
       "I can't believe how much this app has improved my event planning process. It’s packed with useful features and is very reliable. I’m very impressed with the level of detail. It's a fantastic app!",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Benjamin",
   },
   {
     name: "Mia White",
     email: "mia.white@example.com",
     impression:
       "An amazing app for anyone who needs to organize events. It made the entire process so much simpler and more efficient. The user interface is clean and easy to navigate. I highly recommend it!",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Mia",
   },
   {
     name: "Daniel Miller",
     email: "daniel.miller@example.com",
     impression:
       "This app revolutionized our event planning process. It’s incredibly efficient and easy to use. The customer service is top-notch. I highly recommend it to all event planners.",
-    image: "/images/invited/invited-1.webp",
+    image: "https://avatar.vercel.sh/Daniel",
   },
   {
     name: "Sophia Taylor",
     email: "sophia.taylor@example.com",
     impression:
       "An excellent app for organizing events of all sizes. The features are comprehensive and very user-friendly. It made our event planning seamless. I couldn't be happier with the results.",
-    image: "/images/invited/invited-2.webp",
+    image: "https://avatar.vercel.sh/Sophia",
   },
   {
     name: "David Lee",
     email: "david.lee@example.com",
     impression:
       "A must-have app for anyone involved in event management. It has simplified our processes tremendously. The intuitive design is fantastic. We’ve seen great improvements in efficiency.",
-    image: "/images/invited/invited-3.webp",
+    image: "https://avatar.vercel.sh/David",
   },
   {
     name: "Chloe Harris",
     email: "chloe.harris@example.com",
     impression:
       "Planning events has never been easier thanks to this app. The interface is very user-friendly and the features are incredibly useful. It saved us a lot of time and effort. Highly recommended!",
-    image: "/images/invited/invited-4.webp",
+    image: "https://avatar.vercel.sh/Chloe",
   },
   {
     name: "Matthew Walker",
     email: "matthew.walker@example.com",
     impression:
       "This app is a real game-changer for event organizers. It's easy to use and has all the features we need. The support team is also very responsive. We are very pleased with our experience.",
-    image: "/images/invited/invited-5.webp",
+    image: "https://avatar.vercel.sh/Matthew",
   },
   {
     name: "Amelia Hall",
     email: "amelia.hall@example.com",
     impression:
       "An incredible tool for event planning. It offers a wide range of features that cater to all our needs. The user interface is clean and straightforward. It made our event planning a breeze.",
-    image: "/images/invited/invited-6.webp",
+    image: "https://avatar.vercel.sh/Amelia",
   },
   {
     name: "Christopher Young",
     email: "christopher.young@example.com",
     impression:
       "I love how easy and efficient this app makes event planning. It covers every aspect we need and more. The customer service is excellent. I would definitely recommend it to anyone planning an event.",
-    image: "/images/invited/invited-7.webp",
+    image: "https://avatar.vercel.sh/Christopher",
   },
   {
     name: "Mia King",
     email: "mia.king@example.com",
     impression:
       "This app has made organizing events so much simpler. The features are comprehensive and very useful. It's incredibly user-friendly. We’ve had a great experience using it.",
-    image: "/images/invited/invited-8.webp",
+    image: "https://avatar.vercel.sh/Mia",
   },
   {
     name: "Jack Wright",
     email: "jack.wright@example.com",
     impression:
       "An amazing app for event management. It's easy to navigate and has everything we need. The support team is very helpful. It has greatly improved our event planning process.",
-    image: "/images/invited/invited-9.webp",
+    image: "https://avatar.vercel.sh/Jack",
   },
   {
     name: "Lily Scott",
     email: "lily.scott@example.com",
     impression:
       "A fantastic tool for anyone who needs to plan events. It’s packed with useful features and is very reliable. The user interface is intuitive. It has made our event planning much easier.",
-    image: "/images/invited/invited-10.webp",
+    image: "https://avatar.vercel.sh/Lily",
   },
 ];

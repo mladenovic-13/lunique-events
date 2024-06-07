@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 
+import TextRevealByWord from "@/components/magicui/text-reveal";
+
 import { CarouselEvents } from "./_components/carousel-events";
 import { Heading } from "./_components/heading";
 import OnboardingSteps from "./_components/onboarding-steps";
-import Testimonials from "./_components/testimonials";
+import { Testimonials } from "./_components/testimonials-marquee";
 
 export default function Home() {
   return (
@@ -24,6 +26,7 @@ export default function Home() {
         <CarouselEvents />
         <OnboardingSteps />
         <Testimonials />
+        <TextRevealByWord text="Join our community and create the most amazing events ever!" />
       </div>
     </div>
   );

@@ -34,9 +34,6 @@ export function CarouselEvents() {
         duration: 15000,
       }}
     >
-      <div className="hidden md:block">
-        <div className="-top-10 left-0 z-10 -ml-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-r from-background via-background to-background/95 blur-lg md:absolute md:w-[150px]"></div>
-      </div>
       <CarouselContent className="w-full">
         {isLoading &&
           Array.from({ length: 6 }).map((_, index) => (
@@ -61,9 +58,8 @@ export function CarouselEvents() {
             </CarouselItem>
           ))}
       </CarouselContent>
-      <div className="hidden md:block">
-        <div className="-top-10 right-0 z-10 -mr-10 flex h-[120%] w-[80px] items-center justify-end bg-gradient-to-l from-background via-background to-background/95 blur-lg md:absolute md:w-[150px]"></div>
-      </div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
     </Carousel>
   );
 }
