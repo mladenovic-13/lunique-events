@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 
-import { CarouselEvents } from "./_components/carousel";
+import { CarouselEvents } from "./_components/carousel-events";
 import { Heading } from "./_components/heading";
 import OnboardingSteps from "./_components/onboarding-steps";
+import Testimonials from "./_components/testimonials";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <Heading />
         <CarouselEvents />
         <OnboardingSteps />
+        <Testimonials />
       </div>
     </div>
   );

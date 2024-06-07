@@ -34,7 +34,6 @@ const EventCardCarousel = ({
         "flex w-full flex-col overflow-hidden rounded-lg border-[1.1px] border-accent-foreground/20 bg-muted pb-6 transition-all hover:cursor-pointer dark:bg-background",
         hover && "bg-background dark:bg-muted",
       )}
-      onClick={() => eventId && router.push(paths.event.landing.root(eventId))}
     >
       <div>
         {thumbnailUrl && (
@@ -51,6 +50,9 @@ const EventCardCarousel = ({
               )}
             />
             <Button
+              onClick={() =>
+                eventId && router.push(paths.event.landing.root(eventId))
+              }
               className={cn(
                 "duration-2000 absolute inset-0 m-auto hidden w-fit scale-100 transition-all  hover:bg-primary",
                 hover && "md:flex md:hover:scale-110",

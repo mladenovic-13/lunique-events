@@ -23,7 +23,7 @@ export function CarouselEvents() {
   const { data: events, isLoading } = api.explore.featured.useQuery({
     limit: 10,
   });
-
+  if (events) console.log(events[0]?.thumbnailUrl);
   return (
     <Carousel
       plugins={[plugin.current]}
