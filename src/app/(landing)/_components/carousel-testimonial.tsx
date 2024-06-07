@@ -24,7 +24,7 @@ const CarouselTestimonials = ({
   const plugin = React.useRef(
     Autoplay({
       delay: 0,
-      stopOnMouseEnter: true,
+      stopOnMouseEnter: false,
       stopOnFocusIn: false,
       stopOnInteraction: false,
     }),
@@ -40,7 +40,7 @@ const CarouselTestimonials = ({
       opts={{
         ...options,
         loop: true,
-        duration: 15000,
+        duration: 40000,
       }}
     >
       <CarouselContent className="w-full">

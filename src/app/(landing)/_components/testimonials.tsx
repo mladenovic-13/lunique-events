@@ -25,8 +25,8 @@ const Testimonials = ({}: TestimonialsProps) => {
           our application
         </strong>
       </h1>
+      <CarouselTestimonials align={"center"} direction="ltr" />
       <CarouselTestimonials align={"start"} direction="ltr" />
-      <CarouselTestimonials align={"end"} direction="rtl" />
     </section>
   );
 };

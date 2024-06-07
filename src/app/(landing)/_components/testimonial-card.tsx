@@ -25,7 +25,9 @@ const TestimonialCard = ({
   className,
 }: TestimonialCardProps) => {
   return (
-    <Card className={cn("h-52", className && className)}>
+    <Card
+      className={cn("h-52 rounded-sm rounded-tl-2xl", className && className)}
+    >
       <CardHeader className="flex w-full  flex-row items-center justify-start gap-2 space-y-0 pb-4">
         <div className="flex size-12 items-center justify-center p-0">
           <Avatar className="size-full bg-secondary p-0.5 hover:ring-0">
