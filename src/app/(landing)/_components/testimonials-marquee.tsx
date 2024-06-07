@@ -1,6 +1,9 @@
 import Marquee from "@/components/magicui/marquee";
+import { Badge } from "@/components/ui/badge";
 import { testimonials } from "@/lib/mock-events";
 import { cn } from "@/lib/utils";
+
+import AvatarsGroup from "./avatars-group";
 
 const reviews = testimonials;
 
@@ -53,19 +56,37 @@ const ReviewCard = ({
 
 export const Testimonials = () => {
   return (
-    <div className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background py-20 md:shadow-xl">
-      <Marquee pauseOnHover className="[--duration:40s]">
-        {firstRow.map((review, idx) => (
-          <ReviewCard key={idx} {...review} />
-        ))}
-      </Marquee>
-      <Marquee reverse pauseOnHover className="[--duration:40s]">
-        {secondRow.map((review, idx) => (
-          <ReviewCard key={idx} {...review} />
-        ))}
-      </Marquee>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+    <div className="flex w-full flex-col items-center justify-center gap-4 pt-20">
+      <div className="flex size-full flex-col items-center justify-center gap-2">
+        <AvatarsGroup className="flex" />
+        <Badge
+          variant={"secondary"}
+          className="rounded-full border-[1.1px] border-accent-foreground/10"
+        >
+          Testimonials
+        </Badge>
+      </div>
+      <h1 className="text-center text-4xl font-semibold md:text-6xl">
+        Thousands of users have already <br /> tried{" "}
+        <strong className="bg-gradient-to-br from-primary to-rose-900 bg-clip-text font-semibold text-transparent">
+          {" "}
+          our application
+        </strong>
+      </h1>
+      <div className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background py-20 md:shadow-xl">
+        <Marquee pauseOnHover className="[--duration:90s]">
+          {firstRow.map((review, idx) => (
+            <ReviewCard key={idx} {...review} />
+          ))}
+        </Marquee>
+        <Marquee reverse pauseOnHover className="[--duration:90s]">
+          {secondRow.map((review, idx) => (
+            <ReviewCard key={idx} {...review} />
+          ))}
+        </Marquee>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+      </div>
     </div>
   );
 };

@@ -31,7 +31,7 @@ const EventCardCarousel = ({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className={cn(
-        "flex w-full flex-col overflow-hidden rounded-lg border-[1.1px] border-accent-foreground/20 bg-muted pb-6 transition-all hover:cursor-pointer dark:bg-background",
+        "flex  w-[300px] flex-col overflow-hidden rounded-lg border-[1.1px] border-accent-foreground/20 bg-muted pb-6 transition-all hover:cursor-pointer dark:bg-background",
         hover && "bg-background dark:bg-muted",
       )}
     >
