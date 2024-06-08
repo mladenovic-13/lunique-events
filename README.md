@@ -128,6 +128,98 @@ Obtain a Google Maps API key and map ID from the Google Cloud Console. Add these
 
 **You're all set! Your project should now be properly configured and ready for development.**
 
+# Image Optimization CloudFormation Setup
+
+## Prerequisites
+Ensure you have the following prerequisites installed on your local machine:
+- Node.js
+- AWS CLI
+- AWS CDK
+
+## Step-by-Step Instructions
+
+1. **Clone the Repository**
+
+    Clone the following GitHub repository to your local machine:
+
+    ```bash
+    git clone https://github.com/mladenovic-13/lunique-events-aws-image-optimization
+    ```
+
+2. **Navigate to the Project Directory**
+
+    Change your working directory to the cloned repository:
+
+    ```bash
+    cd image-optimization
+    ```
+
+3. **Install Dependencies**
+
+    Install the necessary dependencies using npm:
+
+    ```bash
+    npm install
+    ```
+
+4. **Bootstrap the CDK**
+
+    Initialize the AWS CDK environment:
+
+    ```bash
+    cdk bootstrap
+    ```
+
+5. **Build the Project**
+
+    Compile the TypeScript project:
+
+    ```bash
+    npm run build
+    ```
+
+6. **Deploy the Stack**
+
+    Deploy the CloudFormation stack:
+
+    ```bash
+    cdk deploy
+    ```
+
+## Post-Deployment Instructions
+
+When the deployment completes (typically within a few minutes), the AWS CDK output will include crucial information such as the domain name of the CloudFront distribution created for image optimization.
+
+- **Image Delivery Domain**: This is the CloudFront distribution domain (e.g., `YOURDISTRIBUTION.cloudfront.net`).
+- **Original Images S3 Bucket**: This is the S3 bucket containing sample images (e.g., `YourS3BucketWithOriginalImagesGeneratedName`).
+
+## Verification
+
+To verify that the setup is working correctly, you can test an optimized image URL:
+https://YOURDISTRIBUTION.cloudfront.net/images/rio/1.jpeg?format=auto&width=300
+
+Replace `YOURDISTRIBUTION` with the actual CloudFront distribution domain provided in the CDK output.
+
+## Deployment in Production
+
+For production deployments, it is recommended to use an existing S3 bucket where your images are stored. Deploy the stack in the same region as your S3 bucket using the following command:
+
+```bash
+cdk deploy -c S3_IMAGE_BUCKET_NAME='YOUR_S3_BUCKET_NAME'
+```
+
+##Configurable Parameters
+
+The solution allows for several configurable parameters:
+
+- **S3_IMAGE_BUCKET_NAME**: Specify the name of an existing S3 bucket where your images are stored.
+- **STORE_TRANSFORMED_IMAGES**: Determine whether to store transformed images in S3.
+- **STORE_TRANSFORMED_IMAGES_TTL**: Set the duration (in days) after which transformed images are automatically removed from S3.
+- **S3_TRANSFORMED_IMAGE_CACHE_TTL**: Define the Cache-Control header value for transformed images.
+These parameters can be specified during the deployment process to tailor the stack to your specific needs.
+
+
+
 ## License
 This project is licensed under the MIT License
 
