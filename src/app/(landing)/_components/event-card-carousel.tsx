@@ -45,7 +45,7 @@ const EventCardCarousel = ({
               width={480}
               height={480}
               className={cn(
-                "h-[220px] w-full object-cover brightness-100 transition-all ",
+                "h-[250px] w-full object-cover brightness-100 transition-all ",
                 hover && "brightness-50 ",
               )}
             />

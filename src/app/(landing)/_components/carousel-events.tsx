@@ -64,13 +64,23 @@ export function CarouselEvents() {
     //   <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
     // </Carousel>
     <div className="flex size-full">
-      <div className="relative hidden flex-row items-center justify-center overflow-hidden rounded-lg bg-background  sm:px-20 md:flex md:h-[700px]  lg:h-[800px]">
+      <div className="relative hidden flex-row items-center justify-center overflow-hidden rounded-lg bg-background sm:px-20 md:flex md:h-[700px]  lg:h-[800px]">
         <Marquee pauseOnHover vertical className="[--duration:90s]">
+          {!events &&
+            Array(5)
+              .fill(0)
+              .map((_, index) => index + 1)
+              .map((i) => <EventCardCarousel key={i} />)}
           {events?.map((event, idx) => (
             <EventCardCarousel {...event} key={idx} />
           ))}
         </Marquee>
         <Marquee reverse pauseOnHover vertical className="[--duration:90s]">
+          {!events &&
+            Array(5)
+              .fill(0)
+              .map((_, index) => index + 1)
+              .map((i) => <EventCardCarousel key={i} />)}
           {events?.map((event, idx) => (
             <EventCardCarousel {...event} key={idx} />
           ))}
