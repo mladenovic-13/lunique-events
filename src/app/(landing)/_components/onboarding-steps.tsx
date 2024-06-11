@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
 import createAccountDarkImg from "@/public/images/landing-page-images/create-account-dark.webp";
@@ -7,6 +7,7 @@ import createEventDarkImg from "@/public/images/landing-page-images/create-event
 import createEventLightImg from "@/public/images/landing-page-images/create-event-light.webp";
 import inviteGuestsDarkImg from "@/public/images/landing-page-images/invite-guests-dark.webp";
 import inviteGuestsLightImg from "@/public/images/landing-page-images/invite-guests-light.webp";
+import { paths } from "@/routes/paths";
 
 import StepCard from "./step-card";
 interface OnboardingStepsProps {
@@ -14,6 +15,37 @@ interface OnboardingStepsProps {
 }
 const OnboardingSteps = ({}: OnboardingStepsProps) => {
   const { theme } = useTheme();
+
+  const [createAccountImg, setCreateAccountImg] = useState(
+    createAccountLightImg,
+  );
+  const [createEventImg, setCreateEventImg] = useState(createEventLightImg);
+  const [inviteGuestsImg, setInviteGuestsImg] = useState(inviteGuestsLightImg);
+
+  useEffect(() => {
+    setCreateAccountImg(
+      theme === "light"
+        ? createAccountLightImg
+        : theme === "dark"
+          ? createAccountDarkImg
+          : createAccountLightImg,
+    );
+    setCreateEventImg(
+      theme === "light"
+        ? createEventLightImg
+        : theme === "dark"
+          ? createEventDarkImg
+          : createEventLightImg,
+    );
+    setInviteGuestsImg(
+      theme === "light"
+        ? inviteGuestsLightImg
+        : theme === "dark"
+          ? inviteGuestsDarkImg
+          : inviteGuestsLightImg,
+    );
+  }, [theme, setCreateAccountImg, setCreateEventImg, inviteGuestsImg]);
+
   return (
     <section className="flex w-full max-w-screen-xl flex-col items-center justify-center gap-6 px-4 pt-10 md:px-0 md:pt-0">
       <h1 className="text-3xl font-semibold md:text-5xl">
@@ -31,13 +63,8 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
           title="Create Your Account"
           description="Easily and without any prerequisites!"
           step={1}
-          image={
-            theme === "light"
-              ? createAccountLightImg.src
-              : theme === "dark"
-                ? createAccountDarkImg.src
-                : createAccountLightImg.src
-          }
+          image={createAccountImg.src}
+          href={paths.signin.root}
         />
         <div className="hidden w-32 p-0 md:flex">
           <svg
@@ -46,16 +73,16 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
             viewBox="0 0 800 800"
           >
             <g
-              stroke-width="19"
+              strokeWidth="19"
               stroke="hsl(347, 77%, 50%)"
               fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               transform="matrix(0.7313537016191707,-0.6819983600624983,0.6819983600624983,0.7313537016191707,-184.34082467266762,382.25786337733103)"
             >
               <path
                 d="M221.92139434814453 169Q-129.07860565185547 271 683.9213943481445 631 "
-                marker-end="url(#SvgjsMarker2236)"
+                markerEnd="url(#SvgjsMarker2236)"
               ></path>
             </g>
             <defs>
@@ -80,13 +107,8 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
           title="Create Your First Event"
           description="Easily and without any prerequisites!"
           step={2}
-          image={
-            theme === "light"
-              ? createEventLightImg.src
-              : theme === "dark"
-                ? createEventDarkImg.src
-                : createEventLightImg.src
-          }
+          image={createEventImg.src}
+          href={paths.event.create}
         />
         <div className="hidden w-32 p-0 md:flex">
           <svg
@@ -95,16 +117,16 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
             viewBox="0 0 800 800"
           >
             <g
-              stroke-width="19"
+              strokeWidth="19"
               stroke="hsl(347, 77%, 50%)"
               fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               transform="matrix(0.7313537016191707,-0.6819983600624983,0.6819983600624983,0.7313537016191707,-184.34082467266762,382.25786337733103)"
             >
               <path
                 d="M167.4549560546875 169Q670.4549560546875 271 629.4549560546875 631 "
-                marker-end="url(#SvgjsMarker2447)"
+                markerEnd="url(#SvgjsMarker2447)"
               ></path>
             </g>
             <defs>
@@ -129,13 +151,8 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
           title="Invite Your Guests. Now!"
           description="Easily and without any prerequisites!"
           step={2}
-          image={
-            theme === "light"
-              ? inviteGuestsLightImg.src
-              : theme === "dark"
-                ? inviteGuestsDarkImg.src
-                : inviteGuestsLightImg.src
-          }
+          image={inviteGuestsImg.src}
+          href={paths.signin.root}
         />
       </div>
     </section>
