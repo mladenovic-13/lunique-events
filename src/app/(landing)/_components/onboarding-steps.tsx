@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTheme } from "next-themes";
 
 import createAccountDarkImg from "@/public/images/landing-page-images/create-account-dark.webp";
@@ -14,37 +14,7 @@ interface OnboardingStepsProps {
   props?: string;
 }
 const OnboardingSteps = ({}: OnboardingStepsProps) => {
-  const { theme } = useTheme();
-
-  const [createAccountImg, setCreateAccountImg] = useState(
-    createAccountLightImg,
-  );
-  const [createEventImg, setCreateEventImg] = useState(createEventLightImg);
-  const [inviteGuestsImg, setInviteGuestsImg] = useState(inviteGuestsLightImg);
-
-  useEffect(() => {
-    setCreateAccountImg(
-      theme === "light"
-        ? createAccountLightImg
-        : theme === "dark"
-          ? createAccountDarkImg
-          : createAccountLightImg,
-    );
-    setCreateEventImg(
-      theme === "light"
-        ? createEventLightImg
-        : theme === "dark"
-          ? createEventDarkImg
-          : createEventLightImg,
-    );
-    setInviteGuestsImg(
-      theme === "light"
-        ? inviteGuestsLightImg
-        : theme === "dark"
-          ? inviteGuestsDarkImg
-          : inviteGuestsLightImg,
-    );
-  }, [theme, setCreateAccountImg, setCreateEventImg, inviteGuestsImg]);
+  const { resolvedTheme } = useTheme();
 
   return (
     <section className="flex w-full max-w-screen-xl flex-col items-center justify-center gap-6 px-4 pt-10 md:px-0 md:pt-0">
@@ -61,9 +31,13 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
       <div className="flex w-full flex-col items-center justify-center space-y-4 md:flex-row md:space-y-0">
         <StepCard
           title="Create Your Account"
-          description="Easily and without any prerequisites!"
+          description="Enter your email and sign in with Magic Link 🪄"
           step={1}
-          image={createAccountImg.src}
+          image={
+            resolvedTheme === "light"
+              ? createAccountLightImg.src
+              : createAccountDarkImg.src
+          }
           href={paths.signin.root}
         />
         <div className="hidden w-32 p-0 md:flex">
@@ -105,9 +79,13 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
         </div>
         <StepCard
           title="Create Your First Event"
-          description="Easily and without any prerequisites!"
+          description="Customize every detail, from the event name to the date and time ✨"
           step={2}
-          image={createEventImg.src}
+          image={
+            resolvedTheme === "light"
+              ? createEventLightImg.src
+              : createEventDarkImg.src
+          }
           href={paths.event.create}
         />
         <div className="hidden w-32 p-0 md:flex">
@@ -149,9 +127,13 @@ const OnboardingSteps = ({}: OnboardingStepsProps) => {
         </div>
         <StepCard
           title="Invite Your Guests. Now!"
-          description="Easily and without any prerequisites!"
+          description="Easily invite guests via email, social media, or by sharing a unique link 📨"
           step={2}
-          image={inviteGuestsImg.src}
+          image={
+            resolvedTheme === "light"
+              ? inviteGuestsLightImg.src
+              : inviteGuestsDarkImg.src
+          }
           href={paths.signin.root}
         />
       </div>

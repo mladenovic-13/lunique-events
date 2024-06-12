@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -21,25 +21,25 @@ const StepCard = ({
   href,
   description,
 }: StepCardProps) => {
-  const [hoverCard, setHoverCard] = useState<boolean>(false);
   const router = useRouter();
+
+  const [isServer, setIsServer] = useState(true);
+  useEffect(() => {
+    setIsServer(false);
+  }, [setIsServer]);
+
   return (
     <div
       className={cn(
-        "z-10 flex flex-col items-start  justify-start gap-4 overflow-hidden rounded-lg border border-secondary-foreground/20 bg-gradient-to-b from-muted/60 to-background transition-all  md:w-[300px]  md:hover:border-accent-foreground/40",
+        "group z-10 flex flex-col items-start justify-start  gap-4 overflow-hidden rounded-lg border border-secondary-foreground/20 bg-gradient-to-b from-muted/60 to-background transition-all hover:cursor-pointer  md:w-[300px]  md:hover:border-accent-foreground/40",
         className,
-        hoverCard && "cursor-pointer",
       )}
-      onMouseEnter={() => setHoverCard(true)}
-      onMouseLeave={() => setHoverCard(false)}
-      onTouchStart={() => setHoverCard(true)}
-      onTouchEnd={() => setHoverCard(false)}
       onClick={() => {
         href && router.push(href);
       }}
     >
       <div className="relative h-[300px] w-full overflow-hidden rounded-lg">
-        {image && (
+        {image && !isServer && (
           <Image
             className="absolute inset-0 mx-auto w-full"
             src={image}
@@ -53,13 +53,11 @@ const StepCard = ({
         <h1 className="font-semibold">{title}</h1>
         <p className="line-clamp-2 text-sm text-accent-foreground/60">
           {description}
-          {description}
         </p>
         <Button
           variant={"link"}
           className={cn(
-            "mt-1 flex gap-2 p-0 transition-all",
-            hoverCard && "translate-x-2 ",
+            "mt-1 flex gap-2 p-0 transition-all group-hover:translate-x-2 ",
           )}
         >
           Learn more
