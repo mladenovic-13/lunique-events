@@ -161,26 +161,43 @@ export const EmailSignInForm = () => {
 
   if (isEmailSent)
     return (
-      <Card className="space-y-2 text-center">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">
-            We have sent you verification link
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            Please check your email inbox, it also might be in your spam folder!
-          </p>
-        </CardContent>
-        <CardFooter>
-          <Button
-            variant="link"
-            className="mx-auto"
-            onClick={() => setIsEmailSent(false)}
-          >
-            Change Email Address
-          </Button>
-        </CardFooter>
+      <Card className="z-10 flex h-2/3 w-full items-center justify-center overflow-hidden rounded-lg border bg-muted/70 shadow-lg md:h-4/5 md:w-[900px]">
+        <div className="flex size-full flex-col items-start justify-center gap-2 px-2 backdrop-blur-xl md:w-1/2">
+          <CardHeader className="gap-2 text-left">
+            <CardTitle className="text-2xl font-bold md:text-5xl">
+              We have sent you verification link
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            <p>
+              Please check your email inbox, it also might be in your spam
+              folder!
+            </p>
+          </CardContent>
+
+          <CardFooter>
+            <Button
+              variant="link"
+              className="p-0"
+              onClick={() => setIsEmailSent(false)}
+            >
+              Change Email Address
+            </Button>
+          </CardFooter>
+        </div>
+        <div className="hidden h-full w-1/2  flex-col shadow-none md:flex">
+          <div className="relative flex size-full max-w-lg items-center justify-center overflow-hidden bg-background p-20">
+            <Image
+              src={logoImg.src}
+              height={400}
+              width={400}
+              alt="logo"
+              className="z-10 w-1/2 cursor-pointer brightness-75 transition-all hover:scale-105 dark:brightness-50"
+            />
+            <Ripple color="bg-primary" />
+          </div>
+        </div>
       </Card>
     );
 
