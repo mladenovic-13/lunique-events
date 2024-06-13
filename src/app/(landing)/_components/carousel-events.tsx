@@ -1,4 +1,5 @@
 import * as React from "react";
+import { i } from "@upstash/redis/zmscore-22fd48c7";
 
 import Marquee from "@/components/magicui/marquee";
 import { api } from "@/trpc/react";
@@ -18,7 +19,7 @@ export function CarouselEvents() {
             Array(5)
               .fill(0)
               .map((_, index) => index + 1)
-              .map((i) => <p key={i}>Loading...</p>)}
+              .map((i) => <EventCarouselCard key={i} />)}
           {events?.map((event, idx) => (
             <EventCarouselCard {...event} key={idx} />
           ))}
