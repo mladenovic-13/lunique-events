@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { random } from "lodash";
 import { LoaderCircleIcon, UsersIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
 import { awsImageLoader } from "@/lib/image-loader";
 import { isAwsImage } from "@/lib/is-aws-image";
 import { cn } from "@/lib/utils";
@@ -17,7 +19,7 @@ interface EventCardCarouselProps {
   description?: string;
   thumbnailUrl?: string;
 }
-const EventCardCarousel = ({
+const EventCarouselCard = ({
   date,
   id: eventId,
   name,
@@ -25,40 +27,34 @@ const EventCardCarousel = ({
   thumbnailUrl,
 }: EventCardCarouselProps) => {
   const router = useRouter();
-  const [hover, setHover] = useState(false);
+  const randomGuestCount = useMemo(
+    () => ((random(true) * 100) % 70).toFixed(),
+    [],
+  );
+  const [isServer, setIsServer] = useState(true);
+  useEffect(() => {
+    setIsServer(false);
+  }, [setIsServer]);
+
   return (
     <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={cn(
-        "flex w-full flex-col overflow-hidden rounded-lg border-[1.1px] border-accent-foreground/20 bg-muted pb-6 transition-all hover:cursor-pointer dark:bg-background",
-        hover && "bg-background dark:bg-muted",
-      )}
       onClick={() => eventId && router.push(paths.event.landing.root(eventId))}
+      className={cn(
+        "group flex w-[300px] flex-col overflow-hidden rounded-lg border-[1.1px]  border-accent-foreground/20 bg-muted pb-6 transition-all group-hover:cursor-pointer group-hover:bg-background dark:bg-background group-hover:dark:bg-muted",
+      )}
     >
       <div>
         {thumbnailUrl && (
-          <div className="relative">
-            <Image
-              loader={isAwsImage(thumbnailUrl) ? awsImageLoader : undefined}
-              src={thumbnailUrl}
-              alt={`${name} thumbnail`}
-              width={480}
-              height={480}
-              className={cn(
-                "h-[220px] w-full object-cover brightness-100 transition-all ",
-                hover && "brightness-50 ",
-              )}
-            />
-            <Button
-              className={cn(
-                "duration-2000 absolute inset-0 m-auto hidden w-fit scale-100 transition-all  hover:bg-primary",
-                hover && "md:flex md:hover:scale-110",
-              )}
-            >
-              See Details
-            </Button>
-          </div>
+          <Image
+            loader={isAwsImage(thumbnailUrl) ? awsImageLoader : undefined}
+            src={thumbnailUrl}
+            alt={`${name} thumbnail`}
+            width={300}
+            height={300}
+            className={cn(
+              "h-[250px] w-full object-cover  brightness-100 transition-all group-hover:brightness-50 ",
+            )}
+          />
         )}
         {!thumbnailUrl && (
           <div
@@ -80,10 +76,6 @@ const EventCardCarousel = ({
           <h1 className="line-clamp-1 text-lg font-semibold">
             {name ? name : "Loading..."}
           </h1>
-          <div className="flex items-center justify-center gap-2">
-            <UsersIcon className="size-4" />
-            <p className="text-xs">40</p>
-          </div>
         </div>
         <div className="size-full text-left text-sm font-normal text-accent-foreground/40">
           <p className="line-clamp-5">
@@ -92,18 +84,16 @@ const EventCardCarousel = ({
         </div>
       </div>
       <div className="flex items-center justify-between px-8">
-        <p className="text-xs">{format(date ? date : new Date(), "dd MMMM")}</p>
-        <p
-          className={cn(
-            "-rotate-8 bg-gradient-to-tl from-primary to-rose-700 bg-clip-text text-xl font-bold text-transparent transition-all",
-            hover && "rotate-0",
-          )}
-        >
-          {format(date ? date : new Date(), "yyyy")}
+        <p className="text-xs">
+          {format(date ? date : new Date(), "dd MMMM, yyyy")}
         </p>
+        <div className="flex items-center justify-center gap-2">
+          <UsersIcon className="size-4" />
+          <p className="text-xs">{!isServer && randomGuestCount}</p>
+        </div>
       </div>
     </div>
   );
 };
 
-export default EventCardCarousel;
+export default EventCarouselCard;
