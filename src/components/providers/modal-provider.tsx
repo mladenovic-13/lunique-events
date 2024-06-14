@@ -10,6 +10,7 @@ import { EventCapacityModal } from "../modals/event-capacity-modal";
 import { GetNowModal } from "../modals/get-premium-modal";
 import { GroupRegistrationModal } from "../modals/group-registration-modal";
 import { InviteGuestsModal } from "../modals/invite-guests-modal";
+import { OrganizationAdminsModal } from "../modals/organization-admins-modal";
 import { ShareEventModal } from "../modals/share-event-modal";
 import { ShowGuestListModal } from "../modals/show-guest-list-modal";
 
@@ -36,6 +37,7 @@ export const ModalProvider = () => {
       <GroupRegistrationModal />
       <EventCapacityModal />
       <GetNowModal />
+      <OrganizationAdminsModal />
     </>
   );
 };

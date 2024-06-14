@@ -28,21 +28,21 @@ export default async function ManageCalendarLayout({
       href: paths.organization.manage.events(organizationId),
     },
     {
-      title: "People",
-      href: paths.organization.manage.people(organizationId),
+      title: "Admins",
+      href: paths.organization.manage.admins(organizationId),
     },
-    {
-      title: "Newsletter",
-      href: paths.organization.manage.newsletter(organizationId),
-    },
-    {
-      title: "Insights",
-      href: paths.organization.manage.insights(organizationId),
-    },
-    {
-      title: "Settings",
-      href: paths.organization.manage.settings.display(organizationId),
-    },
+    // {
+    //   title: "Newsletter",
+    //   href: paths.organization.manage.newsletter(organizationId),
+    // },
+    // {
+    //   title: "Insights",
+    //   href: paths.organization.manage.insights(organizationId),
+    // },
+    // {
+    //   title: "Settings",
+    //   href: paths.organization.manage.settings.display(organizationId),
+    // },
   ];
 
   return (

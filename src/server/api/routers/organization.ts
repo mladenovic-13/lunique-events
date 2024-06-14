@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { organizationSchema } from "@/app/organization/create/_components/validation";
@@ -108,6 +109,66 @@ export const organizationRouter = createTRPCRouter({
         },
         select: {
           name: true,
+        },
+      });
+    }),
+  addAdmin: protectedProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        organizationId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organization = await ctx.db.organization.findFirst({
+        where: {
+          id: input.organizationId,
+        },
+        include: {
+          members: {
+            select: {
+              email: true,
+            },
+          },
+        },
+      });
+      if (!organization) {
+        throw new TRPCError({
+          message: "Organization with provided id doesn't exist",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const user = await ctx.db.user.findFirst({
+        where: {
+          email: input.email,
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          message: "User with provided email doesn't exist",
+          code: "NOT_FOUND",
+        });
+      }
+
+      if (organization.members.map((m) => m.email).includes(input.email)) {
+        throw new TRPCError({
+          message: "User is already admin",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      return await ctx.db.organization.update({
+        where: {
+          id: input.organizationId,
+        },
+        data: {
+          members: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
     }),

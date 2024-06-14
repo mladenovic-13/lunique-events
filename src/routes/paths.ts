@@ -50,8 +50,8 @@ export const paths = {
         roots.organization + "/manage" + `/${id}` + "/insights",
       newsletter: (id: string) =>
         roots.organization + "/manage" + `/${id}` + "/newsletter",
-      people: (id: string) =>
-        roots.organization + "/manage" + `/${id}` + "/people",
+      admins: (id: string) =>
+        roots.organization + "/manage" + `/${id}` + "/admins",
       settings: {
         admins: (id: string) =>
           roots.organization + "/manage" + `/${id}` + "/settings" + "/admins",

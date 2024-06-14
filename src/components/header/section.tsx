@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { PlusIcon } from "lucide-react";
 
@@ -7,9 +9,10 @@ interface TitleProps {
   title: string;
   description?: string;
   button?: string;
+  onAction: () => void;
 }
 
-const Section = ({ title, description, button }: TitleProps) => {
+const Section = ({ title, description, button, onAction }: TitleProps) => {
   return (
     <div className="flex justify-between">
       <div className="flex flex-col space-y-0.5 md:space-y-1.5">
@@ -26,6 +29,7 @@ const Section = ({ title, description, button }: TitleProps) => {
         <Button
           className="flex h-7 space-x-2 py-1.5 pl-3 pr-4 md:h-fit"
           variant={"secondary"}
+          onClick={onAction}
         >
           <PlusIcon className="size-3.5 md:size-4" />
           <p className="capitalize">{button}</p>
