@@ -9,7 +9,7 @@ interface TitleProps {
   title: string;
   description?: string;
   button?: string;
-  onAction: () => void;
+  onAction?: () => void;
 }
 
 const Section = ({ title, description, button, onAction }: TitleProps) => {
@@ -29,7 +29,7 @@ const Section = ({ title, description, button, onAction }: TitleProps) => {
         <Button
           className="flex h-7 space-x-2 py-1.5 pl-3 pr-4 md:h-fit"
           variant={"secondary"}
-          onClick={onAction}
+          onClick={onAction && onAction}
         >
           <PlusIcon className="size-3.5 md:size-4" />
           <p className="capitalize">{button}</p>
