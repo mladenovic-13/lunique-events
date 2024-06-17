@@ -10,9 +10,16 @@ interface TitleProps {
   description?: string;
   button?: string;
   onAction?: () => void;
+  disabled?: boolean;
 }
 
-const Section = ({ title, description, button, onAction }: TitleProps) => {
+const Section = ({
+  title,
+  description,
+  button,
+  onAction,
+  disabled,
+}: TitleProps) => {
   return (
     <div className="flex justify-between">
       <div className="flex flex-col space-y-0.5 md:space-y-1.5">
@@ -30,6 +37,7 @@ const Section = ({ title, description, button, onAction }: TitleProps) => {
           className="flex h-7 space-x-2 py-1.5 pl-3 pr-4 md:h-fit"
           variant={"secondary"}
           onClick={onAction && onAction}
+          disabled={disabled && disabled}
         >
           <PlusIcon className="size-3.5 md:size-4" />
           <p className="capitalize">{button}</p>

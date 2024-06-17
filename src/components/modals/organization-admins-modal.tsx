@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UsersRoundIcon } from "lucide-react";
+import { LoaderCircleIcon, UsersRoundIcon } from "lucide-react";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,8 @@ export const OrganizationAdminsModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const { organizationId } = data;
 
-  const { mutate: addAdmin } = api.organization.addAdmin.useMutation();
+  const { mutate: addAdmin, isPending } =
+    api.organization.addAdmin.useMutation();
 
   const isModalOpen = isOpen && type === "org-admins";
 
@@ -46,6 +47,8 @@ export const OrganizationAdminsModal = () => {
     },
   });
 
+  const utils = api.useUtils();
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!organizationId) return;
 
@@ -54,8 +57,15 @@ export const OrganizationAdminsModal = () => {
       {
         onSuccess: () => {
           toast({ title: "Admin succesfully added" });
+          utils.invalidate().catch(() => ({}));
+          onClose();
         },
-        onError: () => toast({ title: "Failed to add admin" }),
+        onError: (error) =>
+          toast({
+            title: "Failed to add admin",
+            description: error.message,
+            variant: "destructive",
+          }),
       },
     );
   }
@@ -98,7 +108,10 @@ export const OrganizationAdminsModal = () => {
               )}
             />
             <DialogFooter className="flex-row gap-1.5">
-              <Button className=" flex-1">Add Admin</Button>
+              <Button className=" flex-1">
+                {isPending && <LoaderCircleIcon className="animate-spin" />}
+                {!isPending && <p>Add Admin</p>}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

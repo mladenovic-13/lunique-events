@@ -92,6 +92,7 @@ export const organizationRouter = createTRPCRouter({
             },
           },
           members: true,
+          owner: true,
         },
       });
     }),
@@ -127,6 +128,7 @@ export const organizationRouter = createTRPCRouter({
         include: {
           members: {
             select: {
+              id: true,
               email: true,
             },
           },
@@ -152,6 +154,13 @@ export const organizationRouter = createTRPCRouter({
         });
       }
 
+      if (organization.ownerId === user.id) {
+        throw new TRPCError({
+          message: "User is owner of this organization",
+          code: "BAD_REQUEST",
+        });
+      }
+
       if (organization.members.map((m) => m.email).includes(input.email)) {
         throw new TRPCError({
           message: "User is already admin",
@@ -167,6 +176,138 @@ export const organizationRouter = createTRPCRouter({
           members: {
             connect: {
               id: user.id,
+            },
+          },
+        },
+      });
+    }),
+  listAdminOf: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
+    const user = await ctx.db.user.findFirst({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        memberOfOrganizations: true,
+      },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        message: "User doesn't exist",
+        code: "BAD_REQUEST",
+      });
+    }
+
+    return user.memberOfOrganizations;
+  }),
+  listAdmins: protectedProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const organization = await ctx.db.organization.findFirst({
+        where: {
+          id: input.organizationId,
+        },
+        include: {
+          members: true,
+        },
+      });
+
+      if (!organization) {
+        throw new TRPCError({
+          message: "Organization with provided id doesn't exist",
+          code: "NOT_FOUND",
+        });
+      }
+
+      if (!organization.members) {
+        throw new TRPCError({
+          message: "Organization does't have any other admins except owner",
+          code: "NOT_FOUND",
+        });
+      }
+
+      return organization.members;
+    }),
+  removeAdmin: protectedProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        adminId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const organization = await ctx.db.organization.findFirst({
+        where: {
+          id: input.organizationId,
+        },
+        include: {
+          members: {
+            select: {
+              id: true,
+              email: true,
+            },
+          },
+        },
+      });
+      if (!organization) {
+        throw new TRPCError({
+          message: "Organization with provided id doesn't exist",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const user = await ctx.db.user.findFirst({
+        where: {
+          id: input.adminId,
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          message: "Admin doesn't exist",
+          code: "NOT_FOUND",
+        });
+      }
+
+      if (organization.ownerId === user.id) {
+        throw new TRPCError({
+          message: "This admin is owner of this organization",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      if (!organization.members.map((m) => m.id).includes(input.adminId)) {
+        throw new TRPCError({
+          message: "This admin doesn't belong to this organization",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      if (organization.ownerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          message:
+            "You aren't owner of this organization and don't have permission for removing admins",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      return await ctx.db.organization.update({
+        where: {
+          id: input.organizationId,
+        },
+        data: {
+          members: {
+            disconnect: {
+              id: input.adminId,
             },
           },
         },
