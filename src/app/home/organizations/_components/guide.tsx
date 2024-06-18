@@ -92,7 +92,7 @@ const OrganizationGuide = () => {
                   key={i}
                   onClick={() => setStep(i)}
                   className={cn(
-                    "h-1 w-6 rounded-sm bg-neutral-300 transition-all hover:cursor-pointer md:hover:scale-110 md:hover:bg-primary/50",
+                    "h-1 w-6 rounded-sm bg-muted brightness-90 transition-all hover:cursor-pointer dark:brightness-125 md:hover:scale-110 md:hover:bg-primary/50",
                     step === i &&
                       "scale-110 bg-accent-foreground md:hover:bg-accent-foreground",
                   )}

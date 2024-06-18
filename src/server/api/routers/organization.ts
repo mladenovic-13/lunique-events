@@ -96,6 +96,29 @@ export const organizationRouter = createTRPCRouter({
         },
       });
     }),
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        timeframe: z.string().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      await ratelimit({
+        enabled: env.VERCEL_ENV === "production",
+        key: ctx.session.user.id,
+      });
+
+      return await ctx.db.organization.findFirst({
+        where: {
+          id: input.id,
+        },
+        include: {
+          members: true,
+          owner: true,
+        },
+      });
+    }),
   getName: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -164,6 +187,16 @@ export const organizationRouter = createTRPCRouter({
       if (organization.members.map((m) => m.email).includes(input.email)) {
         throw new TRPCError({
           message: "User is already admin",
+          code: "BAD_REQUEST",
+        });
+      }
+      if (
+        !organization.members.map((m) => m.id).includes(ctx.session.user.id) &&
+        organization.ownerId !== ctx.session.user.id
+      ) {
+        throw new TRPCError({
+          message:
+            "The user does not have permission to add new administrators because the user is not an admin of this organization.",
           code: "BAD_REQUEST",
         });
       }

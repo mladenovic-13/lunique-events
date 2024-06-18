@@ -12,6 +12,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -41,6 +42,7 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
 
   const { mutate } = useSignOut();
   const { data: orgs } = api.organization.list.useQuery();
+  const { data: orgsAdminOf } = api.organization.listAdminOf.useQuery();
   const { data: isPremiumUser } = api.billing.isPremiumUser.useQuery();
   const { onOpen } = useModal();
   const organizationId = useOrganizationId();
@@ -124,6 +126,41 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                       />
                       <div className="flex flex-col">
                         <p>{item.isPersonal ? item.owner.name : item.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {item.isPersonal ? "Personal" : "Organization"}
+                        </p>
+                      </div>
+                    </div>
+                  </DropdownMenuCheckboxItem>
+                ))}
+              <DropdownMenuSeparator />
+              {orgsAdminOf && orgsAdminOf?.length > 0 && (
+                <DropdownMenuLabel>Admin of Organizations</DropdownMenuLabel>
+              )}
+              {orgsAdminOf
+                ?.sort((item) => (item.isPersonal ? -1 : 1))
+                .map((item) => (
+                  <DropdownMenuCheckboxItem
+                    key={item.id}
+                    checked={item.id === organization.id}
+                    onCheckedChange={(checked) =>
+                      checked && updateOrganizationId(item.id)
+                    }
+                    className="md:pr-8"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={
+                          (item.isPersonal ? image : item.thumbnailUrl) ??
+                          placeholderImg
+                        }
+                        alt="Organization name"
+                        width={32}
+                        height={32}
+                        className="size-8 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <p>{item.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {item.isPersonal ? "Personal" : "Organization"}
                         </p>

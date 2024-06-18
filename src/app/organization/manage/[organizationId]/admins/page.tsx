@@ -16,13 +16,18 @@ const OrganizationAdminsPage = () => {
   const { onOpen } = useModal();
 
   const { organizationId } = useParams<{ organizationId: string }>();
+  // const { data: organization, isLoading: isLoadingOrganization } =
+  //   api.organization.get.useQuery({
+  //     id: organizationId,
+  //     timeframe: "upcoming",
+  //   });
   const { data: organization, isLoading: isLoadingOrganization } =
-    api.organization.get.useQuery({
+    api.organization.getOne.useQuery({
       id: organizationId,
-      timeframe: "upcoming",
     });
+  const user = useSession().data?.user;
   const owner = organization?.owner;
-  const removePermission = owner?.id === useSession().data?.user.id;
+  const ownerPermission = owner?.id === user?.id;
 
   const { data: organizationAdmins, isLoading: isLoadingAdmins } =
     api.organization.listAdmins.useQuery({
@@ -30,6 +35,13 @@ const OrganizationAdminsPage = () => {
     });
 
   if (!organizationId) return notFound();
+  if (
+    user &&
+    organization &&
+    !organization.members.map((member) => member.id).includes(user.id) &&
+    user.id !== owner?.id
+  )
+    return notFound();
 
   return (
     <MainPage>
@@ -47,13 +59,13 @@ const OrganizationAdminsPage = () => {
       <ul className="space-y-2">
         {isLoadingAdmins &&
           isLoadingOrganization &&
-          Array(5)
+          Array(4)
             .fill(0)
             .map((_, index) => index + 1)
             .map((i) => (
               <div
                 key={i}
-                className="h-8 w-full animate-pulse rounded-lg bg-accent-foreground/50"
+                className="h-10 w-full animate-pulse rounded-lg bg-accent-foreground/20"
               ></div>
             ))}
         {owner && (
@@ -67,7 +79,12 @@ const OrganizationAdminsPage = () => {
                   {owner.email}
                 </h1>
               </div>
-              <div className="flex items-center justify-center gap-2">
+              <div
+                className={cn(
+                  "flex items-center justify-center gap-2",
+                  !ownerPermission && "flex-row-reverse",
+                )}
+              >
                 <Badge
                   className={cn(
                     "bg-green-200 text-green-700 shadow-none transition-all hover:cursor-pointer hover:bg-green-200 dark:bg-green-700/50 dark:text-green-400 dark:hover:bg-green-700/50",
@@ -76,7 +93,7 @@ const OrganizationAdminsPage = () => {
                   Owner
                 </Badge>
                 <Button
-                  className="rounded-full transition-all  hover:bg-transparent"
+                  className="rounded-full transition-all hover:cursor-default  hover:bg-transparent"
                   size={"icon"}
                   variant={"ghost"}
                 >
@@ -88,7 +105,7 @@ const OrganizationAdminsPage = () => {
         )}
         {organizationAdmins?.map((admin, idx) => (
           <li key={idx}>
-            <div className="flex items-center justify-between  p-2">
+            <div className="flex items-center  justify-between rounded-lg p-2">
               <div className="flex items-center justify-center gap-2">
                 <div className="flex size-8 items-center justify-center rounded-full border bg-muted drop-shadow-sm">
                   <p>{admin.email?.[0]?.toUpperCase()}</p>
@@ -106,7 +123,7 @@ const OrganizationAdminsPage = () => {
                   Admin
                 </Badge>
 
-                {removePermission && (
+                {ownerPermission && (
                   <Button
                     className="rounded-full transition-all hover:scale-125 hover:bg-transparent hover:text-destructive"
                     size={"icon"}
