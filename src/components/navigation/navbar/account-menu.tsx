@@ -44,7 +44,9 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
   const { data: orgs } = api.organization.list.useQuery();
   const { data: orgsAdminOf } = api.organization.listAdminOf.useQuery();
   const { data: isPremiumUser } = api.billing.isPremiumUser.useQuery();
+
   const { onOpen } = useModal();
+
   const organizationId = useOrganizationId();
   const { updateOrganizationId } = useConfigActions();
 
