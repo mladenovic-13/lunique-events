@@ -1,16 +1,16 @@
-"use client";
+// "use client";
 
-import { createContext, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { createStore } from "zustand";
+// import { createContext, useEffect, useState } from "react";
+// import { useSession } from "next-auth/react";
+// import { createStore } from "zustand";
 
-type OrganizationStore = {
-  id: string | null;
-  name: string | null;
-  owner: string | null;
-};
+// type OrganizationStore = {
+//   id: string | null;
+//   name: string | null;
+//   owner: string | null;
+// };
 
-const OrganizationContext = createContext(null);
+// const OrganizationContext = createContext(null);
 
 //  useEffect(() => {
 //    // TODO: Move organization fetch to store context privider
@@ -33,34 +33,36 @@ const OrganizationContext = createContext(null);
 //    if (!isPremiumUser) onOpen("get-now");
 //  };
 
-export const OrganizationContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [store] = useState(() =>
-    createStore<OrganizationStore>((set) => ({
-      id: null,
-      name: null,
-      owner: null,
-      actions: {
-        update: (id: string, name: string, owner: string) =>
-          set({ id, name, owner }),
-      },
-    })),
-  );
+// export const OrganizationContextProvider = ({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) => {
+//   const [store] = useState(() =>
+//     createStore<OrganizationStore>((set) => ({
+//       id: null,
+//       name: null,
+//       owner: null,
+//       actions: {
+//         update: (id: string, name: string, owner: string) =>
+//           set({ id, name, owner }),
+//       },
+//     })),
+//   );
 
-  const { data: session } = useSession();
+//   const {data: personalOrl} = api.organization.getPersonal({userId: })
+//   const { data: session } = useSession();
 
-  useEffect(() => {
-    if (!session?.user) return;
+//   useEffect(() => {
+//     if (!session?.user && !personalOrg ) return;
 
-    const { user } = session;
-  }, []);
+//     const { user } = session;
 
-  return (
-    <OrganizationContext.Provider value={store}>
-      {children}
-    </OrganizationContext.Provider>
-  );
-};
+//   }, [personalOrg]);
+
+//   return (
+//     <OrganizationContext.Provider value={store}>
+//       {children}
+//     </OrganizationContext.Provider>
+//   );
+// };
