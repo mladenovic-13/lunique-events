@@ -346,4 +346,24 @@ export const organizationRouter = createTRPCRouter({
         },
       });
     }),
+  getPersonalOrganization: protectedProcedure.query(async ({ ctx }) => {
+    await ratelimit({
+      enabled: env.VERCEL_ENV === "production",
+      key: ctx.session.user.id,
+    });
+
+    return await ctx.db.organization.findFirst({
+      where: {
+        AND: {
+          ownerId: ctx.session.user.id,
+          isPersonal: true,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        ownerId: true,
+      },
+    });
+  }),
 });

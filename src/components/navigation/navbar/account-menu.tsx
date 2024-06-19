@@ -40,9 +40,11 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
 
   const router = useRouter();
 
-  const { mutate } = useSignOut();
+  const { mutate: signOut } = useSignOut();
+
   const { data: orgs } = api.organization.list.useQuery();
   const { data: orgsAdminOf } = api.organization.listAdminOf.useQuery();
+
   const { data: isPremiumUser } = api.billing.isPremiumUser.useQuery();
 
   const { onOpen } = useModal();
@@ -188,7 +190,10 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </Link>
         <DropdownMenuItem asChild>
-          <button onClick={() => mutate()} className="flex w-full items-center">
+          <button
+            onClick={() => signOut()}
+            className="flex w-full items-center"
+          >
             Sign Out
           </button>
         </DropdownMenuItem>

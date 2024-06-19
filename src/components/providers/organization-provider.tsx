@@ -1,68 +1,74 @@
-// "use client";
+"use client";
 
-// import { createContext, useEffect, useState } from "react";
-// import { useSession } from "next-auth/react";
-// import { createStore } from "zustand";
+import { createContext, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { createStore, type StoreApi } from "zustand";
 
-// type OrganizationStore = {
-//   id: string | null;
-//   name: string | null;
-//   owner: string | null;
-// };
+import { api } from "@/trpc/react";
 
-// const OrganizationContext = createContext(null);
+export type OrganizationStore = {
+  data: {
+    id: string | null;
+    name: string | null;
+    ownerId: string | null;
+  };
+  actions: StoreActions;
+};
 
-//  useEffect(() => {
-//    // TODO: Move organization fetch to store context privider
-//    if (!orgs) return;
+type StoreActions = {
+  update: (id: string, name: string, owner: string) => void;
+};
 
-//    const personal = orgs.find((item) => item.isPersonal);
-//    const current = orgs.find((item) => item.id === organizationId);
+export const OrganizationStoreContext =
+  createContext<StoreApi<OrganizationStore> | null>(null);
 
-//    if (current) {
-//      setOrganization(current);
-//    }
+export const OrganizationStoreProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [shouldSet, setShouldSet] = useState(true);
 
-//    if (!current) {
-//      updateOrganizationId(personal?.id);
-//    }
-//  }, [organizationId, orgs, updateOrganizationId]);
+  const [store] = useState(() =>
+    createStore<OrganizationStore>((set) => ({
+      data: {
+        id: null,
+        name: null,
+        ownerId: null,
+      },
+      actions: {
+        update: (id: string, name: string, ownerId: string) =>
+          set({ data: { id, name, ownerId } }),
+      },
+    })),
+  );
 
-//  const onNewOrganization = () => {
-//    if (isPremiumUser) router.push(paths.organization.create);
-//    if (!isPremiumUser) onOpen("get-now");
-//  };
+  const { data: session } = useSession();
 
-// export const OrganizationContextProvider = ({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) => {
-//   const [store] = useState(() =>
-//     createStore<OrganizationStore>((set) => ({
-//       id: null,
-//       name: null,
-//       owner: null,
-//       actions: {
-//         update: (id: string, name: string, owner: string) =>
-//           set({ id, name, owner }),
-//       },
-//     })),
-//   );
+  const { data: personalOrganization } =
+    api.organization.getPersonalOrganization.useQuery(undefined, {
+      enabled: !!session?.user.id,
+    });
 
-//   const {data: personalOrl} = api.organization.getPersonal({userId: })
-//   const { data: session } = useSession();
+  useEffect(() => {
+    if (!personalOrganization || !shouldSet) return;
 
-//   useEffect(() => {
-//     if (!session?.user && !personalOrg ) return;
+    store.setState(() => ({
+      data: {
+        id: personalOrganization.id,
+        name: personalOrganization.name,
+        ownerId: personalOrganization.ownerId,
+      },
+    }));
 
-//     const { user } = session;
+    setShouldSet(false);
 
-//   }, [personalOrg]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personalOrganization, session]);
 
-//   return (
-//     <OrganizationContext.Provider value={store}>
-//       {children}
-//     </OrganizationContext.Provider>
-//   );
-// };
+  return (
+    <OrganizationStoreContext.Provider value={store}>
+      {children}
+    </OrganizationStoreContext.Provider>
+  );
+};
