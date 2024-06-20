@@ -2,6 +2,7 @@ import { type Viewport } from "next";
 import { Roboto } from "next/font/google";
 
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { OrganizationStoreProvider } from "@/components/providers/organization-provider";
 import NextAuthProvider from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -53,9 +54,11 @@ export default function RootLayout({
           >
             <TRPCReactProvider>
               <NextAuthProvider>
-                <ModalProvider />
-                <Toaster />
-                {children}
+                <OrganizationStoreProvider>
+                  <ModalProvider />
+                  <Toaster />
+                  {children}
+                </OrganizationStoreProvider>
               </NextAuthProvider>
             </TRPCReactProvider>
           </ThemeProvider>

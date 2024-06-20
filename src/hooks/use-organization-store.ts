@@ -6,9 +6,7 @@ import {
   OrganizationStoreContext,
 } from "@/components/providers/organization-provider";
 
-const useOrganizationStore = (
-  selector: (state: OrganizationStore) => unknown,
-) => {
+const useOrganizationStore = <T>(selector: (store: OrganizationStore) => T) => {
   const store = useContext(OrganizationStoreContext);
 
   if (!store) {

@@ -43,18 +43,67 @@ export const organizationRouter = createTRPCRouter({
       key: ctx.session.user.id,
     });
 
-    return await ctx.db.organization.findMany({
+    const personalOrganization = await ctx.db.organization.findFirst({
       where: {
-        ownerId: ctx.session.user.id,
+        AND: {
+          ownerId: ctx.session.user.id,
+          isPersonal: true,
+        },
       },
       include: {
-        owner: {
-          select: {
-            name: true,
+        owner: true,
+      },
+    });
+    const ownerOfOrganizations = await ctx.db.organization.findMany({
+      where: {
+        AND: {
+          ownerId: ctx.session.user.id,
+          isPersonal: false,
+        },
+      },
+      include: {
+        owner: true,
+      },
+    });
+    const adminOfOrganizations = await ctx.db.organization.findMany({
+      where: {
+        members: {
+          some: {
+            id: ctx.session.user.id,
           },
         },
       },
+      include: {
+        owner: true,
+        members: true,
+      },
     });
+
+    const allOrganizations = [
+      ...(personalOrganization ? [personalOrganization] : []),
+      ...ownerOfOrganizations,
+      ...adminOfOrganizations,
+    ];
+
+    // const organizations = {
+    //   personal: personalOrganization,
+    //   owner: ownerOfOrganizations,
+    //   admin: adminOfOrganizations,
+    // };
+
+    return allOrganizations;
+    // return await ctx.db.organization.findMany({
+    //   where: {
+    //     ownerId: ctx.session.user.id,
+    //   },
+    //   include: {
+    //     owner: {
+    //       select: {
+    //         name: true,
+    //       },
+    //     },
+    //   },
+    // });
   }),
   get: protectedProcedure
     .input(
