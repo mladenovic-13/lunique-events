@@ -31,7 +31,7 @@ export const OrganizationHeader = ({
           />
         </div>
         <div>
-          <Link href={paths.organization.manage.people(organizationId)}>
+          <Link href={paths.organization.manage.admins(organizationId)}>
             <Button variant={"outline"} className="h-8 space-x-2">
               <p>Manage</p>
               <ArrowUpRightIcon size={18} />

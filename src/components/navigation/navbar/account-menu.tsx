@@ -5,8 +5,10 @@ import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,8 +20,12 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
+// import { useConfigActions, useOrganizationId } from "@/hooks/use-config-store";
 import { useModal } from "@/hooks/use-modal-store";
+import {
+  useOrganization,
+  useOrganizationActions,
+} from "@/hooks/use-organization-store";
 import { useSignOut } from "@/hooks/use-sign-out";
 import placeholderImg from "@/public/images/placeholder.jpg";
 import { paths } from "@/routes/paths";
@@ -33,32 +39,42 @@ interface AccountMenuProps {
 }
 
 export const AccountMenu = ({ name, image }: AccountMenuProps) => {
+  // const [organization, setOrganization] = useState<
+  //   RouterOutputs["organization"]["list"][number] | null
+  // >(null);
   const [organization, setOrganization] = useState<
     RouterOutputs["organization"]["list"][number] | null
   >(null);
 
   const router = useRouter();
 
-  const { mutate } = useSignOut();
+  const { mutate: signOut } = useSignOut();
+
   const { data: orgs } = api.organization.list.useQuery();
+
   const { data: isPremiumUser } = api.billing.isPremiumUser.useQuery();
+
   const { onOpen } = useModal();
-  const organizationId = useOrganizationId();
-  const { updateOrganizationId } = useConfigActions();
+
+  // const organizationId = useOrganizationId();
+  // const { updateOrganizationId } = useConfigActions();
+  const { id: organizationId } = useOrganization();
+  const { update: updateOrganizationId } = useOrganizationActions();
+
+  const userId = useSession().data?.user.id;
 
   useEffect(() => {
     // TODO: Move organization fetch to store context privider
     if (!orgs) return;
-
-    const personal = orgs.find((item) => item.isPersonal);
+    console.log(organizationId);
+    const personal = orgs.find((item) => item.isPersonal === true);
     const current = orgs.find((item) => item.id === organizationId);
-
     if (current) {
       setOrganization(current);
     }
 
-    if (!current) {
-      updateOrganizationId(personal?.id);
+    if (!current && personal) {
+      updateOrganizationId(personal.id, personal.name, personal.ownerId);
     }
   }, [organizationId, orgs, updateOrganizationId]);
 
@@ -70,7 +86,6 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
   const avatarUrl = organization?.isPersonal
     ? image
     : organization?.thumbnailUrl;
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -88,7 +103,8 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                   {name && (
                     <p className="min-w-fit whitespace-nowrap font-medium">
                       {organization.isPersonal
-                        ? organization.owner.name
+                        ? // ? organization.ownerId
+                          organization.owner.name
                         : organization.name}
                     </p>
                   )}
@@ -107,7 +123,8 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                     key={item.id}
                     checked={item.id === organization.id}
                     onCheckedChange={(checked) =>
-                      checked && updateOrganizationId(item.id)
+                      checked &&
+                      updateOrganizationId(item.id, item.name, item.ownerId)
                     }
                     className="md:pr-8"
                   >
@@ -124,13 +141,56 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
                       />
                       <div className="flex flex-col">
                         <p>{item.isPersonal ? item.owner.name : item.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {item.isPersonal ? "Personal" : "Organization"}
-                        </p>
+                        {item.isPersonal ? (
+                          <p className="text-xs text-muted-foreground">
+                            Personal
+                          </p>
+                        ) : item.ownerId === userId ? (
+                          <Badge className="size-fit bg-green-200 p-0.5 py-0 text-[10px] text-green-700 shadow-none transition-all hover:cursor-pointer hover:bg-green-200 dark:bg-green-700/50 dark:text-green-400 dark:hover:bg-green-700/50">
+                            Owner
+                          </Badge>
+                        ) : (
+                          <Badge className="size-fit bg-blue-200 p-0.5 py-0 text-[10px] text-blue-700 shadow-none transition-all hover:cursor-pointer hover:bg-blue-200 dark:bg-blue-700/50 dark:text-blue-400 dark:hover:bg-blue-700/50">
+                            Admin
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </DropdownMenuCheckboxItem>
                 ))}
+
+              {/* {orgsAdminOf
+                ?.sort((item) => (item.isPersonal ? -1 : 1))
+                .map((item) => (
+                  <DropdownMenuCheckboxItem
+                    key={item.id}
+                    checked={item.id === organization.id}
+                    onCheckedChange={(checked) =>
+                      checked &&
+                      updateOrganizationId(item.id, item.name, item.ownerId)
+                    }
+                    className="md:pr-8"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={
+                          (item.isPersonal ? image : item.thumbnailUrl) ??
+                          placeholderImg
+                        }
+                        alt="Organization name"
+                        width={32}
+                        height={32}
+                        className="size-8 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col">
+                        <p>{item.name}</p>
+                        <Badge className="size-fit bg-blue-200 p-0.5 py-0 text-[10px] text-blue-700 shadow-none transition-all hover:cursor-pointer hover:bg-blue-200 dark:bg-blue-700/50 dark:text-blue-400 dark:hover:bg-blue-700/50">
+                          Admin
+                        </Badge>
+                      </div>
+                    </div>
+                  </DropdownMenuCheckboxItem>
+                ))} */}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="justify-center gap-1.5"
@@ -149,7 +209,10 @@ export const AccountMenu = ({ name, image }: AccountMenuProps) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </Link>
         <DropdownMenuItem asChild>
-          <button onClick={() => mutate()} className="flex w-full items-center">
+          <button
+            onClick={() => signOut()}
+            className="flex w-full items-center"
+          >
             Sign Out
           </button>
         </DropdownMenuItem>

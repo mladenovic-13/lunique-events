@@ -12,10 +12,14 @@ export type ModalType =
   | "confirm-registration"
   | "group-registration"
   | "get-now"
-  | "event-capacity";
+  | "event-capacity"
+  | "org-admins"
+  | "remove-admin";
 
 export type ModalData = {
   eventId?: string;
+  organizationId?: string;
+  adminId?: string;
   subscription?: RouterOutputs["billing"]["getSubscription"];
 };
 

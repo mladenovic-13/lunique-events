@@ -16,11 +16,22 @@ export default async function ManageCalendarLayout({
 
   if (!session) return redirect(paths.signin.root);
 
-  const organization = await api.organization.getName({
+  const organizationName = await api.organization.getName({
     id: organizationId,
   });
 
-  if (!organization) return notFound();
+  const organization = await api.organization.getOne({
+    id: organizationId,
+  });
+
+  if (!organizationName) return notFound();
+  if (
+    !organization?.members
+      .map((member) => member.id)
+      .includes(session.user.id) &&
+    organization?.owner.id !== session.user.id
+  )
+    return notFound();
 
   const items = [
     {
@@ -28,21 +39,21 @@ export default async function ManageCalendarLayout({
       href: paths.organization.manage.events(organizationId),
     },
     {
-      title: "People",
-      href: paths.organization.manage.people(organizationId),
+      title: "Admins",
+      href: paths.organization.manage.admins(organizationId),
     },
-    {
-      title: "Newsletter",
-      href: paths.organization.manage.newsletter(organizationId),
-    },
-    {
-      title: "Insights",
-      href: paths.organization.manage.insights(organizationId),
-    },
-    {
-      title: "Settings",
-      href: paths.organization.manage.settings.display(organizationId),
-    },
+    // {
+    //   title: "Newsletter",
+    //   href: paths.organization.manage.newsletter(organizationId),
+    // },
+    // {
+    //   title: "Insights",
+    //   href: paths.organization.manage.insights(organizationId),
+    // },
+    // {
+    //   title: "Settings",
+    //   href: paths.organization.manage.settings.display(organizationId),
+    // },
   ];
 
   return (
@@ -51,7 +62,7 @@ export default async function ManageCalendarLayout({
         <div className="mx-auto max-w-4xl md:pt-3">
           <ManageNav
             items={items}
-            title={organization.name}
+            title={organizationName.name}
             landingPage={{
               label: "Organization Page",
               href: paths.organization.landing.root(organizationId),

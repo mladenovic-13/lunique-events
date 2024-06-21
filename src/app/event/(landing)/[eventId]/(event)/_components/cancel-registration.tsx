@@ -20,14 +20,15 @@ export const CancelRegistration = ({ inviteId }: CancelRegistrationProps) => {
       { id: inviteId, status: "NOT_GOING" },
       {
         onSuccess: () => {
-          toast({ title: "You have successfully canceled registration" }),
-            utils.invalidate().catch(() => ({}));
+          toast({ title: "You have successfully canceled registration" });
+          utils.invalidate().catch(() => ({}));
         },
-        onError: () =>
+        onError: () => {
           toast({
             variant: "destructive",
             title: "Failed to canceled registration",
-          }),
+          });
+        },
       },
     );
   };
